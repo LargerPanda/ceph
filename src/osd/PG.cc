@@ -1941,16 +1941,18 @@ void PG::queue_op(OpRequestRef& op)
   Mutex::Locker l(map_lock);
   if (!waiting_for_map.empty()) {
     // preserve ordering
+    //当waiting for map这个队列里不是空的时候，就把op入队
     waiting_for_map.push_back(op);
     op->mark_delayed("waiting_for_map not empty");
     return;
   }
   if (op_must_wait_for_map(get_osdmap_with_maplock()->get_epoch(), op)) {
     waiting_for_map.push_back(op);
+    //必须要waitformap是个什么情况？
     op->mark_delayed("op must wait for map");
     return;
   }
-  op->mark_queued_for_pg();
+  op->mark_queued_for_pg();//标记：已经在pg的队列里了
   osd->op_wq.queue(make_pair(PGRef(this), op));
   {
     // after queue() to include any locking costs

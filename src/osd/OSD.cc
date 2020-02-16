@@ -819,7 +819,7 @@ void OSDService::send_message_osd_cluster(int peer, Message *m, epoch_t from_epo
   const entity_inst_t& peer_inst = next_map->get_cluster_inst(peer);
   ConnectionRef peer_con = osd->cluster_messenger->get_connection(peer_inst);
   share_map_peer(peer, peer_con.get(), next_map);
-  peer_con->send_message(m);
+  peer_con->send_message(m); //实际的发送消息
   release_map(next_map);
 }
 
