@@ -195,6 +195,8 @@ ECBackend::ECBackend(
 
 PGBackend::RecoveryHandle *ECBackend::open_recovery_op()
 {
+	dout(1) << __func__ << ": "
+				<< "in open_recovery_op()" << dendl;
 	return new ECRecoveryHandle;
 }
 
@@ -698,6 +700,8 @@ void ECBackend::run_recovery_op(
 	RecoveryHandle *_h,
 	int priority)
 {
+	dout(1) << __func__ << ": "
+				<< "in run_recovery_op()" << dendl;
 	ECRecoveryHandle *h = static_cast<ECRecoveryHandle *>(_h);
 	RecoveryMessages m;
 	for (list<RecoveryOp>::iterator i = h->ops.begin();
@@ -720,6 +724,8 @@ void ECBackend::recover_object(
 	ObjectContextRef obc,
 	RecoveryHandle *_h)
 {
+	dout(1) << __func__ << ": "
+				<< "in recover_object()" << dendl;
 	ECRecoveryHandle *h = static_cast<ECRecoveryHandle *>(_h);
 	h->ops.push_back(RecoveryOp());
 	h->ops.back().v = v;
@@ -806,6 +812,8 @@ bool ECBackend::handle_message(
 	{
 		MOSDPGPush *op = static_cast<MOSDPGPush *>(_op->get_req());
 		RecoveryMessages rm;
+		dout(1) << __func__ << ": "
+				<< "get MSG_OSD_PG_PUSH" << dendl;
 		for (vector<PushOp>::iterator i = op->pushes.begin();
 			 i != op->pushes.end();
 			 ++i)
@@ -819,6 +827,8 @@ bool ECBackend::handle_message(
 	{
 		MOSDPGPushReply *op = static_cast<MOSDPGPushReply *>(_op->get_req());
 		RecoveryMessages rm;
+		dout(1) << __func__ << ": "
+				<< "get MSG_OSD_PG_PUSH_REPLY" << dendl;
 		for (vector<PushReplyOp>::iterator i = op->replies.begin();
 			 i != op->replies.end();
 			 ++i)
