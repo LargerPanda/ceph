@@ -2134,7 +2134,7 @@ struct CallClientContexts : public GenContext<pair<RecoveryMessages *, ECBackend
 			{
 				to_decode[j->first.shard].claim(j->second);
 			}
-			dout(0) << __func__ << "mydebug: decode in CallclientContexts::finish "<< dendl;
+			//dout(0) << __func__ << "mydebug: decode in CallclientContexts::finish "<< dendl;
 			int r = ECUtil::decode(
 				ec->sinfo,
 				ec->ec_impl,
