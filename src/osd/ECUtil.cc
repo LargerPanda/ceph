@@ -3,15 +3,13 @@
 #include <errno.h>
 #include "include/encoding.h"
 #include "ECUtil.h"
-#include "common/debug.h"
 
 int ECUtil::decode(
   const stripe_info_t &sinfo,
   ErasureCodeInterfaceRef &ec_impl,
   map<int, bufferlist> &to_decode,
   bufferlist *out) {
-  dout(1) << __func__ << ": "
-          << "in decode1()" << dendl;
+
   assert(to_decode.size());
 
   uint64_t total_data_size = to_decode.begin()->second.length();
@@ -51,8 +49,6 @@ int ECUtil::decode(
   map<int, bufferlist> &to_decode,
   map<int, bufferlist*> &out) {
 
-  dout(1) << __func__ << ": "
-          << "in decode2()" << dendl;
   assert(to_decode.size());
 
   uint64_t total_data_size = to_decode.begin()->second.length();
@@ -169,8 +165,6 @@ void ECUtil::HashInfo::encode(bufferlist &bl) const
 
 void ECUtil::HashInfo::decode(bufferlist::iterator &bl)
 {
-  dout(1) << __func__ << ": "
-          << "in hashInfo:decode()" << dendl;
   DECODE_START(1, bl);
   ::decode(total_chunk_size, bl);
   ::decode(cumulative_shard_hashes, bl);
