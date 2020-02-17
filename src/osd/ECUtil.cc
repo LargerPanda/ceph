@@ -6,13 +6,9 @@
 #include "common/debug.h"
 
 #define dout_subsys ceph_subsys_osd
-#define DOUT_PREFIX_ARGS this
+#define DOUT_PREFIX_ARGS ""
 #undef dout_prefix
-#define dout_prefix _prefix(_dout, this)
-static ostream &_prefix(std::ostream *_dout, ECBackend *pgb)
-{
-  return *_dout << pgb->get_parent()->gen_dbg_prefix();
-}
+#define dout_prefix "ECUtil"
 
 int ECUtil::decode(
   const stripe_info_t &sinfo,
