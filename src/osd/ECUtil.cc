@@ -3,6 +3,16 @@
 #include <errno.h>
 #include "include/encoding.h"
 #include "ECUtil.h"
+#include "common/debug.h"
+
+#define dout_subsys ceph_subsys_osd
+#define DOUT_PREFIX_ARGS this
+#undef dout_prefix
+#define dout_prefix _prefix(_dout, this)
+static ostream &_prefix(std::ostream *_dout, ECBackend *pgb)
+{
+  return *_dout << pgb->get_parent()->gen_dbg_prefix();
+}
 
 int ECUtil::decode(
   const stripe_info_t &sinfo,
@@ -10,6 +20,7 @@ int ECUtil::decode(
   map<int, bufferlist> &to_decode,
   bufferlist *out) {
 
+  dout(10) << __func__ << "mydebug: in decode1 "  << dendl;
   assert(to_decode.size());
 
   uint64_t total_data_size = to_decode.begin()->second.length();
@@ -49,6 +60,7 @@ int ECUtil::decode(
   map<int, bufferlist> &to_decode,
   map<int, bufferlist*> &out) {
 
+  dout(10) << __func__ << "mydebug: in decode2 " << dendl;
   assert(to_decode.size());
 
   uint64_t total_data_size = to_decode.begin()->second.length();
@@ -165,6 +177,7 @@ void ECUtil::HashInfo::encode(bufferlist &bl) const
 
 void ECUtil::HashInfo::decode(bufferlist::iterator &bl)
 {
+  dout(10) << __func__ << "mydebug: in hash decode " << dendl;
   DECODE_START(1, bl);
   ::decode(total_chunk_size, bl);
   ::decode(cumulative_shard_hashes, bl);
