@@ -6,9 +6,8 @@
 #include "common/debug.h"
 
 #define dout_subsys ceph_subsys_osd
-#define DOUT_PREFIX_ARGS ""
 #undef dout_prefix
-#define dout_prefix "ECUtil"
+#define dout_prefix (*_dout << "ECUtil")
 
 int ECUtil::decode(
   const stripe_info_t &sinfo,
