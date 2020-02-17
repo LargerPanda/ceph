@@ -394,6 +394,8 @@ void ECBackend::handle_recovery_read_complete(
 	boost::optional<map<string, bufferlist>> attrs,
 	RecoveryMessages *m)
 {
+	dout(1) << __func__ << "mydebug: in handle_recovery_read_complete"<<dendl;
+
 	dout(10) << __func__ << ": returned " << hoid << " "
 			 << "(" << to_read.get<0>()
 			 << ", " << to_read.get<1>()
@@ -418,6 +420,7 @@ void ECBackend::handle_recovery_read_complete(
 		from[i->first.shard].claim(i->second);
 	}
 	dout(10) << __func__ << ": " << from << dendl;
+	dout(0) << __func__ << "mydebug: decode in handle_recovery_read_complete"<< dendl;
 	int r = ECUtil::decode(sinfo, ec_impl, from, target);
 	assert(r == 0);
 	if (attrs)
@@ -451,6 +454,7 @@ void ECBackend::handle_recovery_read_complete(
 		{
 			assert(op.xattrs.count(ECUtil::get_hinfo_key()));
 			bufferlist::iterator bp = op.xattrs[ECUtil::get_hinfo_key()].begin();
+			dout(0) << __func__ << "mydebug: decode in handle_recovery_read_complete hinfo" << dendl;
 			::decode(hinfo, bp);
 		}
 		op.hinfo = unstable_hashinfo_registry.lookup_or_create(hoid, hinfo);
@@ -1961,6 +1965,7 @@ ECUtil::HashInfoRef ECBackend::get_hash_info(
 			if (bl.length() > 0)
 			{
 				bufferlist::iterator bp = bl.begin();
+				dout(0) << __func__ << "mydebug: decode in get_hash_info "<< dendl;
 				::decode(hinfo, bp);
 				if (checks && hinfo.get_total_chunk_size() != (uint64_t)st.st_size)
 				{
@@ -2129,6 +2134,7 @@ struct CallClientContexts : public GenContext<pair<RecoveryMessages *, ECBackend
 			{
 				to_decode[j->first.shard].claim(j->second);
 			}
+			dout(0) << __func__ << "mydebug: decode in CallclientContexts::finish "<< dendl;
 			int r = ECUtil::decode(
 				ec->sinfo,
 				ec->ec_impl,
