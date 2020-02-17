@@ -781,6 +781,9 @@ bool ECBackend::handle_message(
 		MOSDECSubOpReadReply *reply = new MOSDECSubOpReadReply;
 		reply->pgid = get_parent()->primary_spg_t();
 		reply->map_epoch = get_parent()->get_epoch();
+		//add debug
+		dout(0) << __func__ << ": "
+				<< "get MSG_OSD_EC_READ" << dendl;
 		handle_sub_read(op->op.from, op->op, &(reply->op)); //先处理
 		op->set_priority(priority);
 		get_parent()->send_message_osd_cluster(
@@ -792,6 +795,9 @@ bool ECBackend::handle_message(
 		MOSDECSubOpReadReply *op = static_cast<MOSDECSubOpReadReply *>(
 			_op->get_req());
 		RecoveryMessages rm;
+		//add debug
+		dout(0) << __func__ << ": "
+				<< "get MSG_OSD_EC_READ_REPLY" << dendl;
 		handle_sub_read_reply(op->op.from, op->op, &rm);
 		dispatch_recovery_messages(rm, priority);
 		return true;
