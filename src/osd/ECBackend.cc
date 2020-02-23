@@ -774,6 +774,8 @@ bool ECBackend::handle_message(
 	case MSG_OSD_EC_WRITE:
 	{
 		MOSDECSubOpWrite *op = static_cast<MOSDECSubOpWrite *>(_op->get_req());
+		dout(1) << __func__ << ": "
+				<< "mydebug: get MSG_OSD_EC_WRITE" << dendl;
 		handle_sub_write(op->op.from, _op, op->op);
 		return true;
 	}
@@ -782,6 +784,8 @@ bool ECBackend::handle_message(
 		MOSDECSubOpWriteReply *op = static_cast<MOSDECSubOpWriteReply *>(
 			_op->get_req());
 		op->set_priority(priority);
+		dout(1) << __func__ << ": "
+				<< "mydebug: get MSG_OSD_EC_WRITE_REPLY" << dendl;
 		handle_sub_write_reply(op->op.from, op->op);
 		return true;
 	}
