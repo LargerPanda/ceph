@@ -793,7 +793,7 @@ bool ECBackend::handle_message(
 		reply->map_epoch = get_parent()->get_epoch();
 		//add debug
 		dout(1) << __func__ << ": "
-				<< "get MSG_OSD_EC_READ" << dendl;
+				<< "mydebug: get MSG_OSD_EC_READ" << dendl;
 		handle_sub_read(op->op.from, op->op, &(reply->op)); //先处理
 		op->set_priority(priority);
 		get_parent()->send_message_osd_cluster(
@@ -807,7 +807,7 @@ bool ECBackend::handle_message(
 		RecoveryMessages rm;
 		//add debug
 		dout(1) << __func__ << ": "
-				<< "get MSG_OSD_EC_READ_REPLY" << dendl;
+				<< "mydebug: get MSG_OSD_EC_READ_REPLY" << dendl;
 		handle_sub_read_reply(op->op.from, op->op, &rm);
 		dispatch_recovery_messages(rm, priority);
 		return true;
@@ -817,7 +817,7 @@ bool ECBackend::handle_message(
 		MOSDPGPush *op = static_cast<MOSDPGPush *>(_op->get_req());
 		RecoveryMessages rm;
 		dout(1) << __func__ << ": "
-				<< "get MSG_OSD_PG_PUSH" << dendl;
+				<< "mydebug: get MSG_OSD_PG_PUSH" << dendl;
 		for (vector<PushOp>::iterator i = op->pushes.begin();
 			 i != op->pushes.end();
 			 ++i)
@@ -832,7 +832,7 @@ bool ECBackend::handle_message(
 		MOSDPGPushReply *op = static_cast<MOSDPGPushReply *>(_op->get_req());
 		RecoveryMessages rm;
 		dout(1) << __func__ << ": "
-				<< "get MSG_OSD_PG_PUSH_REPLY" << dendl;
+				<< "mydebug: get MSG_OSD_PG_PUSH_REPLY" << dendl;
 		for (vector<PushReplyOp>::iterator i = op->replies.begin();
 			 i != op->replies.end();
 			 ++i)
