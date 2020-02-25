@@ -640,6 +640,7 @@ int ObjBencher::seq_read_bench(int seconds_to_run, int num_objects, int concurre
     return -EINVAL;
 
   std::vector<string> name(concurrentios);
+  cout<<"concurrentios="<<concurrentios<<endl;
   std::string newName;
   bufferlist* contents[concurrentios];
   int index[concurrentios];
@@ -657,6 +658,9 @@ int ObjBencher::seq_read_bench(int seconds_to_run, int num_objects, int concurre
   unsigned writes_per_object = 1;
   if (data.op_size)
     writes_per_object = data.object_size / data.op_size;
+
+
+  out(cout)<<"writes_per_object="<<writes_per_object<<std::endl;
 
   r = completions_init(concurrentios);
   if (r < 0)
@@ -685,6 +689,7 @@ int ObjBencher::seq_read_bench(int seconds_to_run, int num_objects, int concurre
     create_completion(i, _aio_cb, (void *)&lc);
     r = aio_read(name[i], i, contents[i], data.op_size,
 		 data.op_size * (i % writes_per_object));
+    //最后一个参数是偏移
     if (r < 0) { //naughty, doesn't clean up heap -- oh, or handle the print thread!
       cerr << "r = " << r << std::endl;
       goto ERR;
@@ -705,6 +710,7 @@ int ObjBencher::seq_read_bench(int seconds_to_run, int num_objects, int concurre
     lock.Lock();
     int old_slot = slot;
     bool found = false;
+    //一直查询是否有完成的
     while (1) {
       do {
         if (completion_is_done(slot)) {
@@ -730,7 +736,10 @@ int ObjBencher::seq_read_bench(int seconds_to_run, int num_objects, int concurre
     
     // invalidate internal crc cache
     cur_contents->invalidate_crc();
-  
+
+
+    //验证的地方
+    out(cout)<<"no_verify="<<no_verify<<std::endl;
     if (!no_verify) {
       snprintf(data.object_contents, data.op_size, "I'm the %16dth op!", current_index);
       if ( (cur_contents->length() != data.op_size) || 
@@ -739,6 +748,9 @@ int ObjBencher::seq_read_bench(int seconds_to_run, int num_objects, int concurre
         ++errors;
       }
     }
+
+    out(cout) << "##mydebug"
+              << ",name=" << name[slot] <<",index="<< current_index <<",latency=" << data.cur_latency<< std::endl;
 
     newName = generate_object_name(data.started / writes_per_object, pid);
     index[slot] = data.started;
