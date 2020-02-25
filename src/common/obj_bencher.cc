@@ -640,7 +640,7 @@ int ObjBencher::seq_read_bench(int seconds_to_run, int num_objects, int concurre
     return -EINVAL;
 
   std::vector<string> name(concurrentios);
-  cout<<"concurrentios="<<concurrentios<<endl;
+  cout<<"concurrentios="<<concurrentios<<std::endl;
   std::string newName;
   bufferlist* contents[concurrentios];
   int index[concurrentios];
