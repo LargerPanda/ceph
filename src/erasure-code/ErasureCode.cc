@@ -23,6 +23,11 @@
 #include "common/strtol.h"
 #include "ErasureCode.h"
 #include "include/buffer.h"
+#include "common/debug.h"
+
+#define dout_subsys ceph_subsys_osd
+#undef dout_prefix
+#define dout_prefix (*_dout << "ErasureCode")
 
 const unsigned ErasureCode::SIMD_ALIGN = 32;
 
@@ -45,6 +50,8 @@ int ErasureCode::minimum_to_decode(const set<int> &want_to_read,
                                    const set<int> &available_chunks,
                                    set<int> *minimum)
 {
+
+  dout(1) << __func__ << ": mydebug: in minimum_to_decode " << dendl;
   if (includes(available_chunks.begin(), available_chunks.end(),
 	       want_to_read.begin(), want_to_read.end())) {
     *minimum = want_to_read;

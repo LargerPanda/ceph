@@ -22,5 +22,6 @@
         "functional": "cpp",
         "regex": "cpp",
         "tuple": "cpp"
-    }
+    },
+    "python.formatting.provider": "yapf"
 }

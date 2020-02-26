@@ -1151,6 +1151,7 @@ void ECBackend::handle_sub_read_reply(
 	ECSubReadReply &op,
 	RecoveryMessages *m)
 {
+	dout(1) << __func__ << ": mydebug: in handle_sub_read_reply#####" << op << dendl;
 	dout(10) << __func__ << ": reply " << op << dendl;
 	map<ceph_tid_t, ReadOp>::iterator iter = tid_to_read_map.find(op.tid);
 	if (iter == tid_to_read_map.end())
@@ -1242,6 +1243,7 @@ void ECBackend::handle_sub_read_reply(
 			{
 				have.insert(j->first.shard);
 				dout(20) << __func__ << " have shard=" << j->first.shard << dendl;
+				dout(1) << __func__ << ": mydebug: have shard=" << j->first.shard << dendl;
 			}
 			set<int> want_to_read, dummy_minimum;
 			get_want_to_read_shards(&want_to_read);
@@ -1255,6 +1257,7 @@ void ECBackend::handle_sub_read_reply(
 					// we can send the rest of the reads, if any.
 					if (!rop.do_redundant_reads)
 					{
+						dout(1) << __func__ << ": mydebug: do objects_remaining_read_async" << dendl;
 						int r = objects_remaining_read_async(iter->first, rop);
 						if (r == 0)
 						{
@@ -1265,12 +1268,14 @@ void ECBackend::handle_sub_read_reply(
 					}
 					if (rop.complete[iter->first].errors.empty())
 					{
+						dout(1) << __func__ << ": mydebug: simply not enough copies err=" <<err<< dendl;
 						dout(20) << __func__ << " simply not enough copies err=" << err << dendl;
 					}
 					else
 					{
 						// Grab the first error
 						err = rop.complete[iter->first].errors.begin()->second;
+						dout(1) << __func__ << ": mydebug: Use one of the shard errors err=" << err << dendl;
 						dout(20) << __func__ << ": Use one of the shard errors err=" << err << dendl;
 					}
 					rop.complete[iter->first].r = err;
@@ -1284,6 +1289,7 @@ void ECBackend::handle_sub_read_reply(
 				{
 					if (cct->_conf->osd_read_ec_check_for_errors)
 					{
+						dout(1) << __func__ << ": mydebug: Not ignoring errors, use one shard err=" << err << dendl;
 						dout(10) << __func__ << ": Not ignoring errors, use one shard err=" << err << dendl;
 						err = rop.complete[iter->first].errors.begin()->second;
 						rop.complete[iter->first].r = err;
@@ -1293,6 +1299,8 @@ void ECBackend::handle_sub_read_reply(
 						get_parent()->clog_error() << __func__ << ": Error(s) ignored for "
 												   << iter->first << " enough copies available"
 												   << "\n";
+						dout(1) << __func__ << ": mydebug: Error(s) ignored for " << iter->first
+								 << " enough copies available" << dendl;
 						dout(10) << __func__ << " Error(s) ignored for " << iter->first
 								 << " enough copies available" << dendl;
 						rop.complete[iter->first].errors.clear();
@@ -1304,11 +1312,13 @@ void ECBackend::handle_sub_read_reply(
 	}
 	if (rop.in_progress.empty() || is_complete == rop.complete.size())
 	{
+		dout(1) << __func__ << ": mydebug: Complete!" << rop << dendl;
 		dout(20) << __func__ << " Complete: " << rop << dendl;
 		complete_read_op(rop, m);
 	}
 	else
 	{
+		dout(1) << __func__ << ": mydebug: not Complete!" << rop << dendl;
 		dout(10) << __func__ << " readop not complete: " << rop << dendl;
 	}
 }
@@ -2138,7 +2148,7 @@ struct CallClientContexts : public GenContext<pair<RecoveryMessages *, ECBackend
 			{
 				to_decode[j->first.shard].claim(j->second);
 			}
-			//dout(0) << __func__ << "mydebug: decode in CallclientContexts::finish "<< dendl;
+			dout(1) << __func__ << ": mydebug: decode in CallclientContexts::finish "<< dendl;
 			int r = ECUtil::decode(
 				ec->sinfo,
 				ec->ec_impl,

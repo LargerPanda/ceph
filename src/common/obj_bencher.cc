@@ -660,7 +660,7 @@ int ObjBencher::seq_read_bench(int seconds_to_run, int num_objects, int concurre
     writes_per_object = data.object_size / data.op_size;
 
 
-  out(cout)<<"writes_per_object="<<writes_per_object<<std::endl;
+  //out(cout)<<"writes_per_object="<<writes_per_object<<std::endl;
 
   r = completions_init(concurrentios);
   if (r < 0)
@@ -739,7 +739,7 @@ int ObjBencher::seq_read_bench(int seconds_to_run, int num_objects, int concurre
 
 
     //验证的地方
-    out(cout)<<"no_verify="<<no_verify<<std::endl;
+    //out(cout)<<"no_verify="<<no_verify<<std::endl;
     if (!no_verify) {
       snprintf(data.object_contents, data.op_size, "I'm the %16dth op!", current_index);
       if ( (cur_contents->length() != data.op_size) || 
