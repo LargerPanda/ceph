@@ -144,6 +144,8 @@ int ErasureCode::decode(const set<int> &want_to_read,
                         const map<int, bufferlist> &chunks,
                         map<int, bufferlist> *decoded)
 {
+  dout(1) << __func__ << ": mydebug: in decode3  " << dendl;
+
   vector<int> have;
   have.reserve(chunks.size());
   for (map<int, bufferlist>::const_iterator i = chunks.begin();
@@ -266,6 +268,7 @@ int ErasureCode::to_string(const std::string &name,
 int ErasureCode::decode_concat(const map<int, bufferlist> &chunks,
 			       bufferlist *decoded)
 {
+  dout(1) << __func__ << ": mydebug: in decode concat  " << dendl;
   set<int> want_to_read;
 
   for (unsigned int i = 0; i < get_data_chunk_count(); i++) {
