@@ -806,6 +806,7 @@ void OSDService::update_osd_stat(vector<int>& hb_peers)
 
 void OSDService::send_message_osd_cluster(int peer, Message *m, epoch_t from_epoch)
 {
+  dout(1) << __func__ << ": mydebug: in send_message_osd_cluster! " << dendl;
   OSDMapRef next_map = get_nextmap_reserved();
   // service map is always newer/newest
   assert(from_epoch <= next_map->get_epoch());

@@ -23,6 +23,8 @@
 #include "messages/MOSDPGPushReply.h"
 #include "ReplicatedPG.h"
 
+#include <time.h>
+
 class ReplicatedPG;
 
 #define dout_subsys ceph_subsys_osd
@@ -1332,6 +1334,12 @@ void ECBackend::complete_read_op(ReadOp &rop, RecoveryMessages *m)
 	map<hobject_t, read_result_t, hobject_t::BitwiseComparator>::iterator resiter =
 		rop.complete.begin();
 	assert(rop.to_read.size() == rop.complete.size());
+
+	//caculate decode time
+	struct timeval start;
+	struct timeval end;
+	unsigned long diff;
+	gettimeofday(&start,NULL);
 	for (; reqiter != rop.to_read.end(); ++reqiter, ++resiter)
 	{
 		if (reqiter->second.cb)
@@ -1343,6 +1351,10 @@ void ECBackend::complete_read_op(ReadOp &rop, RecoveryMessages *m)
 			reqiter->second.cb = NULL;
 		}
 	}
+	gettimeofday(&end,NULL);
+	diff = 1000000 * (end.tv_sec-start.tv_sec)+ end.tv_usec-start.tv_usec;
+	dout(1) << __func__ << ": mydebug: decode time = " << diff << "(usec) !!"<< dendl;
+
 	dout(1) << __func__ << ": mydebug: erase tid!" << dendl;
 	tid_to_read_map.erase(rop.tid);
 }
@@ -1780,6 +1792,7 @@ void ECBackend::start_read_op(
 	bool do_redundant_reads,
 	bool for_recovery)
 {
+	dout(1) << __func__ << ": mydebug: in start_read_op! " << dendl;
 	ceph_tid_t tid = get_parent()->get_tid(); //get transaction id
 	assert(!tid_to_read_map.count(tid));	  //this map is <tid, op>, one tid can have many ops
 	ReadOp &op(tid_to_read_map[tid]);
@@ -2128,6 +2141,7 @@ struct CallClientContexts : public GenContext<pair<RecoveryMessages *, ECBackend
 		: ec(ec), status(status), to_read(to_read) {}
 	void finish(pair<RecoveryMessages *, ECBackend::read_result_t &> &in)
 	{
+		//dout(1) << __func__ << ": mydebug: in callclientcontext::finish! " << dendl;
 		ECBackend::read_result_t &res = in.second;
 		if (res.r != 0)
 			goto out;
@@ -2208,6 +2222,7 @@ void ECBackend::objects_read_async(
 	Context *on_complete,
 	bool fast_read)
 {
+	dout(10) << __func__ << ": mydebug: in objects_read_async! " << dendl;
 	in_progress_client_reads.push_back(ClientAsyncReadStatus(on_complete));
 	CallClientContexts *c = new CallClientContexts(
 		this, &(in_progress_client_reads.back()), to_read);
