@@ -1325,6 +1325,8 @@ void ECBackend::handle_sub_read_reply(
 
 void ECBackend::complete_read_op(ReadOp &rop, RecoveryMessages *m)
 {
+	dout(1) << __func__ << ": mydebug: in complete_read_op!" << dendl;
+	
 	map<hobject_t, read_request_t, hobject_t::BitwiseComparator>::iterator reqiter =
 		rop.to_read.begin();
 	map<hobject_t, read_result_t, hobject_t::BitwiseComparator>::iterator resiter =
@@ -1336,10 +1338,12 @@ void ECBackend::complete_read_op(ReadOp &rop, RecoveryMessages *m)
 		{
 			pair<RecoveryMessages *, read_result_t &> arg(
 				m, resiter->second);
+			dout(1) << __func__ << ": mydebug: start to complete!" << dendl;
 			reqiter->second.cb->complete(arg);
 			reqiter->second.cb = NULL;
 		}
 	}
+	dout(1) << __func__ << ": mydebug: erase tid!" << dendl;
 	tid_to_read_map.erase(rop.tid);
 }
 

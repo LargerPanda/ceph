@@ -21,7 +21,8 @@
         "thread": "cpp",
         "functional": "cpp",
         "regex": "cpp",
-        "tuple": "cpp"
+        "tuple": "cpp",
+        "type_traits": "cpp"
     },
     "python.formatting.provider": "yapf"
 }
