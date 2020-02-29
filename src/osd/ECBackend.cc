@@ -1753,7 +1753,7 @@ int ECBackend::get_min_avail_to_read_shards(
 	}
 
 	/*force reconstruct*/
-	int straggler = 0; //osd.0 is straggler
+	int straggler = 3; //osd.0 is straggler
 	
 	for (map<shard_id_t, pg_shard_t>::iterator i = shards.begin();
 		 i != shards.end();
