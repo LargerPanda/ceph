@@ -1752,6 +1752,27 @@ int ECBackend::get_min_avail_to_read_shards(
 		dout(1) << __func__ << ": mydebug: shards " << i->second << dendl;
 	}
 
+	/*force reconstruct*/
+	int straggler = 0; //osd.0 is straggler
+	
+	for (map<shard_id_t, pg_shard_t>::iterator i = shards.begin();
+		 i != shards.end();
+		 ++i)
+	{
+		if((i->second).osd == straggler){
+			dout(1) << __func__ << ": mydebug: shards "<< i->first <<" have straggler osd " << straggler << dendl;
+			have.erase(i->first);
+			dout(1) << __func__ << ": mydebug: erase " << i->first << " from have" << dendl;
+		}
+	}
+
+	for (set<int>::iterator i = have.begin();
+		 i != have.end();
+		 ++i)
+	{
+		dout(1) << __func__ << ": mydebug: after erasue, have " << *i << dendl;
+	}
+	/*force reconstruct*/
 	set<int> need;
 	int r = ec_impl->minimum_to_decode(want, have, &need);
 
