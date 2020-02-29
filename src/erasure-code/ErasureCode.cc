@@ -276,10 +276,19 @@ int ErasureCode::decode_concat(const map<int, bufferlist> &chunks,
     dout(1) << __func__ << ": mydebug: want_to_read.insert(" << chunk_index(i) <<")" << dendl;
   }
   map<int, bufferlist> decoded_map;
+
+  for (map<int, bufferlist>::const_iterator i = chunks.begin();
+       i != chunks.end();
+       ++i)
+  {
+    dout(1) << __func__ << ": mydebug: chunks has "<< i->first << dendl;
+  }
+
   int r = decode(want_to_read, chunks, &decoded_map);
   if (r == 0) {
     for (unsigned int i = 0; i < get_data_chunk_count(); i++) {
       decoded->claim_append(decoded_map[chunk_index(i)]);
+      dout(1) << __func__ << ": mydebug: chunk_index(i) =  " << chunk_index(i) << dendl;
     }
   }
   return r;
