@@ -273,6 +273,7 @@ int ErasureCode::decode_concat(const map<int, bufferlist> &chunks,
 
   for (unsigned int i = 0; i < get_data_chunk_count(); i++) {
     want_to_read.insert(chunk_index(i));
+    dout(1) << __func__ << ": mydebug: want_to_read.insert(" << chunk_index(i) <<")" << dendl;
   }
   map<int, bufferlist> decoded_map;
   int r = decode(want_to_read, chunks, &decoded_map);

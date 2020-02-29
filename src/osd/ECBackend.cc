@@ -1956,6 +1956,7 @@ ECUtil::HashInfoRef ECBackend::get_hash_info(
 	ECUtil::HashInfoRef ref = unstable_hashinfo_registry.lookup(hoid);
 	if (!ref)
 	{
+		dout(1) << __func__ << ": mydebug: not in cache " << hoid << dendl;
 		dout(10) << __func__ << ": not in cache " << hoid << dendl;
 		struct stat st;
 		int r = store->stat(
@@ -1966,6 +1967,7 @@ ECUtil::HashInfoRef ECBackend::get_hash_info(
 		// XXX: What does it mean if there is no object on disk?
 		if (r >= 0)
 		{
+			dout(1) << __func__ << ": mydebug: found on disk, size " << st.st_size << dendl;
 			dout(10) << __func__ << ": found on disk, size " << st.st_size << dendl;
 			bufferlist bl;
 			if (attrs)
@@ -1996,7 +1998,7 @@ ECUtil::HashInfoRef ECBackend::get_hash_info(
 			if (bl.length() > 0)
 			{
 				bufferlist::iterator bp = bl.begin();
-				dout(0) << __func__ << "mydebug: decode in get_hash_info "<< dendl;
+				dout(1) << __func__ << "mydebug: decode in get_hash_info "<< dendl;
 				::decode(hinfo, bp);
 				if (checks && hinfo.get_total_chunk_size() != (uint64_t)st.st_size)
 				{
@@ -2222,7 +2224,7 @@ void ECBackend::objects_read_async(
 	Context *on_complete,
 	bool fast_read)
 {
-	dout(10) << __func__ << ": mydebug: in objects_read_async! " << dendl;
+	dout(1) << __func__ << ": mydebug: in objects_read_async! " << dendl;
 	in_progress_client_reads.push_back(ClientAsyncReadStatus(on_complete));
 	CallClientContexts *c = new CallClientContexts(
 		this, &(in_progress_client_reads.back()), to_read);
@@ -2274,6 +2276,7 @@ int ECBackend::objects_remaining_read_async(
 	const hobject_t &hoid,
 	ReadOp &rop)
 {
+	dout(1) << __func__ << ": mydebug: in objects_remaining_read_async! " << dendl;
 	set<int> already_read;
 	const set<pg_shard_t> &ots = rop.obj_to_source[hoid];
 	for (set<pg_shard_t>::iterator i = ots.begin(); i != ots.end(); ++i)
