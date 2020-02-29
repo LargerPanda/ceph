@@ -1738,13 +1738,36 @@ int ECBackend::get_min_avail_to_read_shards(
 
 	get_all_avail_shards(hoid, have, shards, for_recovery);
 
+	for (set<int>::iterator i = have.begin();
+		 i != have.end();
+		 ++i)
+	{
+		dout(1) << __func__ << ": mydebug: have " << *i << dendl;
+	}
+
+	for (map<shard_id_t, pg_shard_t>::iterator i = shards.begin();
+		 i != shards.end();
+		 ++i)
+	{
+		dout(1) << __func__ << ": mydebug: shards " << i->second << dendl;
+	}
+
 	set<int> need;
 	int r = ec_impl->minimum_to_decode(want, have, &need);
+
+	for (set<int>::iterator i = need.begin();
+		 i != need.end();
+		 ++i)
+	{
+		dout(1) << __func__ << ": mydebug: need " << *i << dendl;
+	}
+
 	if (r < 0)
 		return r;
 
 	if (do_redundant_reads)
 	{
+		dout(1) << __func__ << ": mydebug: do_redundant_reads " << dendl;
 		need.swap(have);
 	}
 
@@ -1757,6 +1780,7 @@ int ECBackend::get_min_avail_to_read_shards(
 	{
 		assert(shards.count(shard_id_t(*i)));
 		to_read->insert(shards[shard_id_t(*i)]);
+		dout(1) << __func__ << ": mydebug: to_read insert " << shards[shard_id_t(*i)] << dendl;
 	}
 	return 0;
 }
