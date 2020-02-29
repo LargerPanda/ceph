@@ -2244,6 +2244,10 @@ void ECBackend::objects_read_async(
 	set<int> want_to_read;
 	get_want_to_read_shards(&want_to_read);
 
+	for(set<int>::const_iterator i = want_to_read.begin();i!=want_to_read.end();i++){
+		dout(1) << __func__ << ": mydebug: want_to_read : " << *i << dendl;
+	}
+
 	set<pg_shard_t> shards;
 	int r = get_min_avail_to_read_shards(
 		hoid,
@@ -2252,6 +2256,10 @@ void ECBackend::objects_read_async(
 		fast_read,
 		&shards);
 	assert(r == 0);
+
+	for(set<pg_shard_t>::const_iterator i = shards.begin();i!=shards.end();i++){
+		dout(1) << __func__ << ": mydebug: shards : " << *i << dendl;
+	}
 
 	map<hobject_t, read_request_t, hobject_t::BitwiseComparator> for_read_op;
 	for_read_op.insert(
