@@ -807,8 +807,10 @@ int ObjBencher::seq_read_bench(int seconds_to_run, int num_objects, int concurre
     --data.in_flight;
     release_completion(slot);
 
+    int temp_index = 0;
+
     out(cout) << "##mydebug"
-              << ",name=" << name[slot] <<",index="<< current_index <<",latency=" << data.cur_latency<< std::endl;
+              << ",name=" << name[slot] <<",index="<< temp_index <<",latency=" << data.cur_latency<< std::endl;
 
     if (!no_verify) {
       snprintf(data.object_contents, data.op_size, "I'm the %16dth op!", index[slot]);
