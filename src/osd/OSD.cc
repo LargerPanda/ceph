@@ -8781,10 +8781,13 @@ void OSD::ShardedOpWQ::_process(uint32_t thread_index, heartbeat_handle_d *hb ) 
 
   uint32_t shard_index = thread_index % num_shards;
 
+  dout(1) << __func__ << ": mydebug: thread_index = " << thread_index << ", shard_index = "<< shard_index<< dendl;
+
   ShardData* sdata = shard_list[shard_index];
   assert(NULL != sdata);
   sdata->sdata_op_ordering_lock.Lock();
   if (sdata->pqueue->empty()) {
+    dout(1) << __func__ << ": mydebug: waiting !! thread_id = " << thread_index << ", shard_index = "<< shard_index << dendl;
     osd->cct->get_heartbeat_map()->reset_timeout(hb, 4, 0);
     sdata->sdata_lock.Lock();
     sdata->sdata_op_ordering_lock.Unlock();
@@ -8812,6 +8815,7 @@ void OSD::ShardedOpWQ::_process(uint32_t thread_index, heartbeat_handle_d *hb ) 
       return;
     }
     assert(sdata->pg_for_processing[&*(item.first)].size());
+    dout(1) << __func__ << ": mydebug: thread_id = " << thread_index << ", pg_for_processing.size() = "<< sdata->pg_for_processing[&*(item.first)].size()<< dendl;
     op = sdata->pg_for_processing[&*(item.first)].front();
     sdata->pg_for_processing[&*(item.first)].pop_front();
     if (!(sdata->pg_for_processing[&*(item.first)].size()))
@@ -8860,20 +8864,29 @@ void OSD::ShardedOpWQ::_enqueue(pair<PGRef, PGQueueable> item) {
 
   uint32_t shard_index = (((item.first)->get_pgid().ps())% shard_list.size());
 
+  dout(1) << __func__ << ": mydebug: shard_index = " << shard_index << ", pgid = " << (item.first)->get_pgid().ps() << ", shard_list size = " << shard_list.size() << dendl;
+
   ShardData* sdata = shard_list[shard_index];
   assert (NULL != sdata);
   unsigned priority = item.second.get_priority();
   unsigned cost = item.second.get_cost();
   sdata->sdata_op_ordering_lock.Lock();
- 
-  if (priority >= osd->op_prio_cutoff)
+
+  dout(1) << __func__ << ": mydebug: cost = " << cost << dendl;
+
+
+  if (priority >= osd->op_prio_cutoff){
+     dout(1) << __func__ << ": mydebug: priority = " << priority << ", osd->op_prio_cutoff = "<< osd->op_prio_cutoff<< dendl;
     sdata->pqueue->enqueue_strict(
       item.second.get_owner(), priority, item);
-  else
+  }
+  else{
     sdata->pqueue->enqueue(
       item.second.get_owner(),
       priority, cost, item);
+  }
   sdata->sdata_op_ordering_lock.Unlock();
+
 
   sdata->sdata_lock.Lock();
   sdata->sdata_cond.SignalOne();
