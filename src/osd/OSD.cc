@@ -804,8 +804,12 @@ void OSDService::update_osd_stat(vector<int>& hb_peers)
   dout(20) << "update_osd_stat " << osd_stat << dendl;
 }
 
+#undef dout_prefix
+#define dout_prefix (*_dout << "osd.cc")
+
 void OSDService::send_message_osd_cluster(int peer, Message *m, epoch_t from_epoch)
 {
+  
   dout(1) << __func__ << ": mydebug: in send_message_osd_cluster! " << dendl;
   OSDMapRef next_map = get_nextmap_reserved();
   // service map is always newer/newest
@@ -1628,8 +1632,11 @@ int OSD::peek_meta(ObjectStore *store, std::string& magic,
 }
 
 
+// #undef dout_prefix
+// #define dout_prefix _prefix(_dout, whoami, get_osdmap_epoch())
+
 #undef dout_prefix
-#define dout_prefix _prefix(_dout, whoami, get_osdmap_epoch())
+#define dout_prefix (*_dout << "osd.cc")
 
 // cons/des
 
