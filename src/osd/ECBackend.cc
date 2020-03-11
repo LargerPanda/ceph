@@ -1045,6 +1045,11 @@ void ECBackend::handle_sub_read(
 			 j != i->second.end(); ++j) //对于每一个偏移
 		{
 			bufferlist bl;//读object到bl中
+			//caculate read time
+			struct timeval start;
+			struct timeval end;
+			unsigned long diff;
+			gettimeofday(&start, NULL);
 			r = store->read(
 				ch,
 				ghobject_t(i->first, ghobject_t::NO_GEN, shard),
@@ -1052,6 +1057,7 @@ void ECBackend::handle_sub_read(
 				j->get<1>(),
 				bl, j->get<2>(),
 				true); // Allow EIO return
+			
 			if (r < 0)
 			{
 				get_parent()->clog_error() << __func__
@@ -1065,6 +1071,9 @@ void ECBackend::handle_sub_read(
 			else
 			{
 				dout(20) << __func__ << " read request=" << j->get<1>() << " r=" << r << " len=" << bl.length() << dendl;
+				gettimeofday(&end, NULL);	
+				diff = 1000000 * (end.tv_sec - start.tv_sec) + end.tv_usec - start.tv_usec;
+				dout(1) << __func__ << ": mydebug: read time = " << diff << "(usec) !!" << dendl;
 				//填充reply中的buffer
 				reply->buffers_read[i->first].push_back(
 					make_pair(
