@@ -1766,14 +1766,18 @@ int ECBackend::get_min_avail_to_read_shards(
 	int k=4;
 	int m=2;
 
-	for(shard_id_t i=0;i<k;i++){
-		map<shard_id_t, pg_shard_t>::iterator it = shard.find(i);
-		if((it->second).osd == straggler){
-			dout(1) << __func__ << ": mydebug: shards "<< it->first <<" have straggler osd " << straggler << dendl;
-			have.erase(it->first);
-			have.erase(k+m-1);
-			dout(1) << __func__ << ": mydebug: erase " << i->first << " from have" << dendl;
-			break;
+	for (map<shard_id_t, pg_shard_t>::iterator i = shards.begin();
+		 i != shards.end();
+		 ++i)
+	{
+		if(i->first < k){
+			if((i->second).osd == straggler){
+				dout(1) << __func__ << ": mydebug: shards "<< i->first <<" have straggler osd " << straggler << dendl;
+				have.erase(i->first);
+				have.erase(k+m-1);
+				dout(1) << __func__ << ": mydebug: erase " << i->first << " from have" << dendl;
+				break;
+			}
 		}
 	}
 	// for (map<shard_id_t, pg_shard_t>::iterator i = shards.begin();
