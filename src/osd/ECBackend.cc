@@ -1774,7 +1774,7 @@ int ECBackend::get_min_avail_to_read_shards(
 			if((i->second).osd == straggler){
 				dout(1) << __func__ << ": mydebug: shards "<< i->first <<" have straggler osd " << straggler << dendl;
 				have.erase(i->first);
-				have.erase(k+m-1);
+				have.erase(k+m-2);
 				dout(1) << __func__ << ": mydebug: erase " << i->first << " from have" << dendl;
 				break;
 			}
