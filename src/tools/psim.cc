@@ -56,6 +56,7 @@ int main(int argc, char **argv)
       char foo[20];
       snprintf(foo, sizeof(foo), "%d.%d", f, b);
       object_t oid(foo);
+      cout<<foo<<" "<<std::endl;
       ceph_object_layout l = osdmap.make_object_layout(oid, 3, nspace);
       vector<int> osds;
       pg_t pgid = pg_t(l.ol_pgid);
