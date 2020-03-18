@@ -70,9 +70,11 @@ int main(int argc, char **argv)
 
       vector<int> acting;
       osdmap.pg_to_acting_osds(pgid, acting);
-      cout << " object '" << oid
-           << "' -> " << pgid
-           << " -> " << acting
+      // cout << " object '" << oid
+      //      << "' -> " << pgid
+      //      << " -> " << acting
+      //      << std::endl;
+      cout << acting << " 1.111111"
            << std::endl;
       /*osd_map edition*/
 
@@ -85,15 +87,15 @@ int main(int argc, char **argv)
       osdmap.pg_to_acting_osds(pgid, &osds, &primary);
       int j=0;
       std::cout << "["; 
-      for (vector<int>::iterator i = osds.begin(); i != osds.end(); i++){
-          std::cout << *i;
-          if(j<(osds.size()-1)){
-            std::cout << ",";
-          }else{
-            std::cout << "]" <<" 1.111111" << std::endl;
-          }
-          j++;
-      } 
+      // for (vector<int>::iterator i = osds.begin(); i != osds.end(); i++){
+      //     std::cout << *i;
+      //     if(j<(osds.size()-1)){
+      //       std::cout << ",";
+      //     }else{
+      //       std::cout << "]" <<" 1.111111" << std::endl;
+      //     }
+      //     j++;
+      // } 
       size[osds.size()]++;
 #if 0
       if (0) {
