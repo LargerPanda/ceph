@@ -268,13 +268,14 @@ int main(int argc, const char **argv)
     inc.fsid = osdmap.get_fsid();
     inc.epoch = osdmap.get_epoch()+1;
     inc.crush = cbl;
-    //osdmap.apply_incremental(inc);
+    
     /*updata*/
     ofstream outfile;
     outfile.open("/users/yushua/log.txt", ios::out | ios::app);
 
     outfile<<"cur osd num" << osdmap.calc_num_osds() <<std::endl;
-    osdmap.apply_incremental2();
+    osdmap.apply_incremental(inc);
+    //osdmap.apply_incremental2();
     outfile << "after osd num" << osdmap.calc_num_osds() << std::endl;
     ////////
     cout << me << ": imported " << cbl.length() << " byte crush map from " << import_crush << std::endl;
