@@ -51,7 +51,7 @@ int main(int argc, char **argv)
   for (int n = 0; n < 10; n++) {   // namespaces
     char nspace[20];
     snprintf(nspace, sizeof(nspace), "n%d", n);
-  for (int f = 0; f < 5000; f++) {  // files
+  for (int f = 0; f < 100; f++) {  // files
     for (int b = 0; b < 4; b++) {   // blocks
       char foo[20];
       snprintf(foo, sizeof(foo), "%d.%d", f, b);
@@ -62,6 +62,17 @@ int main(int argc, char **argv)
       //pgid.u.ps = f * 4 + b;
       int primary;
       osdmap.pg_to_acting_osds(pgid, &osds, &primary);
+      int j=0
+      std::cout << "["; 
+      for (vector<int>::iterator i = osds.begin(); i != osds.end(); i++){
+          std::cout << *i;
+          if(j<(osds.size()-1)){
+            std::cout << ",";
+          }else{
+            std::cout << "]" <<" 1.111111" << std::endl;
+          }
+          j++;
+      } 
       size[osds.size()]++;
 #if 0
       if (0) {
