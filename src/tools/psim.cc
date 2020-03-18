@@ -47,16 +47,36 @@ int main(int argc, char **argv)
 
   //pg_pool_t *p = (pg_pool_t *)osdmap.get_pg_pool(0);
   //p->type = pg_pool_t::TYPE_ERASURE;
+  int pool=3;
 
   for (int n = 0; n < 10; n++) {   // namespaces
     char nspace[20];
     snprintf(nspace, sizeof(nspace), "n%d", n);
   for (int f = 0; f < 100; f++) {  // files
     for (int b = 0; b < 4; b++) {   // blocks
+      /*osd_map edition*/
+      if (!osdmap.have_pg_pool(pool))
+      {
+        cerr << "There is no pool " << pool << std::endl;
+        exit(1);
+      }
+      object_locator_t loc(pool);
+      pg_t raw_pgid = osdmap.object_locator_to_pg(oid, loc);
+      pg_t pgid = osdmap.raw_pg_to_pg(raw_pgid);
+
+      vector<int> acting;
+      osdmap.pg_to_acting_osds(pgid, acting);
+      cout << " object '" << oid
+           << "' -> " << pgid
+           << " -> " << acting
+           << std::endl;
+      /*osd_map edition*/
+
+
       char foo[20];
       snprintf(foo, sizeof(foo), "%d.%d", f, b);
       object_t oid(foo);
-      cout<<foo<<" "<<std::endl;
+      cout<<foo<<std::endl;
       ceph_object_layout l = osdmap.make_object_layout(oid, 3, nspace);
       vector<int> osds;
       pg_t pgid = pg_t(l.ol_pgid);
