@@ -54,6 +54,10 @@ int main(int argc, char **argv)
     snprintf(nspace, sizeof(nspace), "n%d", n);
   for (int f = 0; f < 100; f++) {  // files
     for (int b = 0; b < 4; b++) {   // blocks
+      char foo[20];
+      snprintf(foo, sizeof(foo), "%d.%d", f, b);
+      object_t oid(foo);
+      cout << foo << std::endl;
       /*osd_map edition*/
       if (!osdmap.have_pg_pool(pool))
       {
@@ -72,14 +76,10 @@ int main(int argc, char **argv)
            << std::endl;
       /*osd_map edition*/
 
-
-      char foo[20];
-      snprintf(foo, sizeof(foo), "%d.%d", f, b);
-      object_t oid(foo);
-      cout<<foo<<std::endl;
       ceph_object_layout l = osdmap.make_object_layout(oid, 3, nspace);
       vector<int> osds;
-      pg_t pgid = pg_t(l.ol_pgid);
+      pgid = pg_t(l.ol_pgid);
+      //pg_t pgid = pg_t(l.ol_pgid);
       //pgid.u.ps = f * 4 + b;
       int primary;
       osdmap.pg_to_acting_osds(pgid, &osds, &primary);
