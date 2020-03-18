@@ -252,11 +252,11 @@ int main(int argc, const char **argv)
     bufferlist::iterator p = cbl.begin();
     cw.decode(p);
 
-    if (cw.get_max_devices() > osdmap.get_max_osd()) {
-      cerr << me << ": crushmap max_devices " << cw.get_max_devices()
-	   << " > osdmap max_osd " << osdmap.get_max_osd() << std::endl;
-      exit(1);
-    }
+    // if (cw.get_max_devices() > osdmap.get_max_osd()) {
+    //   cerr << me << ": crushmap max_devices " << cw.get_max_devices()
+	  //  << " > osdmap max_osd " << osdmap.get_max_osd() << std::endl;
+    //   exit(1);
+    // }
     
     // apply
     OSDMap::Incremental inc;
