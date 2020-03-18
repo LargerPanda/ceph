@@ -1262,7 +1262,7 @@ void OSDMap::remove_down_temps(CephContext *cct,
 int OSDMap::apply_incremental(const Incremental &inc)
 {
   ofstream outfile;
-  outfile.open("/users/yushua/log.txt",ios::out|ios:app);
+  outfile.open("/users/yushua/log.txt",ios::out|ios::app);
   
   new_blacklist_entries = false;
   if (inc.epoch == 1)
