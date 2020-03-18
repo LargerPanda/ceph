@@ -62,7 +62,7 @@ int main(int argc, char **argv)
       //pgid.u.ps = f * 4 + b;
       int primary;
       osdmap.pg_to_acting_osds(pgid, &osds, &primary);
-      int j=0
+      int j=0;
       std::cout << "["; 
       for (vector<int>::iterator i = osds.begin(); i != osds.end(); i++){
           std::cout << *i;
