@@ -1471,23 +1471,23 @@ int OSDMap::object_locator_to_pg(
   // calculate ps (placement seed)
   //根据pool的id返回pool的结构
 
-  ldout(1) << "##mydebug: name : " << oid.name << dendl;
-  ldout(1) << "##mydebug: pooid : " << loc.pool << dendl;
+  dout(1) << "##mydebug: name : " << oid.name << dendl;
+  dout(1) << "##mydebug: pooid : " << loc.pool << dendl;
   const pg_pool_t *pool = get_pg_pool(loc.get_pool());
   if (!pool)
     return -ENOENT;
   ps_t ps;
   if (loc.hash >= 0) {
     ps = loc.hash;
-    ldout(1) << "##mydebug: loc.hash > 0 : " << ps << dendl;
+    dout(1) << "##mydebug: loc.hash > 0 : " << ps << dendl;
   } else {
     if (!loc.key.empty()){
       ps = pool->hash_key(loc.key, loc.nspace);
-      ldout(1) << "##mydebug: !loc.key.empty() : " << ps << dendl;
+      dout(1) << "##mydebug: !loc.key.empty() : " << ps << dendl;
     }
     else{
       ps = pool->hash_key(oid.name, loc.nspace);
-      ldout(1) << "##mydebug: loc.key.empty() : " << ps << dendl;
+      dout(1) << "##mydebug: loc.key.empty() : " << ps << dendl;
     }
   }
   
@@ -1537,16 +1537,16 @@ int OSDMap::_pg_to_osds(const pg_pool_t& pool, pg_t pg,
 {
   // map to osds[]
   ps_t pps = pool.raw_pg_to_pps(pg);  // placement ps
-  ldout(1) << "##mydebug: pps = " << pps << dendl;
+  dout(1) << "##mydebug: pps = " << pps << dendl;
   unsigned size = pool.get_size();
-  ldout(1) << "##mydebug: size = " << pps << dendl;
+  dout(1) << "##mydebug: size = " << pps << dendl;
   // what crush rule?
   int ruleno = crush->find_rule(pool.get_crush_ruleset(), pool.get_type(), size);
   if (ruleno >= 0)
     crush->do_rule(ruleno, pps, *osds, size, osd_weight);
 
   for(vector<__u32>::iterator i=osd_weight.begin();i!=osd_weight.end();i++){
-      ldout(1) << "##mydebug: osd_weight = " << *i << dendl;
+      dout(1) << "##mydebug: osd_weight = " << *i << dendl;
   } 
   _remove_nonexistent_osds(pool, *osds);
 
