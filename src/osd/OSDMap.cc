@@ -1545,8 +1545,8 @@ int OSDMap::_pg_to_osds(const pg_pool_t& pool, pg_t pg,
   if (ruleno >= 0)
     crush->do_rule(ruleno, pps, *osds, size, osd_weight);
 
-  for(vector<__u32>::iterator i=osd_weight.begin();i!=osd_weight.end();i++){
-      dout(1) << "##mydebug: osd_weight = " << *i << dendl;
+  for(int i=0;i<osd_weight.size();i++){
+      dout(1) << "##mydebug: osd_weight = " << osd_weight[i] << dendl;
   } 
   _remove_nonexistent_osds(pool, *osds);
 
