@@ -28,6 +28,9 @@
 
 #include "crush/CrushTreeDumper.h"
 
+#include <iostream>
+#include <fstream>
+
 #define dout_subsys ceph_subsys_osd
 
 // ----------------------------------
@@ -1258,6 +1261,9 @@ void OSDMap::remove_down_temps(CephContext *cct,
 
 int OSDMap::apply_incremental(const Incremental &inc)
 {
+  ofstream outfile;
+  outfile.open("/users/yushua/log.txt",ios::out|ios:app);
+  
   new_blacklist_entries = false;
   if (inc.epoch == 1)
     fsid = inc.fsid;
@@ -1273,17 +1279,21 @@ int OSDMap::apply_incremental(const Incremental &inc)
   if (inc.fullmap.length()) {
     bufferlist bl(inc.fullmap);
     decode(bl);
-    dout(1)<<"mydebugfull"<<dendl;
+    outfile<<"mydebugfull"<<std::endl;
     return 0;
   }
 
+  outfile<<"##mydebug:not full"<<std::endl;
   // nope, incremental.
   if (inc.new_flags >= 0)
     flags = inc.new_flags;
 
   if (inc.new_max_osd >= 0){
+    outfile<<"##mydebug: new_max_osd = "<<inc.new_max_osd<<std::endl;
     set_max_osd(inc.new_max_osd);
   }
+
+  outfile.close();
 
   if (inc.new_pool_max != -1)
     pool_max = inc.new_pool_max;
