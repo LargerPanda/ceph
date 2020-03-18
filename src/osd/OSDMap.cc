@@ -1285,16 +1285,19 @@ int OSDMap::apply_incremental(const Incremental &inc)
 
   outfile<<"##mydebug:not full"<<std::endl;
   // nope, incremental.
+  outfile<<"##mydebug: inc.new_flags = "<<inc.new_flags<<std::endl;
   if (inc.new_flags >= 0)
     flags = inc.new_flags;
 
+
+  outfile<<"##mydebug: new_max_osd = "<<inc.new_max_osd<<std::endl;
   if (inc.new_max_osd >= 0){
-    outfile<<"##mydebug: new_max_osd = "<<inc.new_max_osd<<std::endl;
+    //outfile<<"##mydebug: new_max_osd = "<<inc.new_max_osd<<std::endl;
     set_max_osd(inc.new_max_osd);
   }
 
-  outfile.close();
-
+  
+  outfile<<"##mydebug: inc.new_pool_max = "<<inc.new_pool_max<<std::endl;
   if (inc.new_pool_max != -1)
     pool_max = inc.new_pool_max;
 
@@ -1353,6 +1356,7 @@ int OSDMap::apply_incremental(const Incremental &inc)
   }
   
   // up/down
+  int j=0;
   for (map<int32_t,uint8_t>::const_iterator i = inc.new_state.begin();
        i != inc.new_state.end();
        ++i) {
@@ -1377,7 +1381,11 @@ int OSDMap::apply_incremental(const Incremental &inc)
     } else {
       osd_state[i->first] ^= s;
     }
+    j++;
   }
+
+  outfile<<"##mydebug: j = "<<j<<std::endl;
+  
   for (map<int32_t,entity_addr_t>::const_iterator i = inc.new_up_client.begin();
        i != inc.new_up_client.end();
        ++i) {
