@@ -1260,7 +1260,7 @@ void OSDMap::remove_down_temps(CephContext *cct,
 }
 
 int OSDMap::apply_incremental2(){
-    m=10;
+    int m=10;
     int o = max_osd;
     max_osd = m;
     osd_state.resize(m);
