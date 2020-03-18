@@ -57,7 +57,7 @@ int main(int argc, char **argv)
       char foo[20];
       snprintf(foo, sizeof(foo), "%d.%d", f, b);
       object_t oid(foo);
-      cout << foo << std::endl;
+      //cout << foo << std::endl;
       /*osd_map edition*/
       if (!osdmap.have_pg_pool(pool))
       {
@@ -86,7 +86,7 @@ int main(int argc, char **argv)
       int primary;
       osdmap.pg_to_acting_osds(pgid, &osds, &primary);
       int j=0;
-      std::cout << "["; 
+      //std::cout << "["; 
       // for (vector<int>::iterator i = osds.begin(); i != osds.end(); i++){
       //     std::cout << *i;
       //     if(j<(osds.size()-1)){
