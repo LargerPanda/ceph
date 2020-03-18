@@ -47,7 +47,7 @@ int main(int argc, char **argv)
 
   //pg_pool_t *p = (pg_pool_t *)osdmap.get_pg_pool(0);
   //p->type = pg_pool_t::TYPE_ERASURE;
-  int pool=3;
+  int pool=4;
 
   for (int n = 0; n < 10; n++) {   // namespaces
     char nspace[20];
