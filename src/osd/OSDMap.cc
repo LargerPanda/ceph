@@ -1273,7 +1273,7 @@ int OSDMap::apply_incremental(const Incremental &inc)
   if (inc.fullmap.length()) {
     bufferlist bl(inc.fullmap);
     decode(bl);
-    cout<<"full map"<<endl;
+    dout(1)<<"mydebugfull"<<dendl;
     return 0;
   }
 
@@ -1281,8 +1281,9 @@ int OSDMap::apply_incremental(const Incremental &inc)
   if (inc.new_flags >= 0)
     flags = inc.new_flags;
 
-  if (inc.new_max_osd >= 0)
+  if (inc.new_max_osd >= 0){
     set_max_osd(inc.new_max_osd);
+  }
 
   if (inc.new_pool_max != -1)
     pool_max = inc.new_pool_max;
