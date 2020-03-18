@@ -24,6 +24,12 @@
 #endif
 #include "crush_ln_table.h"
 
+#include "common/debug.h"
+
+#define dout_subsys ceph_subsys_osd
+#undef dout_prefix
+#define dout_prefix (*_dout << "mapper")
+
 #define dprintk(args...) /* printf(args) */
 
 /*
@@ -792,6 +798,8 @@ int crush_do_rule(const struct crush_map *map,
 		  const __u32 *weight, int weight_max,
 		  int *scratch)
 {
+	
+	ldout(1)<<"##mydebug: in crush_do_rule"<<dendl;
 	int result_len;
 	int *a = scratch;
 	int *b = scratch + result_max;

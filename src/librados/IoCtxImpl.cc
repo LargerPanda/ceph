@@ -227,6 +227,7 @@ int librados::IoCtxImpl::get_object_hash_position(
     const std::string& oid, uint32_t *hash_position)
 {
   int64_t r = objecter->get_object_hash_position(poolid, oid, oloc.nspace);
+  ldout(client->cct, 1) << "##mydebug: nspace=" << oloc.nspace << dendl;
   if (r < 0)
     return r;
   *hash_position = (uint32_t)r;

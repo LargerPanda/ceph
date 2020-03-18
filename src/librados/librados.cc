@@ -2991,6 +2991,8 @@ extern "C" int rados_mon_command(rados_t cluster, const char **cmd,
     cmdvec.push_back(cmd[i]);
   }
 
+
+
   inbl.append(inbuf, inbuflen);
   int ret = client->mon_command(cmdvec, inbl, &outbl, &outstring);
 
