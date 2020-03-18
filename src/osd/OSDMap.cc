@@ -1259,6 +1259,32 @@ void OSDMap::remove_down_temps(CephContext *cct,
   }
 }
 
+int OSDMap::apply_incremental2(){
+    int o = max_osd;
+    max_osd = 10;
+    osd_state.resize(m);
+    osd_weight.resize(m);
+    for (; o < max_osd; o++)
+    {
+      osd_state[o] = osd_state[o-1];
+      osd_weight[o] = osd_weight[o-1];
+    }
+
+    osd_info.resize(m);
+    osd_xinfo.resize(m);
+    osd_addrs->client_addr.resize(m);
+    osd_addrs->cluster_addr.resize(m);
+    osd_addrs->hb_back_addr.resize(m);
+    osd_addrs->hb_front_addr.resize(m);
+    osd_uuid->resize(m);
+    if (osd_primary_affinity)
+      osd_primary_affinity->resize(m, CEPH_OSD_DEFAULT_PRIMARY_AFFINITY);
+
+    calc_num_osds();
+
+    /**updata**/
+}
+
 int OSDMap::apply_incremental(const Incremental &inc)
 {
   ofstream outfile;
@@ -1385,7 +1411,7 @@ int OSDMap::apply_incremental(const Incremental &inc)
   }
 
   outfile<<"##mydebug: j = "<<j<<std::endl;
-  
+
   for (map<int32_t,entity_addr_t>::const_iterator i = inc.new_up_client.begin();
        i != inc.new_up_client.end();
        ++i) {

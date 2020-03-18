@@ -582,6 +582,7 @@ public:
   uint64_t get_up_osd_features() const;
 
   int apply_incremental(const Incremental &inc);
+  int apply_incremental2();
 
   /// try to re-use/reference addrs in oldmap from newmap
   static void dedup(const OSDMap *oldmap, OSDMap *newmap);
