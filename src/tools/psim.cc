@@ -49,7 +49,7 @@ int main(int argc, char **argv)
   //p->type = pg_pool_t::TYPE_ERASURE;
   int pool=5;
 
-  for (int n = 0; n < 10; n++) {   // namespaces
+  for (int n = 0; n < 1; n++) {   // namespaces
     char nspace[20];
     snprintf(nspace, sizeof(nspace), "n%d", n);
   for (int f = 0; f < 100; f++) {  // files
