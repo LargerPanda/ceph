@@ -78,7 +78,7 @@ int main(int argc, char **argv)
            << std::endl;
       /*osd_map edition*/
 
-      ceph_object_layout l = osdmap.make_object_layout(oid, 3, nspace);
+      ceph_object_layout l = osdmap.make_object_layout(oid, pool, nspace);
       vector<int> osds;
       pgid = pg_t(l.ol_pgid);
       //pg_t pgid = pg_t(l.ol_pgid);
