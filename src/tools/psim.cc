@@ -47,7 +47,8 @@ int main(int argc, char **argv)
 
   //pg_pool_t *p = (pg_pool_t *)osdmap.get_pg_pool(0);
   //p->type = pg_pool_t::TYPE_ERASURE;
-  int pool=5;
+  int pool= atoi(argv[1]);
+  cout << " pool id : "  << pool << std::endl;
 
   for (int n = 0; n < 1; n++) {   // namespaces
     char nspace[20];
