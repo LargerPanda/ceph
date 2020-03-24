@@ -8794,7 +8794,7 @@ void OSD::ShardedOpWQ::_process(uint32_t thread_index, heartbeat_handle_d *hb ) 
   assert(NULL != sdata);
   sdata->sdata_op_ordering_lock.Lock();
   if (sdata->pqueue->empty()) {
-    dout(1) <<":" << __func__ << ": mydebug: waiting !! thread_id = " << thread_index << ", shard_index = "<< shard_index << dendl;
+    //dout(1) <<":" << __func__ << ": mydebug: waiting !! thread_id = " << thread_index << ", shard_index = "<< shard_index << dendl;
     osd->cct->get_heartbeat_map()->reset_timeout(hb, 4, 0);
     sdata->sdata_lock.Lock();
     sdata->sdata_op_ordering_lock.Unlock();
@@ -8807,7 +8807,7 @@ void OSD::ShardedOpWQ::_process(uint32_t thread_index, heartbeat_handle_d *hb ) 
     }
   }
   
-  dout(1) << ":" <<__func__ << ": mydebug: thread_id = " << thread_index << ", queue size of shard "<<shard_index<<" : "<< sdata->pqueue->length() << dendl;
+  dout(1) << ":" <<__func__ << ": mydebug: #queue_size_of_shard "<<shard_index<<" = "<< sdata->pqueue->length() <<"#"<< dendl;
 
   pair<PGRef, PGQueueable> item = sdata->pqueue->dequeue();
   sdata->pg_for_processing[&*(item.first)].push_back(item.second);
@@ -8950,6 +8950,7 @@ void OSD::dequeue_op(
 	   << " " << *(op->get_req())
 	   << " pg " << *pg << dendl;
 
+  dout(1) << "#wait_for_servie = " << latency << "#"<< dendl;
   // share our map with sender, if they're old
   if (op->send_map_update) {
     Message *m = op->get_req();

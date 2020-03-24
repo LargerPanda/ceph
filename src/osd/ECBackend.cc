@@ -1073,7 +1073,7 @@ void ECBackend::handle_sub_read(
 				dout(20) << __func__ << " read request=" << j->get<1>() << " r=" << r << " len=" << bl.length() << dendl;
 				gettimeofday(&end, NULL);	
 				diff = 1000000 * (end.tv_sec - start.tv_sec) + end.tv_usec - start.tv_usec;
-				dout(1) << __func__ << ": mydebug: read time = " << diff << "(usec) !!" << dendl;
+				dout(1) << __func__ << ": mydebug:(usec) !! #read_time = " << diff << "#" << dendl;
 				//填充reply中的buffer
 				reply->buffers_read[i->first].push_back(
 					make_pair(
