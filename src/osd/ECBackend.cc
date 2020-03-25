@@ -203,12 +203,12 @@ ECBackend::ECBackend(
 	while(getline(myfile,temp)) 
     { 
         int space_location = temp.find(" ");
-		string objname = temp.substr(0, space_loacation);
-		vector<int32_t> temp_osds;
+		string objname = temp.substr(0, space_location);
+		vector<int> temp_osds;
 		for(int i = 0;i<4;i++){
-			temp_osds.push_back(atoi(temp[space_location+i*2+2].c_str()));
+			temp_osds.push_back(atoi(temp[space_location+i*2+2]));
 		}
-		remap.insert(pair<string,vector<int32_t>>(objname,temp_osds));
+		remap.insert(pair<string,vector<int>>(objname,temp_osds));
     }
 	/*get manage info*/
 	assert((ec_impl->get_data_chunk_count() *
@@ -1787,9 +1787,9 @@ int ECBackend::get_min_avail_to_read_shards(
 	int k=4;
 	int m=2;
 
-	pair<string, vector<int32_t>>::iterator temp_pair = remap.find(hoid.oid.name);
+	pair<string, vector<int>> temp_pair = remap.find(hoid.oid.name);
 	dout(1) << __func__ << ": mydebug: get obj_name "<< temp_pair->first << dendl;
-	for(vector<int32_t>::iterator i = temp_pair->second.begin(); i!= temp_pair->second.end();i++){
+	for(vector<int>::iterator i = temp_pair->second.begin(); i!= temp_pair->second.end();i++){
 		have2.insert(*i);
 	}
 
