@@ -185,7 +185,7 @@ int main(int argc, const char **argv)
   OSDMap osdmap;
   bufferlist bl;
 
-  cerr << me << ": osdmap file '" << fn << "'" << std::endl;
+  //cerr << me << ": osdmap file '" << fn << "'" << std::endl;
   
   int r = 0;
   struct stat st;

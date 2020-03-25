@@ -16,6 +16,7 @@
 #include <boost/optional/optional_io.hpp>
 #include <iostream>
 #include <sstream>
+#include <fstream>
 
 #include "ECUtil.h"
 #include "ECBackend.h"
@@ -191,6 +192,25 @@ ECBackend::ECBackend(
 	  ec_impl(ec_impl),
 	  sinfo(ec_impl->get_data_chunk_count(), stripe_width)
 {
+	/*get manage info*/
+	ifstream myfile("/users/yushua/remap.txt");
+	string temp;
+	if (!myfile.is_open())
+	{
+		dout(1) << __func__ << ": "
+				<< "open remap.txt failed!" << dendl;
+	}
+	while(getline(myfile,temp)) 
+    { 
+        int space_location = temp.find(" ");
+		string objname = temp.substr(0, space_loacation);
+		vector<int32_t> temp_osds;
+		for(int i = 0;i<4;i++){
+			temp_osds.push_back(atoi(temp[space_location+i*2+2].c_str()));
+		}
+		remap.insert(pair<string,vector<int32_t>>(objname,temp_osds));
+    }
+	/*get manage info*/
 	assert((ec_impl->get_data_chunk_count() *
 			ec_impl->get_chunk_size(stripe_width)) == stripe_width);
 }
@@ -1743,6 +1763,7 @@ int ECBackend::get_min_avail_to_read_shards(
 	assert(!for_recovery || !do_redundant_reads);
 
 	set<int> have;
+	set<int> have2;
 	map<shard_id_t, pg_shard_t> shards;
 
 	get_all_avail_shards(hoid, have, shards, for_recovery);
@@ -1766,20 +1787,26 @@ int ECBackend::get_min_avail_to_read_shards(
 	int k=4;
 	int m=2;
 
-	for (map<shard_id_t, pg_shard_t>::iterator i = shards.begin();
-		 i != shards.end();
-		 ++i)
-	{
-		if(i->first < k){
-			if((i->second).osd == straggler){
-				dout(1) << __func__ << ": mydebug: shards "<< i->first <<" have straggler osd " << straggler << dendl;
-				//have.erase(i->first);
-				//have.erase(k+m-2);
-				dout(1) << __func__ << ": mydebug: erase " << i->first << " from have" << dendl;
-				break;
-			}
-		}
+	pair<string, vector<int32_t>>::iterator temp_pair = remap.find(hoid.oid.name);
+	dout(1) << __func__ << ": mydebug: get obj_name "<< temp_pair->first << dendl;
+	for(vector<int32_t>::iterator i = temp_pair->second.begin(); i!= temp_pair->second.end();i++){
+		have2.insert(*i);
 	}
+
+	// for (map<shard_id_t, pg_shard_t>::iterator i = shards.begin();
+	// 	 i != shards.end();
+	// 	 ++i)
+	// {
+	// 	if(i->first < k){
+	// 		if((i->second).osd == straggler){
+	// 			dout(1) << __func__ << ": mydebug: shards "<< i->first <<" have straggler osd " << straggler << dendl;
+	// 			//have.erase(i->first);
+	// 			//have.erase(k+m-2);
+	// 			dout(1) << __func__ << ": mydebug: erase " << i->first << " from have" << dendl;
+	// 			break;
+	// 		}
+	// 	}
+	// }
 	// for (map<shard_id_t, pg_shard_t>::iterator i = shards.begin();
 	// 	 i != shards.end();
 	// 	 ++i)
@@ -1796,11 +1823,18 @@ int ECBackend::get_min_avail_to_read_shards(
 		 i != have.end();
 		 ++i)
 	{
-		dout(1) << __func__ << ": mydebug: after erasue, have " << *i << dendl;
+		dout(1) << __func__ << ": mydebug: before schedule, have " << *i << dendl;
+	}
+	for (set<int>::iterator i = have2.begin();
+		 i != have2.end();
+		 ++i)
+	{
+		dout(1) << __func__ << ": mydebug: after schedule, have " << *i << dendl;
 	}
 	/*force reconstruct*/
 	set<int> need;
-	int r = ec_impl->minimum_to_decode(want, have, &need);
+	//int r = ec_impl->minimum_to_decode(want, have, &need);
+	int r = ec_impl->minimum_to_decode(want, have2, &need);
 
 	for (set<int>::iterator i = need.begin();
 		 i != need.end();
