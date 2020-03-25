@@ -1789,7 +1789,7 @@ int ECBackend::get_min_avail_to_read_shards(
 	int re_flag = 0;
 
 	map<string, vector<int>>::iterator temp_pair = remap.find(hoid.oid.name);
-	if(temp_pair!=NULL){
+	if(temp_pair != remap.end()){
 		re_flag = 1;
 	}
 	dout(1) << __func__ << ": mydebug: get obj_name "<< temp_pair->first <<" re_flag = "<<re_flag<< dendl;
