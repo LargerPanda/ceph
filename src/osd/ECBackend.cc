@@ -205,11 +205,15 @@ ECBackend::ECBackend(
         int space_location = temp.find(" ");
 		string objname = temp.substr(0, space_location);
 		vector<int> temp_osds;
+		dout(1) << __func__ << ": "
+				<< " mydebug: ------------------ " << dendl;
 		for(int i = 0;i<4;i++){
 			temp_osds.push_back(atoi(&(temp[space_location+i*2+2])));
 			dout(1) << __func__ << ": "
-				<< " mydebug: push back " << atoi(&(temp[space_location+i*2+2])) << dendl;
+				<< " mydebug: push back " << atoi(&(temp[space_location+2+3*i])) << dendl;
 		}
+		dout(1) << __func__ << ": "
+				<< " mydebug: ------------------ " << dendl;
 		remap.insert(pair<string,vector<int>>(objname,temp_osds));
     }
 	/*get manage info*/
