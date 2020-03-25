@@ -1797,12 +1797,15 @@ int ECBackend::get_min_avail_to_read_shards(
 	map<string, vector<int>>::iterator temp_pair = remap.find(hoid.oid.name);
 	if(temp_pair != remap.end()){
 		re_flag = 1;
+		dout(1) << __func__ << ": mydebug: get obj_name "<< temp_pair->first <<" re_flag = "<<re_flag<< dendl;
+		for(vector<int>::iterator i = temp_pair->second.begin(); i!= temp_pair->second.end();i++){
+			have2.insert(*i);
+			dout(1) << __func__ << ": mydebug: have2.insert "<< *i << dendl;
+		}
+	}else{
+		dout(1) << __func__ << ": mydebug: not get obj_name " <<" re_flag = "<<re_flag<< dendl;
 	}
-	dout(1) << __func__ << ": mydebug: get obj_name "<< temp_pair->first <<" re_flag = "<<re_flag<< dendl;
-	for(vector<int>::iterator i = temp_pair->second.begin(); i!= temp_pair->second.end();i++){
-		have2.insert(*i);
-		dout(1) << __func__ << ": mydebug: have2.insert "<< *i << dendl;
-	}
+	
 
 	// for (map<shard_id_t, pg_shard_t>::iterator i = shards.begin();
 	// 	 i != shards.end();
@@ -1836,6 +1839,7 @@ int ECBackend::get_min_avail_to_read_shards(
 	{
 		dout(1) << __func__ << ": mydebug: before schedule, have " << *i << dendl;
 	}
+	if(re_flag)
 	for (set<int>::iterator i = have2.begin();
 		 i != have2.end();
 		 ++i)
