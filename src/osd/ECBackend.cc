@@ -1847,7 +1847,7 @@ int ECBackend::get_min_avail_to_read_shards(
 		dout(1) << __func__ << ": mydebug: after schedule, have " << *i << dendl;
 	}
 	/*force reconstruct*/
-	re_flag = 0;
+	re_flag = 1;
 	set<int> need;
 	int r;
 	if(re_flag){
