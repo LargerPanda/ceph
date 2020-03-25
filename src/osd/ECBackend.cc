@@ -1388,9 +1388,9 @@ void ECBackend::complete_read_op(ReadOp &rop, RecoveryMessages *m)
 	}
 	gettimeofday(&end,NULL);
 	diff = 1000000 * (end.tv_sec-start.tv_sec)+ end.tv_usec-start.tv_usec;
-	dout(1) << __func__ << ": mydebug: decode time = " << diff << "(usec) !!"<< dendl;
+	dout(1) << __func__ << ": mydebug: #decode_time=" << diff << "#"<< dendl;
 
-	dout(1) << __func__ << ": mydebug: erase tid!" << dendl;
+	//dout(1) << __func__ << ": mydebug: erase tid!" << dendl;
 	tid_to_read_map.erase(rop.tid);
 }
 
