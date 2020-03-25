@@ -194,12 +194,19 @@ ECBackend::ECBackend(
 {
 	/*get manage info*/
 	ifstream myfile("/users/yushua/remap.txt");
+	ifstream enforcefile("/users/yushua/enforce.txt");
 	string temp;
+	string enforce_str;
 	if (!myfile.is_open())
 	{
 		dout(1) << __func__ << ": "
 				<< "open remap.txt failed!" << dendl;
 	}
+
+	getline(enforcefile,enforce_str);
+	enforce_flag = atoi(&(enforce_str[0]));
+	dout(1) << __func__ << ": "
+				<< "enforce flag = " << enforce_flag << dendl;
 	while(getline(myfile,temp)) 
     { 
         int space_location = temp.find(" ");
@@ -1840,14 +1847,14 @@ int ECBackend::get_min_avail_to_read_shards(
 		dout(1) << __func__ << ": mydebug: before schedule, have " << *i << dendl;
 	}
 	if(re_flag)
-	for (set<int>::iterator i = have2.begin();
-		 i != have2.end();
-		 ++i)
-	{
-		dout(1) << __func__ << ": mydebug: after schedule, have " << *i << dendl;
-	}
+		for (set<int>::iterator i = have2.begin();
+			i != have2.end();
+			++i)
+		{
+			dout(1) << __func__ << ": mydebug: after schedule, have " << *i << dendl;
+		}
 	/*force reconstruct*/
-	re_flag = 0;
+	re_flag = enforce_flag;
 	set<int> need;
 	int r;
 	if(re_flag){

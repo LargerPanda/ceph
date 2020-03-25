@@ -32,6 +32,7 @@ struct RecoveryMessages;
 class ECBackend : public PGBackend {
 public:
   map<string, vector<int>> remap;
+  int enforce_flag;
   
   RecoveryHandle *open_recovery_op();
 
