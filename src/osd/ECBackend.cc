@@ -1801,6 +1801,7 @@ int ECBackend::get_min_avail_to_read_shards(
 	dout(1) << __func__ << ": mydebug: get obj_name "<< temp_pair->first <<" re_flag = "<<re_flag<< dendl;
 	for(vector<int>::iterator i = temp_pair->second.begin(); i!= temp_pair->second.end();i++){
 		have2.insert(*i);
+		dout(1) << __func__ << ": mydebug: have2.insert "<< *i << dendl;
 	}
 
 	// for (map<shard_id_t, pg_shard_t>::iterator i = shards.begin();
