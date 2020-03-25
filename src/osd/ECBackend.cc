@@ -207,6 +207,8 @@ ECBackend::ECBackend(
 		vector<int> temp_osds;
 		for(int i = 0;i<4;i++){
 			temp_osds.push_back(atoi(&(temp[space_location+i*2+2])));
+			dout(1) << __func__ << ": "
+				<< " mydebug: push back " << atoi(&(temp[space_location+i*2+2])) << dendl;
 		}
 		remap.insert(pair<string,vector<int>>(objname,temp_osds));
     }
