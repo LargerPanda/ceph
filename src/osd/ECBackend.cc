@@ -1786,9 +1786,13 @@ int ECBackend::get_min_avail_to_read_shards(
 	int straggler = 7; //osd.0 is straggler
 	int k=4;
 	int m=2;
+	int re_flag = 0;
 
 	map<string, vector<int>>::iterator temp_pair = remap.find(hoid.oid.name);
-	dout(1) << __func__ << ": mydebug: get obj_name "<< temp_pair->first << dendl;
+	if(temp_pair!=NULL){
+		re_flag = 1;
+	}
+	dout(1) << __func__ << ": mydebug: get obj_name "<< temp_pair->first <<" re_flag = "<<re_flag<< dendl;
 	for(vector<int>::iterator i = temp_pair->second.begin(); i!= temp_pair->second.end();i++){
 		have2.insert(*i);
 	}
@@ -1833,8 +1837,14 @@ int ECBackend::get_min_avail_to_read_shards(
 	}
 	/*force reconstruct*/
 	set<int> need;
-	//int r = ec_impl->minimum_to_decode(want, have, &need);
-	int r = ec_impl->minimum_to_decode(want, have2, &need);
+	int r;
+	if(re_flag){
+		r = ec_impl->minimum_to_decode(want, have2, &need);
+	}else{
+		r = ec_impl->minimum_to_decode(want, have, &need);
+	}
+	
+ 
 
 	for (set<int>::iterator i = need.begin();
 		 i != need.end();
