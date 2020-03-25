@@ -208,7 +208,7 @@ ECBackend::ECBackend(
 		dout(1) << __func__ << ": "
 				<< " mydebug: ------------------ " << dendl;
 		for(int i = 0;i<4;i++){
-			temp_osds.push_back(atoi(&(temp[space_location+i*2+2])));
+			temp_osds.push_back(atoi(&(temp[space_location+2+i*3])));
 			dout(1) << __func__ << ": "
 				<< " mydebug: push back " << atoi(&(temp[space_location+2+3*i])) << dendl;
 		}
