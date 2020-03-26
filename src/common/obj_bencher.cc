@@ -31,7 +31,7 @@
 const std::string BENCH_LASTRUN_METADATA = "benchmark_last_metadata";
 const std::string BENCH_PREFIX = "benchmark_data";
 static char cached_hostname[30] = {0};
-int cached_pid = 0;
+int cached_pid = 1;
 
 static std::string generate_object_prefix(int pid = 0) {
   if (cached_hostname[0] == 0) {
