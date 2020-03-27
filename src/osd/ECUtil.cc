@@ -34,6 +34,8 @@ int ECUtil::decode(
   if (total_data_size == 0)
     return 0;
 
+
+  int count = 0;
   for (uint64_t i = 0; i < total_data_size; i += sinfo.get_chunk_size()) {
     map<int, bufferlist> chunks;
     for (map<int, bufferlist>::iterator j = to_decode.begin();
@@ -46,7 +48,9 @@ int ECUtil::decode(
     assert(bl.length() == sinfo.get_stripe_width());
     assert(r == 0);
     out->claim_append(bl);
+    count++;
   }
+  dout(1) << __func__ << ": mydebug: count =  " << count << dendl;
   return 0;
 }
 
