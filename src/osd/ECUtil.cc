@@ -20,6 +20,7 @@ int ECUtil::decode(
 
   uint64_t total_data_size = to_decode.begin()->second.length();
   dout(1) << __func__ << ": mydebug: total_data_size =  " << total_data_size  << dendl;
+  dout(1) << __func__ << ": mydebug: get_chunk_size =  " << sinfo.get_chunk_size() << dendl;
   assert(total_data_size % sinfo.get_chunk_size() == 0);
 
   assert(out);
