@@ -193,14 +193,20 @@ ECBackend::ECBackend(
 	  sinfo(ec_impl->get_data_chunk_count(), stripe_width)
 {
 	/*get manage info*/
-	ifstream myfile("/users/yushua/remap.txt");
-	ifstream enforcefile("/users/yushua/enforce.txt");
+	ifstream myfile("/users/yushua/env/remap.txt");
+	ifstream enforcefile("/users/yushua/env/enforce.txt");
 	string temp;
 	string enforce_str;
 	if (!myfile.is_open())
 	{
 		dout(1) << __func__ << ": "
 				<< "open remap.txt failed!" << dendl;
+	}
+
+	if (!enforcefile.is_open())
+	{
+		dout(1) << __func__ << ": "
+				<< "open enforce.txt failed!" << dendl;
 	}
 
 	getline(enforcefile,enforce_str);
