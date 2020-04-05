@@ -644,249 +644,249 @@ int ObjBencher::write_bench(int secondsToRun,
   return r;
 }
 
-int ObjBencher::seq_read_bench_bak(int seconds_to_run, int num_objects, int concurrentios, int pid, bool no_verify) {
-  lock_cond lc(&lock);
+// int ObjBencher::seq_read_bench_bak(int seconds_to_run, int num_objects, int concurrentios, int pid, bool no_verify) {
+//   lock_cond lc(&lock);
 
-  if (concurrentios <= 0) 
-    return -EINVAL;
+//   if (concurrentios <= 0) 
+//     return -EINVAL;
 
-  std::vector<string> name(concurrentios);
-  cout<<"concurrentios="<<concurrentios<<std::endl;
-  std::string newName;
-  bufferlist* contents[concurrentios];
-  int index[concurrentios];
-  int errors = 0;
-  utime_t start_time;
-  std::vector<utime_t> start_times(concurrentios);
-  utime_t time_to_run;
-  time_to_run.set_from_double(seconds_to_run);
-  double total_latency = 0;
-  int r = 0;
-  utime_t runtime;
-  sanitize_object_contents(&data, data.op_size); //clean it up once; subsequent
-  //changes will be safe because string length should remain the same
+//   std::vector<string> name(concurrentios);
+//   cout<<"concurrentios="<<concurrentios<<std::endl;
+//   std::string newName;
+//   bufferlist* contents[concurrentios];
+//   int index[concurrentios];
+//   int errors = 0;
+//   utime_t start_time;
+//   std::vector<utime_t> start_times(concurrentios);
+//   utime_t time_to_run;
+//   time_to_run.set_from_double(seconds_to_run);
+//   double total_latency = 0;
+//   int r = 0;
+//   utime_t runtime;
+//   sanitize_object_contents(&data, data.op_size); //clean it up once; subsequent
+//   //changes will be safe because string length should remain the same
 
-  unsigned writes_per_object = 1;
-  if (data.op_size)
-    writes_per_object = data.object_size / data.op_size;
+//   unsigned writes_per_object = 1;
+//   if (data.op_size)
+//     writes_per_object = data.object_size / data.op_size;
 
 
-  //out(cout)<<"writes_per_object="<<writes_per_object<<std::endl;
+//   //out(cout)<<"writes_per_object="<<writes_per_object<<std::endl;
 
-  r = completions_init(concurrentios);
-  if (r < 0)
-    return r;
+//   r = completions_init(concurrentios);
+//   if (r < 0)
+//     return r;
 
-  //set up initial reads
-  for (int i = 0; i < concurrentios; ++i) {
-    name[i] = generate_object_name(i / writes_per_object, pid);
-    contents[i] = new bufferlist();
-  }
+//   //set up initial reads
+//   for (int i = 0; i < concurrentios; ++i) {
+//     name[i] = generate_object_name(i / writes_per_object, pid);
+//     contents[i] = new bufferlist();
+//   }
 
-  lock.Lock();
-  data.finished = 0;
-  data.start_time = ceph_clock_now(cct);
-  lock.Unlock();
+//   lock.Lock();
+//   data.finished = 0;
+//   data.start_time = ceph_clock_now(cct);
+//   lock.Unlock();
 
-  pthread_t print_thread;
-  pthread_create(&print_thread, NULL, status_printer, (void *)this);
-  pthread_setname_np(print_thread, "seq_read_stat");
+//   pthread_t print_thread;
+//   pthread_create(&print_thread, NULL, status_printer, (void *)this);
+//   pthread_setname_np(print_thread, "seq_read_stat");
 
-  utime_t finish_time = data.start_time + time_to_run;
-  //start initial reads
-  for (int i = 0; i < concurrentios; ++i) {
-    index[i] = i;
-    start_times[i] = ceph_clock_now(cct);
-    create_completion(i, _aio_cb, (void *)&lc);
-    r = aio_read(name[i], i, contents[i], data.op_size,
-		 data.op_size * (i % writes_per_object));
-    //最后一个参数是偏移
-    if (r < 0) { //naughty, doesn't clean up heap -- oh, or handle the print thread!
-      cerr << "r = " << r << std::endl;
-      goto ERR;
-    }
-    lock.Lock();
-    ++data.started;
-    ++data.in_flight;
-    lock.Unlock();
-  }
+//   utime_t finish_time = data.start_time + time_to_run;
+//   //start initial reads
+//   for (int i = 0; i < concurrentios; ++i) {
+//     index[i] = i;
+//     start_times[i] = ceph_clock_now(cct);
+//     create_completion(i, _aio_cb, (void *)&lc);
+//     r = aio_read(name[i], i, contents[i], data.op_size,
+// 		 data.op_size * (i % writes_per_object));
+//     //最后一个参数是偏移
+//     if (r < 0) { //naughty, doesn't clean up heap -- oh, or handle the print thread!
+//       cerr << "r = " << r << std::endl;
+//       goto ERR;
+//     }
+//     lock.Lock();
+//     ++data.started;
+//     ++data.in_flight;
+//     lock.Unlock();
+//   }
 
-  //keep on adding new reads as old ones complete
-  int slot;
-  bufferlist *cur_contents;
+//   //keep on adding new reads as old ones complete
+//   int slot;
+//   bufferlist *cur_contents;
 
-  slot = 0;
-  while ((!seconds_to_run || ceph_clock_now(cct) < finish_time) &&
-	 num_objects > data.started) {
-    lock.Lock();
-    int old_slot = slot;
-    bool found = false;
-    //一直查询是否有完成的
-    while (1) {
-      do {
-        if (completion_is_done(slot)) {
-          found = true;
-          break;
-        }
-        slot++;
-        if (slot == concurrentios) {
-          slot = 0;
-        }
-      } while (slot != old_slot);
-      if (found) {
-        break;
-      }
-      lc.cond.Wait(lock);
-    }
+//   slot = 0;
+//   while ((!seconds_to_run || ceph_clock_now(cct) < finish_time) &&
+// 	 num_objects > data.started) {
+//     lock.Lock();
+//     int old_slot = slot;
+//     bool found = false;
+//     //一直查询是否有完成的
+//     while (1) {
+//       do {
+//         if (completion_is_done(slot)) {
+//           found = true;
+//           break;
+//         }
+//         slot++;
+//         if (slot == concurrentios) {
+//           slot = 0;
+//         }
+//       } while (slot != old_slot);
+//       if (found) {
+//         break;
+//       }
+//       lc.cond.Wait(lock);
+//     }
 
-    // calculate latency here, so memcmp doesn't inflate it
-    data.cur_latency = ceph_clock_now(cct) - start_times[slot];
+//     // calculate latency here, so memcmp doesn't inflate it
+//     data.cur_latency = ceph_clock_now(cct) - start_times[slot];
 
-    cur_contents = contents[slot];
-    int current_index = index[slot];
+//     cur_contents = contents[slot];
+//     int current_index = index[slot];
     
-    // invalidate internal crc cache
-    cur_contents->invalidate_crc();
+//     // invalidate internal crc cache
+//     cur_contents->invalidate_crc();
 
 
-    //验证的地方
-    //out(cout)<<"no_verify="<<no_verify<<std::endl;
-    if (!no_verify) {
-      snprintf(data.object_contents, data.op_size, "I'm the %16dth op!", current_index);
-      if ( (cur_contents->length() != data.op_size) || 
-           (memcmp(data.object_contents, cur_contents->c_str(), data.op_size) != 0) ) {
-        cerr << name[slot] << " is not correct!" << std::endl;
-        ++errors;
-      }
-    }
+//     //验证的地方
+//     //out(cout)<<"no_verify="<<no_verify<<std::endl;
+//     if (!no_verify) {
+//       snprintf(data.object_contents, data.op_size, "I'm the %16dth op!", current_index);
+//       if ( (cur_contents->length() != data.op_size) || 
+//            (memcmp(data.object_contents, cur_contents->c_str(), data.op_size) != 0) ) {
+//         cerr << name[slot] << " is not correct!" << std::endl;
+//         ++errors;
+//       }
+//     }
 
-    out(cout) << "##mydebug"
-              << ",name=" << name[slot] <<",index="<< current_index <<",latency=" << data.cur_latency<< std::endl;
+//     out(cout) << "##mydebug"
+//               << ",name=" << name[slot] <<",index="<< current_index <<",latency=" << data.cur_latency<< std::endl;
 
-    newName = generate_object_name(data.started / writes_per_object, pid);
-    index[slot] = data.started;
-    lock.Unlock();
-    completion_wait(slot);
-    lock.Lock();
-    r = completion_ret(slot);
-    if (r < 0) {
-      cerr << "read got " << r << std::endl;
-      lock.Unlock();
-      goto ERR;
-    }
-    total_latency += data.cur_latency;
-    if (data.cur_latency > data.max_latency) data.max_latency = data.cur_latency;
-    if (data.cur_latency < data.min_latency) data.min_latency = data.cur_latency;
-    ++data.finished;
-    data.avg_latency = total_latency / data.finished;
-    --data.in_flight;
-    lock.Unlock();
-    release_completion(slot);
+//     newName = generate_object_name(data.started / writes_per_object, pid);
+//     index[slot] = data.started;
+//     lock.Unlock();
+//     completion_wait(slot);
+//     lock.Lock();
+//     r = completion_ret(slot);
+//     if (r < 0) {
+//       cerr << "read got " << r << std::endl;
+//       lock.Unlock();
+//       goto ERR;
+//     }
+//     total_latency += data.cur_latency;
+//     if (data.cur_latency > data.max_latency) data.max_latency = data.cur_latency;
+//     if (data.cur_latency < data.min_latency) data.min_latency = data.cur_latency;
+//     ++data.finished;
+//     data.avg_latency = total_latency / data.finished;
+//     --data.in_flight;
+//     lock.Unlock();
+//     release_completion(slot);
 
-    //start new read and check data if requested
-    start_times[slot] = ceph_clock_now(cct);
-    create_completion(slot, _aio_cb, (void *)&lc);
-    r = aio_read(newName, slot, contents[slot], data.op_size,
-		 data.op_size * (data.started % writes_per_object));
-    if (r < 0) {
-      goto ERR;
-    }
-    lock.Lock();
-    ++data.started;
-    ++data.in_flight;
-    lock.Unlock();
-    name[slot] = newName;
-  }
+//     //start new read and check data if requested
+//     start_times[slot] = ceph_clock_now(cct);
+//     create_completion(slot, _aio_cb, (void *)&lc);
+//     r = aio_read(newName, slot, contents[slot], data.op_size,
+// 		 data.op_size * (data.started % writes_per_object));
+//     if (r < 0) {
+//       goto ERR;
+//     }
+//     lock.Lock();
+//     ++data.started;
+//     ++data.in_flight;
+//     lock.Unlock();
+//     name[slot] = newName;
+//   }
 
-  //wait for final reads to complete
-  while (data.finished < data.started) {
-    slot = data.finished % concurrentios;
-    completion_wait(slot);
-    lock.Lock();
-    r = completion_ret(slot);
-    if (r < 0) {
-      cerr << "read got " << r << std::endl;
-      lock.Unlock();
-      goto ERR;
-    }
-    data.cur_latency = ceph_clock_now(cct) - start_times[slot];
-    total_latency += data.cur_latency;
-    if (data.cur_latency > data.max_latency) data.max_latency = data.cur_latency;
-    if (data.cur_latency < data.min_latency) data.min_latency = data.cur_latency;
-    ++data.finished;
-    data.avg_latency = total_latency / data.finished;
-    --data.in_flight;
-    release_completion(slot);
+//   //wait for final reads to complete
+//   while (data.finished < data.started) {
+//     slot = data.finished % concurrentios;
+//     completion_wait(slot);
+//     lock.Lock();
+//     r = completion_ret(slot);
+//     if (r < 0) {
+//       cerr << "read got " << r << std::endl;
+//       lock.Unlock();
+//       goto ERR;
+//     }
+//     data.cur_latency = ceph_clock_now(cct) - start_times[slot];
+//     total_latency += data.cur_latency;
+//     if (data.cur_latency > data.max_latency) data.max_latency = data.cur_latency;
+//     if (data.cur_latency < data.min_latency) data.min_latency = data.cur_latency;
+//     ++data.finished;
+//     data.avg_latency = total_latency / data.finished;
+//     --data.in_flight;
+//     release_completion(slot);
 
-    int temp_index = 0;
+//     int temp_index = 0;
 
-    out(cout) << "##mydebug"
-              << ",name=" << name[slot] <<",index="<< temp_index <<",latency=" << data.cur_latency<< std::endl;
+//     out(cout) << "##mydebug"
+//               << ",name=" << name[slot] <<",index="<< temp_index <<",latency=" << data.cur_latency<< std::endl;
 
-    if (!no_verify) {
-      snprintf(data.object_contents, data.op_size, "I'm the %16dth op!", index[slot]);
-      lock.Unlock();
-      if ((contents[slot]->length() != data.op_size) || 
-         (memcmp(data.object_contents, contents[slot]->c_str(), data.op_size) != 0)) {
-        cerr << name[slot] << " is not correct!" << std::endl;
-        ++errors;
-      }
-    } else {
-        lock.Unlock();
-    }
-    delete contents[slot];
-  }
+//     if (!no_verify) {
+//       snprintf(data.object_contents, data.op_size, "I'm the %16dth op!", index[slot]);
+//       lock.Unlock();
+//       if ((contents[slot]->length() != data.op_size) || 
+//          (memcmp(data.object_contents, contents[slot]->c_str(), data.op_size) != 0)) {
+//         cerr << name[slot] << " is not correct!" << std::endl;
+//         ++errors;
+//       }
+//     } else {
+//         lock.Unlock();
+//     }
+//     delete contents[slot];
+//   }
 
-  runtime = ceph_clock_now(cct) - data.start_time;
-  lock.Lock();
-  data.done = true;
-  lock.Unlock();
+//   runtime = ceph_clock_now(cct) - data.start_time;
+//   lock.Lock();
+//   data.done = true;
+//   lock.Unlock();
 
-  pthread_join(print_thread, NULL);
+//   pthread_join(print_thread, NULL);
 
-  double bandwidth;
-  bandwidth = ((double)data.finished)*((double)data.op_size)/(double)runtime;
-  bandwidth = bandwidth/(1024*1024); // we want it in MB/sec
+//   double bandwidth;
+//   bandwidth = ((double)data.finished)*((double)data.op_size)/(double)runtime;
+//   bandwidth = bandwidth/(1024*1024); // we want it in MB/sec
 
-  if (!formatter) {
-    out(cout) << "Total time run:       " << runtime << std::endl
-       << "Total reads made:     " << data.finished << std::endl
-       << "Read size:            " << data.op_size << std::endl
-       << "Object size:          " << data.object_size << std::endl
-       << "Bandwidth (MB/sec):   " << setprecision(6) << bandwidth << std::endl
-       << "Average IOPS          " << (int)(data.finished/runtime) << std::endl
-       << "Stddev IOPS:          " << vec_stddev(data.history.iops) << std::endl
-       << "Max IOPS:             " << data.idata.max_iops << std::endl
-       << "Min IOPS:             " << data.idata.min_iops << std::endl
-       << "Average Latency(s):   " << data.avg_latency << std::endl
-       << "Max latency(s):       " << data.max_latency << std::endl
-       << "Min latency(s):       " << data.min_latency << std::endl;
-  } else {
-    formatter->dump_format("total_time_run", "%f", (double)runtime);
-    formatter->dump_format("total_reads_made", "%d", data.finished);
-    formatter->dump_format("read_size", "%d", data.op_size);
-    formatter->dump_format("object_size", "%d", data.object_size);
-    formatter->dump_format("bandwidth", "%f", bandwidth);
-    formatter->dump_format("average_iops", "%d", (int)(data.finished/runtime));
-    formatter->dump_format("stddev_iops", "%d", vec_stddev(data.history.iops));
-    formatter->dump_format("max_iops", "%d", data.idata.max_iops);
-    formatter->dump_format("min_iops", "%d", data.idata.min_iops);
-    formatter->dump_format("average_latency", "%f", data.avg_latency);
-    formatter->dump_format("max_latency", "%f", data.max_latency);
-    formatter->dump_format("min_latency", "%f", data.min_latency);
-  }
+//   if (!formatter) {
+//     out(cout) << "Total time run:       " << runtime << std::endl
+//        << "Total reads made:     " << data.finished << std::endl
+//        << "Read size:            " << data.op_size << std::endl
+//        << "Object size:          " << data.object_size << std::endl
+//        << "Bandwidth (MB/sec):   " << setprecision(6) << bandwidth << std::endl
+//        << "Average IOPS          " << (int)(data.finished/runtime) << std::endl
+//        << "Stddev IOPS:          " << vec_stddev(data.history.iops) << std::endl
+//        << "Max IOPS:             " << data.idata.max_iops << std::endl
+//        << "Min IOPS:             " << data.idata.min_iops << std::endl
+//        << "Average Latency(s):   " << data.avg_latency << std::endl
+//        << "Max latency(s):       " << data.max_latency << std::endl
+//        << "Min latency(s):       " << data.min_latency << std::endl;
+//   } else {
+//     formatter->dump_format("total_time_run", "%f", (double)runtime);
+//     formatter->dump_format("total_reads_made", "%d", data.finished);
+//     formatter->dump_format("read_size", "%d", data.op_size);
+//     formatter->dump_format("object_size", "%d", data.object_size);
+//     formatter->dump_format("bandwidth", "%f", bandwidth);
+//     formatter->dump_format("average_iops", "%d", (int)(data.finished/runtime));
+//     formatter->dump_format("stddev_iops", "%d", vec_stddev(data.history.iops));
+//     formatter->dump_format("max_iops", "%d", data.idata.max_iops);
+//     formatter->dump_format("min_iops", "%d", data.idata.min_iops);
+//     formatter->dump_format("average_latency", "%f", data.avg_latency);
+//     formatter->dump_format("max_latency", "%f", data.max_latency);
+//     formatter->dump_format("min_latency", "%f", data.min_latency);
+//   }
 
-  completions_done();
+//   completions_done();
 
-  return (errors > 0 ? -EIO : 0);
+//   return (errors > 0 ? -EIO : 0);
 
- ERR:
-  lock.Lock();
-  data.done = 1;
-  lock.Unlock();
-  pthread_join(print_thread, NULL);
-  return r;
-}
+//  ERR:
+//   lock.Lock();
+//   data.done = 1;
+//   lock.Unlock();
+//   pthread_join(print_thread, NULL);
+//   return r;
+// }
 
 std::vector<int> obj_list;
 
@@ -906,7 +906,7 @@ int ObjBencher::seq_read_bench(int seconds_to_run, int num_objects, int concurre
   /*fill up obj_list*/
   std::string objfile_prefix = "/users/yushua/objlist_";
   char temp_str[10];
-  itoa(OSD_index,temp_str,10)
+  itoa(OSD_index,temp_str,10);
   std::string OSD_index_str = temp_str;
   std::string objfile_postfix = ".txt";
   ifstream objlistfile(objfile_prefix+OSD_index_str+objfile_postfix);
@@ -921,7 +921,7 @@ int ObjBencher::seq_read_bench(int seconds_to_run, int num_objects, int concurre
     getline(objlistfile, obj_str);
     int location1 = obj_str.find("object");
     int location2 = obj_str.find(" ");
-    std::string obj_index_str = temp.substr(location1+6, location2-location1-6);
+    std::string obj_index_str = obj_str.substr(location1+6, location2-location1-6);
     obj_list.push_back(atoi(obj_index_str.c_str()));
     out(cout) << "insert "<< atoi(obj_index_str.c_str()) << std::endl;
   }
