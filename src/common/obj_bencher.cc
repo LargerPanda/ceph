@@ -63,7 +63,8 @@ static std::string generate_object_name(int objnum, int pid = 0)
   }
 
   char name[1024];
-  size_t l = sprintf(&name[0], "%s_%s_%d_object%d", BENCH_PREFIX.c_str(), cached_hostname, cached_pid, objnum);
+  //size_t l = sprintf(&name[0], "%s_%s_%d_object%d", BENCH_PREFIX.c_str(), cached_hostname, cached_pid, objnum);
+  size_t l = sprintf(&name[0], "object%d", objnum);
   return string(&name[0], l);
 }
 
