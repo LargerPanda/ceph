@@ -905,11 +905,9 @@ int ObjBencher::seq_read_bench(int seconds_to_run, int num_objects, int concurre
 
   /*fill up obj_list*/
   std::string objfile_prefix = "/users/yushua/objlist_";
-  char temp_str[10];
-  itoa(OSD_index,temp_str,10);
-  std::string OSD_index_str = temp_str;
+  std::string OSD_index_str = std::to_string(OSD_index);
   std::string objfile_postfix = ".txt";
-  ifstream objlistfile(objfile_prefix+OSD_index_str+objfile_postfix);
+  ifstream objlistfile(objfile_prefix + OSD_index_str + objfile_postfix);
   if (!objlistfile.is_open())
   {
     out(cout) << "Open objlistfile failed!" << std::endl;
