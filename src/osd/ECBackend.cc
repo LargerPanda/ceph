@@ -225,22 +225,25 @@ ECBackend::ECBackend(
 	enforce_flag = atoi(&(enforce_str[0]));
 	dout(1) << __func__ << ": "
 				<< "enforce flag = " << enforce_flag << dendl;
-	while(getline(myfile,temp)) 
-    { 
-        int space_location = temp.find(" ");
-		string objname = temp.substr(0, space_location);
-		vector<int> temp_osds;
-		dout(1) << __func__ << ": "
-				<< " mydebug: ------------------ " << dendl;
-		for(int i = 0;i<4;i++){
-			temp_osds.push_back(atoi(&(temp[space_location+2+i*3])));
+	
+	if (myfile.is_open()){
+		while(getline(myfile,temp)) 
+		{ 
+			int space_location = temp.find(" ");
+			string objname = temp.substr(0, space_location);
+			vector<int> temp_osds;
 			dout(1) << __func__ << ": "
-				<< " mydebug: push back " << atoi(&(temp[space_location+2+3*i])) << dendl;
+					<< " mydebug: ------------------ " << dendl;
+			for(int i = 0;i<4;i++){
+				temp_osds.push_back(atoi(&(temp[space_location+2+i*3])));
+				dout(1) << __func__ << ": "
+					<< " mydebug: push back " << atoi(&(temp[space_location+2+3*i])) << dendl;
+			}
+			dout(1) << __func__ << ": "
+					<< " mydebug: ------------------ " << dendl;
+			remap.insert(pair<string,vector<int>>(objname,temp_osds));
 		}
-		dout(1) << __func__ << ": "
-				<< " mydebug: ------------------ " << dendl;
-		remap.insert(pair<string,vector<int>>(objname,temp_osds));
-    }
+	}
 	/*get manage info*/
 	assert((ec_impl->get_data_chunk_count() *
 			ec_impl->get_chunk_size(stripe_width)) == stripe_width);
