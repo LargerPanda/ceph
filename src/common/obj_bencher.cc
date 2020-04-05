@@ -286,7 +286,7 @@ int ObjBencher::aio_bench(
     getline(OSDfile, OSD_str);
     OSD_index = atoi(&(OSD_str[0]));
     out(cout) << "Start to read "<< num_objects <<" of OSD" << OSD_index <<"!!!!!"<< std::endl;
-    r = seq_read_bench(secondsToRun, max_objects, concurrentios, OSD_index, no_verify);
+    r = seq_read_bench(secondsToRun, max_objects, concurrentios, OSD_index, true);
     if (r != 0) goto out;
   }
   else if (OP_RAND_READ == operation) {
