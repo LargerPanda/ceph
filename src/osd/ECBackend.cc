@@ -193,7 +193,19 @@ ECBackend::ECBackend(
 	  sinfo(ec_impl->get_data_chunk_count(), stripe_width)
 {
 	/*get manage info*/
-	ifstream myfile("/users/yushua/env/remap.txt");
+	ifstream OSDfile("/users/yushua/OSD.txt");
+    string OSD_str;
+    int OSD_index = 0;
+    if (!OSDfile.is_open())
+    {
+      dout(1) << __func__ << ": "
+				<< "Open OSDfile failed!" << dendl;
+    }
+    getline(OSDfile, OSD_str);
+    OSD_index = atoi(&(OSD_str[0]));
+	dout(1) << __func__ << "insert schedule map"" of OSD" << OSD_index <<"!!!!!" << dendl;
+
+	ifstream myfile("/users/yushua/env/remap_"+OSD_str+".txt");
 	ifstream enforcefile("/users/yushua/env/enforce.txt");
 	string temp;
 	string enforce_str;
