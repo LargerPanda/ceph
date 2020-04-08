@@ -2034,6 +2034,9 @@ void ECBackend::start_read_op(
 			i->first.osd,
 			msg,
 			get_parent()->get_epoch());
+		struct timeval send_time;
+		gettimeofday(&send_time, NULL);
+		dout(1) << __func__ << ":p_time#" << i->second.to_read.begin()->first.oid.name << "," << i->first.osd << ",send," << send_time.tv_sec << "." << send_time.tv_usec << "#" << dendl;
 	}
 	dout(10) << __func__ << ": started " << op << dendl;
 }
@@ -2107,9 +2110,7 @@ void ECBackend::start_remaining_read_op(
 			i->first.osd,
 			msg,
 			get_parent()->get_epoch());
-		struct timeval send_time;
-		gettimeofday(&send_time,NULL);
-  		dout(1) << __func__ << ":p_time#"<< i->second.to_read.begin()->first.oid.name<<","<<peer<<",send,"<<send_time.tv_sec<<"."<<send_time.tv_usec<<"#"<< dendl;
+		
 	}
 	dout(10) << __func__ << ": started additional " << op << dendl;
 }
