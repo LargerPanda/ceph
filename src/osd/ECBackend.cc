@@ -864,12 +864,18 @@ bool ECBackend::handle_message(
 	{
 		MOSDECSubOpReadReply *op = static_cast<MOSDECSubOpReadReply *>(
 			_op->get_req());
+		
+		Message* m = _op->get_req();
+		utime_t receive_time = m->get_recv_stamp();
+		dout(1) << __func__ << ":p_time#" << op->op.buffers_read.begin()->first.oid.name << "," << op->op.from.osd << ",receive," << receive_time.tv.tv_sec << "." << receive_time.tv.tv_nsec * 1000 << "#" << dendl;
+		
 		RecoveryMessages rm;
 		//add debug
 		dout(1) << __func__ << ": "
 				<< "mydebug: get MSG_OSD_EC_READ_REPLY" << dendl;
 		handle_sub_read_reply(op->op.from, op->op, &rm);
 		dispatch_recovery_messages(rm, priority);
+
 		return true;
 	}
 	case MSG_OSD_PG_PUSH:
@@ -2101,6 +2107,9 @@ void ECBackend::start_remaining_read_op(
 			i->first.osd,
 			msg,
 			get_parent()->get_epoch());
+		struct timeval send_time;
+		gettimeofday(&send_time,NULL);
+  		dout(1) << __func__ << ":p_time#"<< i->second.to_read.begin()->first.oid.name<<","<<peer<<",send,"<<send_time.tv_sec<<"."<<send_time.tv_usec<<"#"<< dendl;
 	}
 	dout(10) << __func__ << ": started additional " << op << dendl;
 }
