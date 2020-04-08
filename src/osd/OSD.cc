@@ -810,7 +810,9 @@ void OSDService::update_osd_stat(vector<int>& hb_peers)
 void OSDService::send_message_osd_cluster(int peer, Message *m, epoch_t from_epoch)
 {
   
-  dout(1) << __func__ << ": mydebug: in send_message_osd_cluster! " << dendl;
+  struct timeval send_time;
+	gettimeofday(&send_time,NULL);
+  dout(1) << __func__ << ":p_time#"<< m->op.to_read.begin()->first.oid.name<<","<<peer<<",send,"<<send_time.tv_sec<<"."<<send_time.tv_usec<<"#"<< dendl;
   OSDMapRef next_map = get_nextmap_reserved();
   // service map is always newer/newest
   assert(from_epoch <= next_map->get_epoch());

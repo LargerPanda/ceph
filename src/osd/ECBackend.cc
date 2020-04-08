@@ -1802,19 +1802,19 @@ int ECBackend::get_min_avail_to_read_shards(
 
 	get_all_avail_shards(hoid, have, shards, for_recovery);
 
-	for (set<int>::iterator i = have.begin();
-		 i != have.end();
-		 ++i)
-	{
-		dout(1) << __func__ << ": mydebug: have " << *i << dendl;
-	}
+	// for (set<int>::iterator i = have.begin();
+	// 	 i != have.end();
+	// 	 ++i)
+	// {
+	// 	dout(1) << __func__ << ": mydebug: have " << *i << dendl;
+	// }
 
-	for (map<shard_id_t, pg_shard_t>::iterator i = shards.begin();
-		 i != shards.end();
-		 ++i)
-	{
-		dout(1) << __func__ << ": mydebug: shards " << i->second << dendl;
-	}
+	// for (map<shard_id_t, pg_shard_t>::iterator i = shards.begin();
+	// 	 i != shards.end();
+	// 	 ++i)
+	// {
+	// 	dout(1) << __func__ << ": mydebug: shards " << i->second << dendl;
+	// }
 
 	/*force reconstruct*/
 	int straggler = 7; //osd.0 is straggler
@@ -1823,17 +1823,17 @@ int ECBackend::get_min_avail_to_read_shards(
 	int find_obj = 0;
 
 
-	dout(1) << __func__ << ": mydebug: obj_name is "<< hoid.oid.name << dendl;
+	// dout(1) << __func__ << ": mydebug: obj_name is "<< hoid.oid.name << dendl;
 	map<string, vector<int>>::iterator temp_pair = remap.find(hoid.oid.name);
 	if(temp_pair != remap.end()){
 		find_obj = 1;
-		dout(1) << __func__ << ": mydebug: find obj_name in list"<< temp_pair->first << dendl;
+		// dout(1) << __func__ << ": mydebug: find obj_name in list"<< temp_pair->first << dendl;
 		for(vector<int>::iterator i = temp_pair->second.begin(); i!= temp_pair->second.end();i++){
 			have2.insert(*i);
-			dout(1) << __func__ << ": mydebug: have2.insert "<< *i << dendl;
+			// dout(1) << __func__ << ": mydebug: have2.insert "<< *i << dendl;
 		}
 	}else{
-		dout(1) << __func__ << ": mydebug: not get obj_name " << dendl;
+		// dout(1) << __func__ << ": mydebug: not get obj_name " << dendl;
 	}
 	
 
@@ -1863,20 +1863,20 @@ int ECBackend::get_min_avail_to_read_shards(
 	// 	}
 	// }
 
-	for (set<int>::iterator i = have.begin();
-		 i != have.end();
-		 ++i)
-	{
-		dout(1) << __func__ << ": mydebug: before schedule, have " << *i << dendl;
-	}
-	if(find_obj){
-		for (set<int>::iterator i = have2.begin();
-			i != have2.end();
-			++i)
-		{
-			dout(1) << __func__ << ": mydebug: after schedule, have " << *i << dendl;
-		}
-	}
+	// for (set<int>::iterator i = have.begin();
+	// 	 i != have.end();
+	// 	 ++i)
+	// {
+	// 	dout(1) << __func__ << ": mydebug: before schedule, have " << *i << dendl;
+	// }
+	// if(find_obj){
+	// 	for (set<int>::iterator i = have2.begin();
+	// 		i != have2.end();
+	// 		++i)
+	// 	{
+	// 		dout(1) << __func__ << ": mydebug: after schedule, have " << *i << dendl;
+	// 	}
+	// }
 	/*force reconstruct*/
 	set<int> need;
 	int r;
@@ -1887,19 +1887,19 @@ int ECBackend::get_min_avail_to_read_shards(
 	}
 	
 
-	for (set<int>::iterator i = need.begin();
-		 i != need.end();
-		 ++i)
-	{
-		dout(1) << __func__ << ": mydebug: need " << *i << dendl;
-	}
+	// for (set<int>::iterator i = need.begin();
+	// 	 i != need.end();
+	// 	 ++i)
+	// {
+	// 	dout(1) << __func__ << ": mydebug: need " << *i << dendl;
+	// }
 
 	if (r < 0)
 		return r;
 
 	if (do_redundant_reads)
 	{
-		dout(1) << __func__ << ": mydebug: do_redundant_reads " << dendl;
+		//dout(1) << __func__ << ": mydebug: do_redundant_reads " << dendl;
 		need.swap(have);
 	}
 
@@ -1912,7 +1912,7 @@ int ECBackend::get_min_avail_to_read_shards(
 	{
 		assert(shards.count(shard_id_t(*i)));
 		to_read->insert(shards[shard_id_t(*i)]);
-		dout(1) << __func__ << ": mydebug: to_read insert " << shards[shard_id_t(*i)] << dendl;
+		//dout(1) << __func__ << ": mydebug: to_read insert " << shards[shard_id_t(*i)] << dendl;
 	}
 	return 0;
 }
@@ -2112,7 +2112,7 @@ ECUtil::HashInfoRef ECBackend::get_hash_info(
 	ECUtil::HashInfoRef ref = unstable_hashinfo_registry.lookup(hoid);
 	if (!ref)
 	{
-		dout(1) << __func__ << ": mydebug: not in cache " << hoid << dendl;
+		//dout(1) << __func__ << ": mydebug: not in cache " << hoid << dendl;
 		dout(10) << __func__ << ": not in cache " << hoid << dendl;
 		struct stat st;
 		int r = store->stat(
@@ -2123,7 +2123,7 @@ ECUtil::HashInfoRef ECBackend::get_hash_info(
 		// XXX: What does it mean if there is no object on disk?
 		if (r >= 0)
 		{
-			dout(1) << __func__ << ": mydebug: found on disk, size " << st.st_size << dendl;
+			//dout(1) << __func__ << ": mydebug: found on disk, size " << st.st_size << dendl;
 			dout(10) << __func__ << ": found on disk, size " << st.st_size << dendl;
 			bufferlist bl;
 			if (attrs)
@@ -2154,7 +2154,7 @@ ECUtil::HashInfoRef ECBackend::get_hash_info(
 			if (bl.length() > 0)
 			{
 				bufferlist::iterator bp = bl.begin();
-				dout(1) << __func__ << "mydebug: decode in get_hash_info "<< dendl;
+				//dout(1) << __func__ << "mydebug: decode in get_hash_info "<< dendl;
 				::decode(hinfo, bp);
 				if (checks && hinfo.get_total_chunk_size() != (uint64_t)st.st_size)
 				{
