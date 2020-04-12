@@ -8788,13 +8788,17 @@ void OSD::ShardedOpWQ::_process(uint32_t thread_index, heartbeat_handle_d *hb ) 
   uint32_t shard_index = thread_index % num_shards;
 
   //dout(1) << __func__ << ": mydebug: thread_index = " << thread_index << ", shard_index = "<< shard_index<< dendl;
-  // ShardData* tempdata;
-  // int pending_queue_size = 0;
-  // for(int i=0;i<num_shards;i++){
-  //   tempdata = shard_list[i];
-  //   pending_queue_size += tempdata->pqueue->length();
-  // }
-  // dout(1) << ":" <<__func__ << ": mydebug: #queue_size_of_shard "<<shard_index<<" = "<< pending_queue_size <<"#"<< dendl;
+  if(thread_index==0){
+    ShardData* tempdata;
+    int pending_queue_size = 0;
+    for(int i=0;i<num_shards;i++){
+      tempdata = shard_list[i];
+      tempdata->sdata_op_ordering_lock.Lock();
+      pending_queue_size += tempdata->pqueue->length();
+      tempdata->sdata_op_ordering_lock.Unlock();
+    }
+    dout(1) << ": mydebug: #queue_size_of_shard "<<shard_index<<" = "<< pending_queue_size <<"#"<< dendl;
+  }
   
 
   ShardData* sdata = shard_list[shard_index];
