@@ -51,7 +51,7 @@ int ErasureCode::minimum_to_decode(const set<int> &want_to_read,
                                    set<int> *minimum)
 {
 
-  dout(1) << __func__ << ": mydebug: in minimum_to_decode " << dendl;
+  //dout(1) << __func__ << ": mydebug: in minimum_to_decode " << dendl;
   if (includes(available_chunks.begin(), available_chunks.end(),
 	       want_to_read.begin(), want_to_read.end())) {
     *minimum = want_to_read;

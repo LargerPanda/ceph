@@ -1288,8 +1288,8 @@ int OSDMap::apply_incremental2(){
 
 int OSDMap::apply_incremental(const Incremental &inc)
 {
-  ofstream outfile;
-  outfile.open("/users/yushua/log.txt",ios::out|ios::app);
+  // ofstream outfile;
+  // outfile.open("/users/yushua/log.txt",ios::out|ios::app);
   
   new_blacklist_entries = false;
   if (inc.epoch == 1)
@@ -1306,25 +1306,25 @@ int OSDMap::apply_incremental(const Incremental &inc)
   if (inc.fullmap.length()) {
     bufferlist bl(inc.fullmap);
     decode(bl);
-    outfile<<"mydebugfull"<<std::endl;
+    //outfile<<"mydebugfull"<<std::endl;
     return 0;
   }
 
-  outfile<<"##mydebug:not full"<<std::endl;
+  //outfile<<"##mydebug:not full"<<std::endl;
   // nope, incremental.
-  outfile<<"##mydebug: inc.new_flags = "<<inc.new_flags<<std::endl;
+  //outfile<<"##mydebug: inc.new_flags = "<<inc.new_flags<<std::endl;
   if (inc.new_flags >= 0)
     flags = inc.new_flags;
 
 
-  outfile<<"##mydebug: new_max_osd = "<<inc.new_max_osd<<std::endl;
+  //outfile<<"##mydebug: new_max_osd = "<<inc.new_max_osd<<std::endl;
   if (inc.new_max_osd >= 0){
     //outfile<<"##mydebug: new_max_osd = "<<inc.new_max_osd<<std::endl;
     set_max_osd(inc.new_max_osd);
   }
 
   
-  outfile<<"##mydebug: inc.new_pool_max = "<<inc.new_pool_max<<std::endl;
+  //outfile<<"##mydebug: inc.new_pool_max = "<<inc.new_pool_max<<std::endl;
   if (inc.new_pool_max != -1)
     pool_max = inc.new_pool_max;
 
@@ -1411,7 +1411,7 @@ int OSDMap::apply_incremental(const Incremental &inc)
     j++;
   }
 
-  outfile<<"##mydebug: j = "<<j<<std::endl;
+  //outfile<<"##mydebug: j = "<<j<<std::endl;
 
   for (map<int32_t,entity_addr_t>::const_iterator i = inc.new_up_client.begin();
        i != inc.new_up_client.end();

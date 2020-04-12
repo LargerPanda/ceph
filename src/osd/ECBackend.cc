@@ -450,7 +450,7 @@ void ECBackend::handle_recovery_read_complete(
 	boost::optional<map<string, bufferlist>> attrs,
 	RecoveryMessages *m)
 {
-	dout(1) << __func__ << "mydebug: in handle_recovery_read_complete"<<dendl;
+	//dout(1) << __func__ << "mydebug: in handle_recovery_read_complete"<<dendl;
 
 	dout(10) << __func__ << ": returned " << hoid << " "
 			 << "(" << to_read.get<0>()
@@ -476,7 +476,7 @@ void ECBackend::handle_recovery_read_complete(
 		from[i->first.shard].claim(i->second);
 	}
 	dout(10) << __func__ << ": " << from << dendl;
-	dout(0) << __func__ << "mydebug: decode in handle_recovery_read_complete"<< dendl;
+	//dout(0) << __func__ << "mydebug: decode in handle_recovery_read_complete"<< dendl;
 	int r = ECUtil::decode(sinfo, ec_impl, from, target);
 	assert(r == 0);
 	if (attrs)
@@ -510,7 +510,7 @@ void ECBackend::handle_recovery_read_complete(
 		{
 			assert(op.xattrs.count(ECUtil::get_hinfo_key()));
 			bufferlist::iterator bp = op.xattrs[ECUtil::get_hinfo_key()].begin();
-			dout(0) << __func__ << "mydebug: decode in handle_recovery_read_complete hinfo" << dendl;
+			//dout(0) << __func__ << "mydebug: decode in handle_recovery_read_complete hinfo" << dendl;
 			::decode(hinfo, bp);
 		}
 		op.hinfo = unstable_hashinfo_registry.lookup_or_create(hoid, hinfo);
@@ -830,8 +830,8 @@ bool ECBackend::handle_message(
 	case MSG_OSD_EC_WRITE:
 	{
 		MOSDECSubOpWrite *op = static_cast<MOSDECSubOpWrite *>(_op->get_req());
-		dout(1) << __func__ << ": "
-				<< "mydebug: get MSG_OSD_EC_WRITE" << dendl;
+		// dout(1) << __func__ << ": "
+		// 		<< "mydebug: get MSG_OSD_EC_WRITE" << dendl;
 		handle_sub_write(op->op.from, _op, op->op);
 		return true;
 	}
@@ -840,8 +840,8 @@ bool ECBackend::handle_message(
 		MOSDECSubOpWriteReply *op = static_cast<MOSDECSubOpWriteReply *>(
 			_op->get_req());
 		op->set_priority(priority);
-		dout(1) << __func__ << ": "
-				<< "mydebug: get MSG_OSD_EC_WRITE_REPLY" << dendl;
+		// dout(1) << __func__ << ": "
+		// 		<< "mydebug: get MSG_OSD_EC_WRITE_REPLY" << dendl;
 		handle_sub_write_reply(op->op.from, op->op);
 		return true;
 	}
@@ -852,8 +852,8 @@ bool ECBackend::handle_message(
 		reply->pgid = get_parent()->primary_spg_t();
 		reply->map_epoch = get_parent()->get_epoch();
 		//add debug
-		dout(1) << __func__ << ": "
-				<< "mydebug: get MSG_OSD_EC_READ" << dendl;
+		// dout(1) << __func__ << ": "
+		// 		<< "mydebug: get MSG_OSD_EC_READ" << dendl;
 		handle_sub_read(op->op.from, op->op, &(reply->op)); //先处理
 		op->set_priority(priority);
 		get_parent()->send_message_osd_cluster(
@@ -871,8 +871,8 @@ bool ECBackend::handle_message(
 		
 		RecoveryMessages rm;
 		//add debug
-		dout(1) << __func__ << ": "
-				<< "mydebug: get MSG_OSD_EC_READ_REPLY" << dendl;
+		// dout(1) << __func__ << ": "
+		// 		<< "mydebug: get MSG_OSD_EC_READ_REPLY" << dendl;
 		handle_sub_read_reply(op->op.from, op->op, &rm);
 		dispatch_recovery_messages(rm, priority);
 
@@ -882,8 +882,8 @@ bool ECBackend::handle_message(
 	{
 		MOSDPGPush *op = static_cast<MOSDPGPush *>(_op->get_req());
 		RecoveryMessages rm;
-		dout(1) << __func__ << ": "
-				<< "mydebug: get MSG_OSD_PG_PUSH" << dendl;
+		// dout(1) << __func__ << ": "
+		// 		<< "mydebug: get MSG_OSD_PG_PUSH" << dendl;
 		for (vector<PushOp>::iterator i = op->pushes.begin();
 			 i != op->pushes.end();
 			 ++i)
@@ -897,8 +897,8 @@ bool ECBackend::handle_message(
 	{
 		MOSDPGPushReply *op = static_cast<MOSDPGPushReply *>(_op->get_req());
 		RecoveryMessages rm;
-		dout(1) << __func__ << ": "
-				<< "mydebug: get MSG_OSD_PG_PUSH_REPLY" << dendl;
+		// dout(1) << __func__ << ": "
+		// 		<< "mydebug: get MSG_OSD_PG_PUSH_REPLY" << dendl;
 		for (vector<PushReplyOp>::iterator i = op->replies.begin();
 			 i != op->replies.end();
 			 ++i)
@@ -1222,7 +1222,7 @@ void ECBackend::handle_sub_read_reply(
 	ECSubReadReply &op,
 	RecoveryMessages *m)
 {
-	dout(1) << __func__ << ": mydebug: in handle_sub_read_reply#####" << op << dendl;
+	// dout(1) << __func__ << ": mydebug: in handle_sub_read_reply#####" << op << dendl;
 	dout(10) << __func__ << ": reply " << op << dendl;
 	map<ceph_tid_t, ReadOp>::iterator iter = tid_to_read_map.find(op.tid);
 	if (iter == tid_to_read_map.end())
@@ -1314,7 +1314,7 @@ void ECBackend::handle_sub_read_reply(
 			{
 				have.insert(j->first.shard);
 				dout(20) << __func__ << " have shard=" << j->first.shard << dendl;
-				dout(1) << __func__ << ": mydebug: have shard=" << j->first.shard << dendl;
+				//dout(1) << __func__ << ": mydebug: have shard=" << j->first.shard << dendl;
 			}
 			set<int> want_to_read, dummy_minimum;
 			get_want_to_read_shards(&want_to_read);
@@ -1328,7 +1328,7 @@ void ECBackend::handle_sub_read_reply(
 					// we can send the rest of the reads, if any.
 					if (!rop.do_redundant_reads)
 					{
-						dout(1) << __func__ << ": mydebug: do objects_remaining_read_async" << dendl;
+						//dout(1) << __func__ << ": mydebug: do objects_remaining_read_async" << dendl;
 						int r = objects_remaining_read_async(iter->first, rop);
 						if (r == 0)
 						{
@@ -1339,14 +1339,14 @@ void ECBackend::handle_sub_read_reply(
 					}
 					if (rop.complete[iter->first].errors.empty())
 					{
-						dout(1) << __func__ << ": mydebug: simply not enough copies err=" <<err<< dendl;
+						//dout(1) << __func__ << ": mydebug: simply not enough copies err=" <<err<< dendl;
 						dout(20) << __func__ << " simply not enough copies err=" << err << dendl;
 					}
 					else
 					{
 						// Grab the first error
 						err = rop.complete[iter->first].errors.begin()->second;
-						dout(1) << __func__ << ": mydebug: Use one of the shard errors err=" << err << dendl;
+						//dout(1) << __func__ << ": mydebug: Use one of the shard errors err=" << err << dendl;
 						dout(20) << __func__ << ": Use one of the shard errors err=" << err << dendl;
 					}
 					rop.complete[iter->first].r = err;
@@ -1360,7 +1360,7 @@ void ECBackend::handle_sub_read_reply(
 				{
 					if (cct->_conf->osd_read_ec_check_for_errors)
 					{
-						dout(1) << __func__ << ": mydebug: Not ignoring errors, use one shard err=" << err << dendl;
+						//dout(1) << __func__ << ": mydebug: Not ignoring errors, use one shard err=" << err << dendl;
 						dout(10) << __func__ << ": Not ignoring errors, use one shard err=" << err << dendl;
 						err = rop.complete[iter->first].errors.begin()->second;
 						rop.complete[iter->first].r = err;
@@ -1370,8 +1370,8 @@ void ECBackend::handle_sub_read_reply(
 						get_parent()->clog_error() << __func__ << ": Error(s) ignored for "
 												   << iter->first << " enough copies available"
 												   << "\n";
-						dout(1) << __func__ << ": mydebug: Error(s) ignored for " << iter->first
-								 << " enough copies available" << dendl;
+						// dout(1) << __func__ << ": mydebug: Error(s) ignored for " << iter->first
+						// 		 << " enough copies available" << dendl;
 						dout(10) << __func__ << " Error(s) ignored for " << iter->first
 								 << " enough copies available" << dendl;
 						rop.complete[iter->first].errors.clear();
@@ -1383,20 +1383,20 @@ void ECBackend::handle_sub_read_reply(
 	}
 	if (rop.in_progress.empty() || is_complete == rop.complete.size())
 	{
-		dout(1) << __func__ << ": mydebug: Complete!" << rop << dendl;
+		//dout(1) << __func__ << ": mydebug: Complete!" << rop << dendl;
 		dout(20) << __func__ << " Complete: " << rop << dendl;
 		complete_read_op(rop, m);
 	}
 	else
 	{
-		dout(1) << __func__ << ": mydebug: not Complete!" << rop << dendl;
+		//dout(1) << __func__ << ": mydebug: not Complete!" << rop << dendl;
 		dout(10) << __func__ << " readop not complete: " << rop << dendl;
 	}
 }
 
 void ECBackend::complete_read_op(ReadOp &rop, RecoveryMessages *m)
 {
-	dout(1) << __func__ << ": mydebug: in complete_read_op!" << dendl;
+	//dout(1) << __func__ << ": mydebug: in complete_read_op!" << dendl;
 	
 	map<hobject_t, read_request_t, hobject_t::BitwiseComparator>::iterator reqiter =
 		rop.to_read.begin();
@@ -1415,7 +1415,7 @@ void ECBackend::complete_read_op(ReadOp &rop, RecoveryMessages *m)
 		{
 			pair<RecoveryMessages *, read_result_t &> arg(
 				m, resiter->second);
-			dout(1) << __func__ << ": mydebug: start to complete!" << dendl;
+			//dout(1) << __func__ << ": mydebug: start to complete!" << dendl;
 			reqiter->second.cb->complete(arg);
 			reqiter->second.cb = NULL;
 		}
@@ -1954,7 +1954,7 @@ void ECBackend::start_read_op(
 	bool do_redundant_reads,
 	bool for_recovery)
 {
-	dout(1) << __func__ << ": mydebug: in start_read_op! " << dendl;
+	//dout(1) << __func__ << ": mydebug: in start_read_op! " << dendl;
 	ceph_tid_t tid = get_parent()->get_tid(); //get transaction id
 	assert(!tid_to_read_map.count(tid));	  //this map is <tid, op>, one tid can have many ops
 	ReadOp &op(tid_to_read_map[tid]);
@@ -2390,7 +2390,7 @@ void ECBackend::objects_read_async(
 	Context *on_complete,
 	bool fast_read)
 {
-	dout(1) << __func__ << ": mydebug: in objects_read_async! " << dendl;
+	//dout(1) << __func__ << ": mydebug: in objects_read_async! " << dendl;
 	in_progress_client_reads.push_back(ClientAsyncReadStatus(on_complete));
 	CallClientContexts *c = new CallClientContexts(
 		this, &(in_progress_client_reads.back()), to_read);
@@ -2450,7 +2450,7 @@ int ECBackend::objects_remaining_read_async(
 	const hobject_t &hoid,
 	ReadOp &rop)
 {
-	dout(1) << __func__ << ": mydebug: in objects_remaining_read_async! " << dendl;
+	//dout(1) << __func__ << ": mydebug: in objects_remaining_read_async! " << dendl;
 	set<int> already_read;
 	const set<pg_shard_t> &ots = rop.obj_to_source[hoid];
 	for (set<pg_shard_t>::iterator i = ots.begin(); i != ots.end(); ++i)

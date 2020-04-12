@@ -8880,7 +8880,7 @@ void OSD::ShardedOpWQ::_enqueue(pair<PGRef, PGQueueable> item) {
 
   uint32_t shard_index = (((item.first)->get_pgid().ps())% shard_list.size());
 
-  dout(1) <<":" <<__func__ << ": mydebug: shard_index = " << shard_index << ", pgid = " << (item.first)->get_pgid().ps() << ", shard_list size = " << shard_list.size() << dendl;
+  //dout(1) <<":" <<__func__ << ": mydebug: shard_index = " << shard_index << ", pgid = " << (item.first)->get_pgid().ps() << ", shard_list size = " << shard_list.size() << dendl;
 
   ShardData* sdata = shard_list[shard_index];
   assert (NULL != sdata);

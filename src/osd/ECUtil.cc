@@ -15,12 +15,12 @@ int ECUtil::decode(
   map<int, bufferlist> &to_decode,
   bufferlist *out) {
 
-  dout(1) << __func__ << ": mydebug: in decode1 "  << dendl;
+  //dout(1) << __func__ << ": mydebug: in decode1 "  << dendl;
   assert(to_decode.size());
 
   uint64_t total_data_size = to_decode.begin()->second.length();
-  dout(1) << __func__ << ": mydebug: total_data_size =  " << total_data_size  << dendl;
-  dout(1) << __func__ << ": mydebug: get_chunk_size =  " << sinfo.get_chunk_size() << dendl;
+  //dout(1) << __func__ << ": mydebug: total_data_size =  " << total_data_size  << dendl;
+  //dout(1) << __func__ << ": mydebug: get_chunk_size =  " << sinfo.get_chunk_size() << dendl;
   assert(total_data_size % sinfo.get_chunk_size() == 0);
 
   assert(out);
@@ -51,7 +51,7 @@ int ECUtil::decode(
     out->claim_append(bl);
     count++;
   }
-  dout(1) << __func__ << ": mydebug: count =  " << count << dendl;
+  //dout(1) << __func__ << ": mydebug: count =  " << count << dendl;
   return 0;
 }
 
@@ -61,7 +61,7 @@ int ECUtil::decode(
   map<int, bufferlist> &to_decode,
   map<int, bufferlist*> &out) {
 
-  dout(1) << __func__ << ": mydebug: in decode2 " << dendl;
+  //dout(1) << __func__ << ": mydebug: in decode2 " << dendl;
   assert(to_decode.size());
 
   uint64_t total_data_size = to_decode.begin()->second.length();
@@ -178,7 +178,7 @@ void ECUtil::HashInfo::encode(bufferlist &bl) const
 
 void ECUtil::HashInfo::decode(bufferlist::iterator &bl)
 {
-  dout(1) << __func__ << ": mydebug: in hash decode " << dendl;
+  //dout(1) << __func__ << ": mydebug: in hash decode " << dendl;
   DECODE_START(1, bl);
   ::decode(total_chunk_size, bl);
   ::decode(cumulative_shard_hashes, bl);
