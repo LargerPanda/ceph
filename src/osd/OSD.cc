@@ -8794,7 +8794,7 @@ void OSD::ShardedOpWQ::_process(uint32_t thread_index, heartbeat_handle_d *hb ) 
     tempdata = shard_list[i];
     pending_queue_size += tempdata->pqueue->length();
   }
-  dout(1) << ":" <<__func__ << ": mydebug: #queue_size_of_shard "<<shard_index<<" = "<<  <<"#"<< dendl;
+  dout(1) << ":" <<__func__ << ": mydebug: #queue_size_of_shard "<<shard_index<<" = "<< pending_queue_size <<"#"<< dendl;
   
 
   ShardData* sdata = shard_list[shard_index];
