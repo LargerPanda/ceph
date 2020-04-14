@@ -997,6 +997,8 @@ int ObjBencher::seq_read_bench(int seconds_to_run, int num_objects, int concurre
     lock.Unlock();
   }
 
+  out(cout) << "##mydebug"
+              << ",complete adding initial requests!"  << std::endl;
   //keep on adding new reads as old ones complete
   int slot;
   bufferlist *cur_contents;
