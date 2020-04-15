@@ -8961,7 +8961,8 @@ void OSD::dequeue_op(
 	   << " " << *(op->get_req())
 	   << " pg " << *pg << dendl;
 
-  dout(1) << "#wait_for_servie = " << latency << "#"<< dendl;
+  if((op->get_req()->get_type()) == MSG_OSD_EC_READ)
+    dout(1) << "#wait_for_servie = " << latency << "#"<< dendl;
   // share our map with sender, if they're old
   if (op->send_map_update) {
     Message *m = op->get_req();
