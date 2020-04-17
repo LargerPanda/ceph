@@ -284,9 +284,7 @@ int ObjBencher::aio_bench(
       out(cout) << "Open OSDfile failed!" << std::endl;
     }
 
-    getline(OSDfile, OSD_str);
-    OSD_index = atoi(&(OSD_str[0]));
-    out(cout) << "Start to read "<< max_objects <<" of OSD" << OSD_index <<"!!!!!"<< std::endl;
+    out(cout) << "Start to read "<< max_objects <<" of OSD" << OSD_index<<"!!!!!"<< std::endl;
     r = seq_read_bench(secondsToRun, max_objects, concurrentios, OSD_index, true);
     if (r != 0) goto out;
   }
@@ -906,6 +904,19 @@ int ObjBencher::seq_read_bench(int seconds_to_run, int num_objects, int concurre
   // OSD_index = atoi(OSD_str.c_str());
   // out(cout) << "Start to read " << num_objects << " of OSD" << OSD_index << "!!!!!" << std::endl;
 
+  ifstream offsetfile("/users/yushua/offset.txt");
+    string offset_str;
+    int offset = 0;
+    if (!offsetfile.is_open())
+    {
+      out(cout) << "Open offsetfile failed!" << std::endl;
+    }
+
+    getline(offsetfile, offset_str);
+    offset = atoi(&(offset_str[0]));
+
+    out(cout) << "!!offset = " <<offset<< std::endl;
+
   /*fill up obj_list*/
   std::string objfile_prefix = "/users/yushua/objlist_";
   std::string OSD_index_str = std::to_string(OSD_index);
@@ -917,8 +928,12 @@ int ObjBencher::seq_read_bench(int seconds_to_run, int num_objects, int concurre
   }
   std::string obj_str;
   int num_list = num_objects;
+  skip_num = offset * num_list;
+  while(skip_num--){
+    getline(objlistfile, obj_str);
+  }
+  
   while(num_list--){
-
     getline(objlistfile, obj_str);
     int location1 = obj_str.find("object");
     int location2 = obj_str.find(" ");
