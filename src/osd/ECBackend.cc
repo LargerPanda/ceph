@@ -234,8 +234,8 @@ ECBackend::ECBackend(
 			vector<int> temp_osds;
 			dout(1) << __func__ << ": "
 					<< " mydebug: ------------------ " << dendl;			
-			dout(1) << __func__ << ": "
-					<< " mydebug: objname = " << objname << dendl;
+			// dout(1) << __func__ << ": "
+			// 		<< " mydebug: objname = " << objname << dendl;
 			for(int i = 0;i<4;i++){
 				temp_osds.push_back(atoi(&(temp[space_location+2+i*3])));
 				dout(1) << __func__ << ": "
@@ -1831,17 +1831,17 @@ int ECBackend::get_min_avail_to_read_shards(
 	int find_obj = 0;
 
 
-	dout(1) << __func__ << ": mydebug: obj_name is "<< hoid.oid.name << dendl;
+	//dout(1) << __func__ << ": mydebug: obj_name is "<< hoid.oid.name << dendl;
 	map<string, vector<int>>::iterator temp_pair = remap.find(hoid.oid.name);
 	if(temp_pair != remap.end()){
 		find_obj = 1;
-		dout(1) << __func__ << ": mydebug: find obj_name in list"<< temp_pair->first << dendl;
+		//dout(1) << __func__ << ": mydebug: find obj_name in list"<< temp_pair->first << dendl;
 		for(vector<int>::iterator i = temp_pair->second.begin(); i!= temp_pair->second.end();i++){
 			have2.insert(*i);
-			dout(1) << __func__ << ": mydebug: have2.insert "<< *i << dendl;
+			//dout(1) << __func__ << ": mydebug: have2.insert "<< *i << dendl;
 		}
 	}else{
-		dout(1) << __func__ << ": mydebug: not get obj_name " << dendl;
+		//dout(1) << __func__ << ": mydebug: not get obj_name " << dendl;
 	}
 	
 
@@ -1920,7 +1920,7 @@ int ECBackend::get_min_avail_to_read_shards(
 	{
 		assert(shards.count(shard_id_t(*i)));
 		to_read->insert(shards[shard_id_t(*i)]);
-		dout(1) << __func__ << ": mydebug: to_read insert " << shards[shard_id_t(*i)] << dendl;
+		//dout(1) << __func__ << ": mydebug: to_read insert " << shards[shard_id_t(*i)] << dendl;
 	}
 	return 0;
 }

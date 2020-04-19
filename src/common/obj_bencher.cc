@@ -283,7 +283,8 @@ int ObjBencher::aio_bench(
     {
       out(cout) << "Open OSDfile failed!" << std::endl;
     }
-
+    getline(OSDfile, OSD_str);
+    OSD_index = atoi(&(OSD_str[0]));
     out(cout) << "Start to read "<< max_objects <<" of OSD" << OSD_index<<"!!!!!"<< std::endl;
     r = seq_read_bench(secondsToRun, max_objects, concurrentios, OSD_index, true);
     if (r != 0) goto out;
