@@ -238,18 +238,18 @@ int ObjBencher::aio_bench(
   const std::string run_name_meta = (run_name.empty() ? BENCH_LASTRUN_METADATA : run_name);
 
   //get data from previous write run, if available
-  if (operation != OP_WRITE) {
-    size_t prev_op_size, prev_object_size;
-    r = fetch_bench_metadata(run_name_meta, &prev_op_size, &prev_object_size,
-			     &num_objects, &prevPid);
-    if (r < 0) {
-      if (r == -ENOENT)
-        cerr << "Must write data before running a read benchmark!" << std::endl;
-      return r;
-    }
-    object_size = prev_object_size;   
-    op_size = prev_op_size;           
-  }
+  // if (operation != OP_WRITE) {
+  //   size_t prev_op_size, prev_object_size;
+  //   r = fetch_bench_metadata(run_name_meta, &prev_op_size, &prev_object_size,
+	// 		     &num_objects, &prevPid);
+  //   if (r < 0) {
+  //     if (r == -ENOENT)
+  //       cerr << "Must write data before running a read benchmark!" << std::endl;
+  //     return r;
+  //   }
+  //   object_size = prev_object_size;   
+  //   op_size = prev_op_size;           
+  // }
 
   char* contentsChars = new char[op_size];
   lock.Lock();
