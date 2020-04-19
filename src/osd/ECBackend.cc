@@ -1825,24 +1825,25 @@ int ECBackend::get_min_avail_to_read_shards(
 	// }
 
 	/*force reconstruct*/
-	int straggler = 7; //osd.0 is straggler
+	int straggler = 2; //osd.0 is straggler
 	int k=4;
 	int m=2;
 	int find_obj = 0;
 
 
 	//dout(1) << __func__ << ": mydebug: obj_name is "<< hoid.oid.name << dendl;
-	map<string, vector<int>>::iterator temp_pair = remap.find(hoid.oid.name);
-	if(temp_pair != remap.end()){
-		find_obj = 1;
-		dout(1) << __func__ << ": mydebug: find obj_name in list"<< temp_pair->first << dendl;
-		for(vector<int>::iterator i = temp_pair->second.begin(); i!= temp_pair->second.end();i++){
-			have2.insert(*i);
-			//dout(1) << __func__ << ": mydebug: have2.insert "<< *i << dendl;
-		}
-	}else{
-		dout(1) << __func__ << ": mydebug: not get obj_name " << dendl;
-	}
+
+	// map<string, vector<int>>::iterator temp_pair = remap.find(hoid.oid.name);
+	// if(temp_pair != remap.end()){
+	// 	find_obj = 1;
+	// 	dout(1) << __func__ << ": mydebug: find obj_name in list"<< temp_pair->first << dendl;
+	// 	for(vector<int>::iterator i = temp_pair->second.begin(); i!= temp_pair->second.end();i++){
+	// 		have2.insert(*i);
+	// 		//dout(1) << __func__ << ": mydebug: have2.insert "<< *i << dendl;
+	// 	}
+	// }else{
+	// 	dout(1) << __func__ << ": mydebug: not get obj_name " << dendl;
+	// }
 	
 
 	// for (map<shard_id_t, pg_shard_t>::iterator i = shards.begin();
@@ -1859,17 +1860,17 @@ int ECBackend::get_min_avail_to_read_shards(
 	// 		}
 	// 	}
 	// }
-	// for (map<shard_id_t, pg_shard_t>::iterator i = shards.begin();
-	// 	 i != shards.end();
-	// 	 ++i)
-	// {
-	// 	if((i->second).osd == straggler){
-	// 		dout(1) << __func__ << ": mydebug: shards "<< i->first <<" have straggler osd " << straggler << dendl;
-	// 		have.erase(i->first);
-	// 		have.erase()
-	// 		dout(1) << __func__ << ": mydebug: erase " << i->first << " from have" << dendl;
-	// 	}
-	// }
+
+	for (map<shard_id_t, pg_shard_t>::iterator i = shards.begin();
+		 i != shards.end();
+		 ++i)
+	{
+		if((i->second).osd == straggler){
+			//dout(1) << __func__ << ": mydebug: shards "<< i->first <<" have straggler osd " << straggler << dendl;
+			have.erase(i->first);
+			//dout(1) << __func__ << ": mydebug: erase " << i->first << " from have" << dendl;
+		}
+	}
 
 	// for (set<int>::iterator i = have.begin();
 	// 	 i != have.end();

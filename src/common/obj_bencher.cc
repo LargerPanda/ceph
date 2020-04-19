@@ -940,7 +940,7 @@ int ObjBencher::seq_read_bench(int seconds_to_run, int num_objects, int concurre
     int location2 = obj_str.find(" ");
     std::string obj_index_str = obj_str.substr(location1+6, location2-location1-6);
     obj_list.push_back(atoi(obj_index_str.c_str()));
-    out(cout) << "insert "<< atoi(obj_index_str.c_str()) << std::endl;
+    //out(cout) << "insert "<< atoi(obj_index_str.c_str()) << std::endl;
   }
   
 
@@ -1071,8 +1071,8 @@ int ObjBencher::seq_read_bench(int seconds_to_run, int num_objects, int concurre
       }
     }
 
-    out(cout) << "##mydebug"
-              << ",name=" << name[slot] << ",index=" << current_index << ",latency=" << data.cur_latency << std::endl;
+    //out(cout) << "##mydebug"
+              //<< ",name=" << name[slot] << ",index=" << current_index << ",latency=" << data.cur_latency << std::endl;
 
     newName = generate_object_name(obj_list[data.started] / writes_per_object, pid);
     index[slot] = data.started;
