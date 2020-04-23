@@ -1,0 +1,110 @@
+XDG_SESSION_ID=9840
+HOSTNAME=node-0.10cephhdd.cloudincr-pg0.wisc.cloudlab.us
+SHELL=/bin/bash
+TERM=xterm-256color
+HISTSIZE=1000
+SSH_CLIENT=208.180.239.26 52938 22
+SSH_TTY=/dev/pts/1
+USER=USER
+LS_COLORS=rs=0:di=38;5;27:ln=38;5;51:mh=44;38;5;15:pi=40;38;5;11:so=38;5;13:do=38;5;5:bd=48;5;232;38;5;11:cd=48;5;232;38;5;3:or=48;5;232;38;5;9:mi=05;48;5;232;38;5;15:su=48;5;196;38;5;15:sg=48;5;11;38;5;16:ca=48;5;196;38;5;226:tw=48;5;10;38;5;16:ow=48;5;10;38;5;21:st=48;5;21;38;5;15:ex=38;5;34:*.tar=38;5;9:*.tgz=38;5;9:*.arc=38;5;9:*.arj=38;5;9:*.taz=38;5;9:*.lha=38;5;9:*.lz4=38;5;9:*.lzh=38;5;9:*.lzma=38;5;9:*.tlz=38;5;9:*.txz=38;5;9:*.tzo=38;5;9:*.t7z=38;5;9:*.zip=38;5;9:*.z=38;5;9:*.Z=38;5;9:*.dz=38;5;9:*.gz=38;5;9:*.lrz=38;5;9:*.lz=38;5;9:*.lzo=38;5;9:*.xz=38;5;9:*.bz2=38;5;9:*.bz=38;5;9:*.tbz=38;5;9:*.tbz2=38;5;9:*.tz=38;5;9:*.deb=38;5;9:*.rpm=38;5;9:*.jar=38;5;9:*.war=38;5;9:*.ear=38;5;9:*.sar=38;5;9:*.rar=38;5;9:*.alz=38;5;9:*.ace=38;5;9:*.zoo=38;5;9:*.cpio=38;5;9:*.7z=38;5;9:*.rz=38;5;9:*.cab=38;5;9:*.jpg=38;5;13:*.jpeg=38;5;13:*.gif=38;5;13:*.bmp=38;5;13:*.pbm=38;5;13:*.pgm=38;5;13:*.ppm=38;5;13:*.tga=38;5;13:*.xbm=38;5;13:*.xpm=38;5;13:*.tif=38;5;13:*.tiff=38;5;13:*.png=38;5;13:*.svg=38;5;13:*.svgz=38;5;13:*.mng=38;5;13:*.pcx=38;5;13:*.mov=38;5;13:*.mpg=38;5;13:*.mpeg=38;5;13:*.m2v=38;5;13:*.mkv=38;5;13:*.webm=38;5;13:*.ogm=38;5;13:*.mp4=38;5;13:*.m4v=38;5;13:*.mp4v=38;5;13:*.vob=38;5;13:*.qt=38;5;13:*.nuv=38;5;13:*.wmv=38;5;13:*.asf=38;5;13:*.rm=38;5;13:*.rmvb=38;5;13:*.flc=38;5;13:*.avi=38;5;13:*.fli=38;5;13:*.flv=38;5;13:*.gl=38;5;13:*.dl=38;5;13:*.xcf=38;5;13:*.xwd=38;5;13:*.yuv=38;5;13:*.cgm=38;5;13:*.emf=38;5;13:*.axv=38;5;13:*.anx=38;5;13:*.ogv=38;5;13:*.ogx=38;5;13:*.aac=38;5;45:*.au=38;5;45:*.flac=38;5;45:*.mid=38;5;45:*.midi=38;5;45:*.mka=38;5;45:*.mp3=38;5;45:*.mpc=38;5;45:*.ogg=38;5;45:*.ra=38;5;45:*.wav=38;5;45:*.axa=38;5;45:*.oga=38;5;45:*.spx=38;5;45:*.xspf=38;5;45:
+PATH=/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/users/USER/.local/bin:/users/USER/bin
+MAIL=/var/spool/mail/USER
+_=/usr/bin/env
+PWD=/users/USER/Author-Kit
+LANG=zh_CN.UTF-8
+HISTCONTROL=ignoredups
+HOME=/users/USER
+SHLVL=2
+LOGNAME=USER
+CVS_RSH=ssh
+LC_CTYPE=zh_CN.UTF-8
+SSH_CONNECTION=208.180.239.26 52938 128.105.145.75 22
+LESSOPEN=||/usr/bin/lesspipe.sh %s
+XDG_RUNTIME_DIR=/run/user/20001
+Linux node-0.10cephhdd.cloudincr-pg0.wisc.cloudlab.us 3.10.0-1062.12.1.el7.x86_64 #1 SMP Tue Feb 4 23:02:59 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux
+Architecture:          x86_64
+CPU op-mode(s):        32-bit, 64-bit
+Byte Order:            Little Endian
+CPU(s):                40
+On-line CPU(s) list:   0-39
+Thread(s) per core:    2
+Core(s) per socket:    10
+座：                 2
+NUMA 节点：         2
+厂商 ID：           GenuineIntel
+CPU 系列：          6
+型号：              63
+型号名称：        Intel(R) Xeon(R) CPU E5-2660 v3 @ 2.60GHz
+步进：              2
+CPU MHz：             1200.024
+CPU max MHz:           3300.0000
+CPU min MHz:           1200.0000
+BogoMIPS：            5187.76
+虚拟化：           VT-x
+L1d 缓存：          32K
+L1i 缓存：          32K
+L2 缓存：           256K
+L3 缓存：           25600K
+NUMA 节点0 CPU：    0-9,20-29
+NUMA 节点1 CPU：    10-19,30-39
+Flags:                 fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm epb invpcid_single intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid cqm xsaveopt cqm_llc cqm_occup_llc dtherm ida arat pln pts md_clear spec_ctrl intel_stibp flush_l1d
+MemTotal:       164948484 kB
+MemFree:        161379524 kB
+MemAvailable:   161807632 kB
+Buffers:          186792 kB
+Cached:          1016424 kB
+SwapCached:            0 kB
+Active:           563816 kB
+Inactive:        1016812 kB
+Active(anon):     377504 kB
+Inactive(anon):   288808 kB
+Active(file):     186312 kB
+Inactive(file):   728004 kB
+Unevictable:           0 kB
+Mlocked:               0 kB
+SwapTotal:       3145724 kB
+SwapFree:        3145724 kB
+Dirty:                40 kB
+Writeback:             0 kB
+AnonPages:        378028 kB
+Mapped:            66220 kB
+Shmem:            288856 kB
+Slab:             355340 kB
+SReclaimable:     183408 kB
+SUnreclaim:       171932 kB
+KernelStack:       10112 kB
+PageTables:         9356 kB
+NFS_Unstable:          0 kB
+Bounce:                0 kB
+WritebackTmp:          0 kB
+CommitLimit:    85619964 kB
+Committed_AS:    1891536 kB
+VmallocTotal:   34359738367 kB
+VmallocUsed:      702212 kB
+VmallocChunk:   34275065852 kB
+HardwareCorrupted:     0 kB
+AnonHugePages:    299008 kB
+CmaTotal:              0 kB
+CmaFree:               0 kB
+HugePages_Total:       0
+HugePages_Free:        0
+HugePages_Rsvd:        0
+HugePages_Surp:        0
+Hugepagesize:       2048 kB
+DirectMap4k:      593744 kB
+DirectMap2M:     9779200 kB
+DirectMap1G:    159383552 kB
+NAME   MAJ:MIN RM   SIZE RO TYPE MOUNTPOINT
+sda      8:0    0   1.1T  0 disk 
+├─sda1   8:1    0    16G  0 part /
+├─sda2   8:2    0     3G  0 part 
+├─sda3   8:3    0     3G  0 part [SWAP]
+└─sda4   8:4    0   1.1T  0 part 
+sdb      8:16   0   1.1T  0 disk 
+├─sdb1   8:17   0   500G  0 part /var/lib/ceph/osd/ceph-0
+├─sdb2   8:18   0     5G  0 part 
+└─sdb3   8:19   0 612.8G  0 part /users/yushua/stressdir
+sdc      8:32   0 447.1G  0 disk 
+[0:0:0:0]    disk    HGST     HUC101212CSS600  A469  /dev/sda   1.20TB
+[0:0:1:0]    disk    HGST     HUC101212CSS600  A469  /dev/sdb   1.20TB
+[0:0:2:0]    disk    ATA      INTEL SSDSC2BB48 0374  /dev/sdc    480GB
