@@ -3217,7 +3217,7 @@ void Monitor::handle_forward(MonOpRequestRef op)
 
     // not super accurate, but better than nothing.
     req->set_recv_stamp(m->get_recv_stamp());
-    dout(1) << "mydebug: set_recv_stamp in monitor::handle_forward"<<dendl;
+    //dout(1) << "mydebug: set_recv_stamp in monitor::handle_forward"<<dendl;
     /*
      * note which election epoch this is; we will drop the message if
      * there is a future election since our peers will resend routed

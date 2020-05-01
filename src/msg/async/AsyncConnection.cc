@@ -2668,7 +2668,7 @@ void AsyncConnection::local_deliver()
     local_messages.pop_front();
     m->set_connection(this);
     m->set_recv_stamp(ceph_clock_now(async_msgr->cct));
-    ldout(async_msgr->cct, 0) << "mydebug: set_recv_stamp in AsyncConnection::local_deliver"<<dendl;
+    //ldout(async_msgr->cct, 0) << "mydebug: set_recv_stamp in AsyncConnection::local_deliver"<<dendl;
     ldout(async_msgr->cct, 10) << __func__ << " " << *m << " local deliver " << dendl;
     async_msgr->ms_fast_preprocess(m);
     write_lock.Unlock();

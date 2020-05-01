@@ -2394,7 +2394,7 @@ void ECBackend::objects_read_async(
 	Context *on_complete,
 	bool fast_read)
 {
-	//dout(1) << __func__ << ": mydebug: in objects_read_async! " << dendl;
+	dout(1) << __func__ << ": mydebug: in objects_read_async! " << dendl;
 	in_progress_client_reads.push_back(ClientAsyncReadStatus(on_complete));
 	CallClientContexts *c = new CallClientContexts(
 		this, &(in_progress_client_reads.back()), to_read);
