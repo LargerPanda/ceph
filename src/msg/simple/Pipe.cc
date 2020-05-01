@@ -2176,7 +2176,7 @@ int Pipe::read_message(Message **pm, AuthSessionHandler* auth_handler)
   message->set_dispatch_throttle_size(message_size);
 
   message->set_recv_stamp(recv_stamp);
-  ldout(msgr->cct,0) << "mydebug: set_recv_stamp in Pipe::read_message" <<dendl;
+  ldout(msgr->cct,0) << "mydebug: in Pipe::read_message set_recv_stamp() " << message->get_recv_stamp()<<dendl;
   message->set_throttle_stamp(throttle_stamp);
   message->set_recv_complete_stamp(ceph_clock_now(msgr->cct));
 

@@ -97,7 +97,7 @@ void DispatchQueue::local_delivery(Message *m, int priority)
 {
   m->set_connection(msgr->local_connection.get());
   m->set_recv_stamp(ceph_clock_now(msgr->cct));
-  ldout(cct,0) << "mydebug: set_recv_stamp in DispatchQueue::local_deliver" << dendl;
+  ldout(cct,0) << "mydebug: in DispatchQueue::local_deliver set_recv_stamp() " <<m->get_recv_stamp() << dendl;
   Mutex::Locker l(local_delivery_lock);
   if (local_messages.empty())
     local_delivery_cond.Signal();
