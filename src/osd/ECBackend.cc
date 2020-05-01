@@ -1836,7 +1836,7 @@ int ECBackend::get_min_avail_to_read_shards(
 	map<string, vector<int>>::iterator temp_pair = remap.find(hoid.oid.name);
 	if(temp_pair != remap.end()){
 		find_obj = 1;
-		dout(1) << __func__ << ": mydebug: find obj_name in list"<< temp_pair->first << dendl;
+		dout(1) << __func__ << ": mydebug: find obj_name in list "<< temp_pair->first << dendl;
 		for(vector<int>::iterator i = temp_pair->second.begin(); i!= temp_pair->second.end();i++){
 			have2.insert(*i);
 			//dout(1) << __func__ << ": mydebug: have2.insert "<< *i << dendl;
@@ -1890,6 +1890,7 @@ int ECBackend::get_min_avail_to_read_shards(
 	set<int> need;
 	int r;
 	if(find_obj && enforce_flag){
+		dout(1) << __func__ << ": mydebug: enforce "<< temp_pair->first << dendl;
 		r = ec_impl->minimum_to_decode(want, have2, &need);
 	}else{
 		r = ec_impl->minimum_to_decode(want, have, &need);
