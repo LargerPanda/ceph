@@ -653,7 +653,7 @@ public:
   protected:
     virtual void _enqueue(T) = 0;
     virtual void _enqueue_front(T) = 0;
-    virtual int _get_queue_size();
+    virtual int _get_queue_size() = 0;
 
   public:
 
