@@ -90,9 +90,11 @@ private:
   uint8_t hit_flag_points;
   uint8_t latest_flag_point;
 
+   
   utime_t dequeued_time;
   utime_t enqueued_time;
   int queue_size_when_enqueued;
+
 
   static const uint8_t flag_queued_for_pg=1 << 0;
   static const uint8_t flag_reached_pg =  1 << 1;
@@ -159,6 +161,7 @@ public:
   void mark_commit_sent() {
     mark_flag_point(flag_commit_sent, "commit_sent");
   }
+
 
   int set_queue_size_when_enqueued(int queue_size){
     queue_size_when_enqueued = queue_size;

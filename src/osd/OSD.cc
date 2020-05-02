@@ -8813,6 +8813,7 @@ void OSD::ShardedOpWQ::_process(uint32_t thread_index, heartbeat_handle_d *hb ) 
   
 
   pair<PGRef, PGQueueable> item = sdata->pqueue->dequeue();
+
   sdata->pg_for_processing[&*(item.first)].push_back(item.second);
   sdata->sdata_op_ordering_lock.Unlock();
   ThreadPool::TPHandle tp_handle(osd->cct, hb, timeout_interval,
@@ -8887,7 +8888,8 @@ void OSD::ShardedOpWQ::_enqueue(pair<PGRef, PGQueueable> item) {
     cur_queue_size += tempdata->pqueue->length();
     tempdata->sdata_op_ordering_lock.Unlock();
   }
-  item.second.maybe_get_op()->ref->set_queue_size_when_enqueued(cur_queue_size);
+  //item.second.set_queue_size_when_enqueued(cur_queue_size);
+  item.second.op_ref->set_queue_size_when_enqueued(cur_queue_size);
   /*get_cur_queue_size*/
 
 
@@ -8901,7 +8903,7 @@ void OSD::ShardedOpWQ::_enqueue(pair<PGRef, PGQueueable> item) {
 
   //////add enqueue time_stamp
   utime_t now = ceph_clock_now(osd->cct);
-  item.second.maybe_get_op()->ref->set_enqueued_time(now);
+  item.second.op_ref->set_enqueued_time(now);
 
   if (priority >= osd->op_prio_cutoff){
      //dout(1) << __func__ << ": mydebug: priority = " << priority << ", osd->op_prio_cutoff = "<< osd->op_prio_cutoff<< dendl;

@@ -355,7 +355,7 @@ class PGQueueable {
   unsigned priority;
 
   /*recorder*/
-  
+  OpRequestRef op_ref;
   /*recorder*/
 
   utime_t start_time;
@@ -377,7 +377,7 @@ public:
       priority(op->get_req()->get_priority()),
       start_time(op->get_req()->get_recv_stamp()),
       owner(op->get_req()->get_source_inst())
-    {}
+    {op_ref = op;}
   PGQueueable(
     const PGSnapTrim &op, int cost, unsigned priority, utime_t start_time,
     const entity_inst_t &owner)
@@ -400,7 +400,6 @@ public:
   int get_cost() const { return cost; }
   utime_t get_start_time() const { return start_time; }
   entity_inst_t get_owner() const { return owner; }
-
   
 };
 
