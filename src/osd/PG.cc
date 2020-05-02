@@ -1954,6 +1954,10 @@ void PG::queue_op(OpRequestRef& op)
   }
   op->mark_queued_for_pg();//标记：已经在pg的队列里了
 
+  op->set_queue_size_when_enqueued(osd->op_wq.get_queue_size());
+  utime_t now = ceph_clock_now(osd->cct);
+  op->set_enqueued_time(now);
+  
   osd->op_wq.queue(make_pair(PGRef(this), op));
   //dout(1) << "mydebug: op_wq after enque, has " <<osd->op_wq.<<" ops"<< dendl;
   {

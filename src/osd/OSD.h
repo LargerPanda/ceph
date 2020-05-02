@@ -1686,7 +1686,7 @@ private:
 
 public:
   class ShardedOpWQ: public ShardedThreadPool::ShardedWQ < pair <PGRef, PGQueueable> > {
-
+    
     struct ShardData {
       Mutex sdata_lock;
       Cond sdata_cond;

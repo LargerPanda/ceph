@@ -8873,11 +8873,7 @@ void OSD::ShardedOpWQ::_process(uint32_t thread_index, heartbeat_handle_d *hb ) 
   (item.first)->unlock();
 }
 
-void OSD::ShardedOpWQ::_enqueue(pair<PGRef, PGQueueable> item) {
-  //dout(1) << ": mydebug: in _enqueue"<< dendl;
-  uint32_t shard_index = (((item.first)->get_pgid().ps())% shard_list.size());
-
-  /*get_cur_queue_size*/
+int OSD::ShardedOpWQ::_get_queue_size(){
   ShardData* tempdata;
   int cur_queue_size = 0;
   for(int i=0;i<num_shards;i++){
@@ -8886,11 +8882,20 @@ void OSD::ShardedOpWQ::_enqueue(pair<PGRef, PGQueueable> item) {
     cur_queue_size += tempdata->pqueue->length();
     tempdata->sdata_op_ordering_lock.Unlock();
   }
-  item.second.maybe_get_op()->get_enqueued_time();
+  return cur_queue_size;
+}
+
+void OSD::ShardedOpWQ::_enqueue(pair<PGRef, PGQueueable> item) {
+  //dout(1) << ": mydebug: in _enqueue"<< dendl;
+  uint32_t shard_index = (((item.first)->get_pgid().ps())% shard_list.size());
+
+  /*get_cur_queue_size*/
+  
+  //item.second.maybe_get_op()->get_enqueued_time();
   //set_queue_size_when_enqueued(cur_queue_size);
 
-  utime_t now = ceph_clock_now(osd->cct);
-  //op->set_enqueued_time(now);
+  // utime_t now = ceph_clock_now(osd->cct);
+  // op->set_enqueued_time(now);
   
   /*get_cur_queue_size*/
 
