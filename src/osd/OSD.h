@@ -1745,6 +1745,7 @@ public:
 
     void _process(uint32_t thread_index, heartbeat_handle_d *hb);
     void _enqueue(pair <PGRef, PGQueueable> item);
+    int _get_queue_size();
     void _enqueue_front(pair <PGRef, PGQueueable> item);
       
     void return_waiting_threads() {
