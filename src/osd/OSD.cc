@@ -8877,20 +8877,21 @@ void OSD::ShardedOpWQ::_enqueue(pair<PGRef, PGQueueable> item) {
   //dout(1) << ": mydebug: in _enqueue"<< dendl;
   uint32_t shard_index = (((item.first)->get_pgid().ps())% shard_list.size());
 
-  
-  //dout(1) <<":" <<__func__ << ": mydebug: shard_index = " << shard_index << ", pgid = " << (item.first)->get_pgid().ps() << ", shard_list size = " << shard_list.size() << dendl;
   /*get_cur_queue_size*/
-  // ShardData* tempdata;
-  // int cur_queue_size = 0;
-  // for(int i=0;i<num_shards;i++){
-  //   tempdata = shard_list[i];
-  //   tempdata->sdata_op_ordering_lock.Lock();
-  //   cur_queue_size += tempdata->pqueue->length();
-  //   tempdata->sdata_op_ordering_lock.Unlock();
-  // }
-  //item.second.set_queue_size_when_enqueued(cur_queue_size);
-  //item.second.maybe_get_op()->get_req();
-  //item.second.maybe_get_op()->set_queue_size_when_enqueued(cur_queue_size);
+  ShardData* tempdata;
+  int cur_queue_size = 0;
+  for(int i=0;i<num_shards;i++){
+    tempdata = shard_list[i];
+    tempdata->sdata_op_ordering_lock.Lock();
+    cur_queue_size += tempdata->pqueue->length();
+    tempdata->sdata_op_ordering_lock.Unlock();
+  }
+  item.second.maybe_get_op()->get_enqueued_time();
+  //set_queue_size_when_enqueued(cur_queue_size);
+
+  utime_t now = ceph_clock_now(osd->cct);
+  //op->set_enqueued_time(now);
+  
   /*get_cur_queue_size*/
 
 
