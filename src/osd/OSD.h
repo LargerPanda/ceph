@@ -355,7 +355,7 @@ class PGQueueable {
   unsigned priority;
 
   /*recorder*/
-  OpRequestRef op_ref;
+  
   /*recorder*/
 
   utime_t start_time;
@@ -372,6 +372,9 @@ class PGQueueable {
   };
 public:
   // cppcheck-suppress noExplicitConstructor
+
+  OpRequestRef op_ref;
+
   PGQueueable(OpRequestRef op)
     : qvariant(op), cost(op->get_req()->get_cost()),
       priority(op->get_req()->get_priority()),
