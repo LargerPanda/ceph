@@ -8900,7 +8900,7 @@ void OSD::ShardedOpWQ::_enqueue(pair<PGRef, PGQueueable> item) {
   //dout(1) << __func__ << ": mydebug: cost = " << cost << dendl;
 
   //////add enqueue time_stamp
-  utime_t now = ceph_clock_now(cct);
+  utime_t now = ceph_clock_now(osd->cct);
   item.second.maybe_get_op()->set_enqueued_time(now);
 
   if (priority >= osd->op_prio_cutoff){

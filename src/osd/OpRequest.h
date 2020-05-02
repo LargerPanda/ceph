@@ -165,7 +165,7 @@ public:
     return queue_size_when_enqueued; 
   }
 
-  int get_queue_size_when_enqueued(int queue_size) const{
+  int get_queue_size_when_enqueued() const{
     return queue_size_when_enqueued; 
   }
 
