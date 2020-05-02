@@ -667,6 +667,18 @@ public:
     //   return _get_queue_size();
     // }
 
+    int get_queue_size(){
+      ShardData* tempdata;
+      int cur_queue_size = 0;
+      for(int i=0;i<num_shards;i++){
+        tempdata = shard_list[i];
+        tempdata->sdata_op_ordering_lock.Lock();
+        cur_queue_size += tempdata->pqueue->length();
+        tempdata->sdata_op_ordering_lock.Unlock();
+      }
+      return cur_queue_size;
+    }
+
     void queue(T item) {
       _enqueue(item);
     }
