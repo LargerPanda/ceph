@@ -864,6 +864,9 @@ bool ECBackend::handle_message(
 		op->set_priority(priority);
 		get_parent()->send_message_osd_cluster(
 			op->op.from.osd, reply, get_parent()->get_epoch()); //再发送
+
+		dout(1)<< ": after EC_READ\n" << "queue_size: "  << reply->op.queue_size<< ",\n"<< "wait_for_service_time: " <<reply->op.wait_for_service_time << ",\n"<< "disk_read_time: " << reply->op.disk_read_time<< dendl;
+
 		return true;
 	}
 	case MSG_OSD_EC_READ_REPLY:
@@ -878,7 +881,7 @@ bool ECBackend::handle_message(
 		int queue_size = op->op.queue_size;
 		unsigned long disk_read_time = op->op.disk_read_time;
 
-		dout(1) << __func__ << ":p_time#" << op->op.buffers_read.begin()->first.oid.name << "," << op->op.from.osd << ",receive," << queue_size<<","<<wait_for_service_time << "," << disk_read_time<<","<<receive_time<< "#" << dendl;
+		dout(1) << __func__ << ":p_time#\n" << "name: "<< op->op.buffers_read.begin()->first.oid.name << ",\n"<< "from: " << op->op.from.osd<< ",\n"<< "queue_size: "  << queue_size<< ",\n"<< "wait_for_service_time: " <<wait_for_service_time << ",\n"<< "disk_read_time: " << disk_read_time<< ",\n"<< "receive_time: " <<receive_time<< "#" << dendl;
 		//dout(1) << __func__ << ":p_time#" << op->op.buffers_read.begin()->first.oid.name << "," << op->op.from.osd << ",receive," << receive_time.tv.tv_sec << "." << receive_time.tv.tv_nsec/1000 << "#" << dendl;
 		
 		RecoveryMessages rm;
