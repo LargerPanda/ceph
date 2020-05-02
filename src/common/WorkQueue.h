@@ -653,7 +653,7 @@ public:
   protected:
     virtual void _enqueue(T) = 0;
     virtual void _enqueue_front(T) = 0;
-    //virtual int _get_queue_size();
+    virtual int _get_queue_size();
 
   public:
 
@@ -663,21 +663,10 @@ public:
     }
     virtual ~ShardedWQ() {}
 
-    // int get_cur_queue_size(){
-    //   return _get_queue_size();
-    // }
-
     int get_queue_size(){
-      ShardData* tempdata;
-      int cur_queue_size = 0;
-      for(int i=0;i<num_shards;i++){
-        tempdata = shard_list[i];
-        tempdata->sdata_op_ordering_lock.Lock();
-        cur_queue_size += tempdata->pqueue->length();
-        tempdata->sdata_op_ordering_lock.Unlock();
-      }
-      return cur_queue_size;
+      return _get_queue_size();
     }
+
 
     void queue(T item) {
       _enqueue(item);
