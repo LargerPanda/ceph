@@ -1953,6 +1953,8 @@ void PG::queue_op(OpRequestRef& op)
     return;
   }
   op->mark_queued_for_pg();//标记：已经在pg的队列里了
+
+
   osd->op_wq.queue(make_pair(PGRef(this), op));
   //dout(1) << "mydebug: op_wq after enque, has " <<osd->op_wq.<<" ops"<< dendl;
   {

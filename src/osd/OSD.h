@@ -373,14 +373,12 @@ class PGQueueable {
 public:
   // cppcheck-suppress noExplicitConstructor
 
-  OpRequestRef op_ref;
-
   PGQueueable(OpRequestRef op)
     : qvariant(op), cost(op->get_req()->get_cost()),
       priority(op->get_req()->get_priority()),
       start_time(op->get_req()->get_recv_stamp()),
       owner(op->get_req()->get_source_inst())
-    {op_ref = op;}
+    {}
   PGQueueable(
     const PGSnapTrim &op, int cost, unsigned priority, utime_t start_time,
     const entity_inst_t &owner)
