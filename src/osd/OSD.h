@@ -1683,6 +1683,8 @@ private:
   const unsigned int op_prio_cutoff;
 
   friend class PGQueueable;
+
+public:
   class ShardedOpWQ: public ShardedThreadPool::ShardedWQ < pair <PGRef, PGQueueable> > {
 
     struct ShardData {
