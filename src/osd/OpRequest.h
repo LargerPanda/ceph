@@ -89,7 +89,11 @@ private:
   osd_reqid_t reqid;
   uint8_t hit_flag_points;
   uint8_t latest_flag_point;
+
   utime_t dequeued_time;
+  utime_t enqueued_time;
+  int queue_size_when_enqueued;
+
   static const uint8_t flag_queued_for_pg=1 << 0;
   static const uint8_t flag_reached_pg =  1 << 1;
   static const uint8_t flag_delayed =     1 << 2;
@@ -156,11 +160,30 @@ public:
     mark_flag_point(flag_commit_sent, "commit_sent");
   }
 
+  int set_queue_size_when_enqueued(int queue_size){
+    queue_size_when_enqueued = queue_size;
+    return queue_size_when_enqueued; 
+  }
+
+  int get_queue_size_when_enqueued(int queue_size) const{
+    return queue_size_when_enqueued; 
+  }
+
+  utime_t set_enqueued_time(utime_t enq_time){
+    enqueued_time = enq_time;
+    return enqueued_time; 
+  }
+
+  utime_t get_enqueued_time() const{ 
+    return enqueued_time; 
+  }
+
   utime_t get_dequeued_time() const {
     return dequeued_time;
   }
-  void set_dequeued_time(utime_t deq_time) {
+  utime_t set_dequeued_time(utime_t deq_time) {
     dequeued_time = deq_time;
+    return dequeued_time;
   }
 
   osd_reqid_t get_reqid() const {

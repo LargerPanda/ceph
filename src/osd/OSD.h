@@ -353,6 +353,11 @@ class PGQueueable {
   QVariant qvariant;
   int cost; 
   unsigned priority;
+
+  /*recorder*/
+  
+  /*recorder*/
+
   utime_t start_time;
   entity_inst_t owner;
   struct RunVis : public boost::static_visitor<> {
@@ -395,6 +400,8 @@ public:
   int get_cost() const { return cost; }
   utime_t get_start_time() const { return start_time; }
   entity_inst_t get_owner() const { return owner; }
+
+  
 };
 
 class OSDService {

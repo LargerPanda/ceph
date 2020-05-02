@@ -851,6 +851,10 @@ bool ECBackend::handle_message(
 	{
 		MOSDECSubOpRead *op = static_cast<MOSDECSubOpRead *>(_op->get_req());
 		MOSDECSubOpReadReply *reply = new MOSDECSubOpReadReply;
+
+		reply->op.wait_for_service_time = _op->get_dequeued_time() - _op->get_enqueued_time(); 
+		reply->op.queue_size = _op->get_queue_size_when_enqueued();
+
 		reply->pgid = get_parent()->primary_spg_t();
 		reply->map_epoch = get_parent()->get_epoch();
 		//add debug
@@ -869,7 +873,13 @@ bool ECBackend::handle_message(
 		
 		Message* m = _op->get_req();
 		utime_t receive_time = m->get_recv_stamp();
-		dout(1) << __func__ << ":p_time#" << op->op.buffers_read.begin()->first.oid.name << "," << op->op.from.osd << ",receive," << receive_time.tv.tv_sec << "." << receive_time.tv.tv_nsec/1000 << "#" << dendl;
+
+		utime_t wait_for_service_time = op->op.wait_for_service_time;
+		int queue_size = op->op.queue_size;
+		unsigned long disk_read_time = op->op.disk_read_time;
+
+		dout(1) << __func__ << ":p_time#" << op->op.buffers_read.begin()->first.oid.name << "," << op->op.from.osd << ",receive," << queue_size<<","<<wait_for_service_time << "," << disk_read_time<<","<<receive_time<< "#" << dendl;
+		//dout(1) << __func__ << ":p_time#" << op->op.buffers_read.begin()->first.oid.name << "," << op->op.from.osd << ",receive," << receive_time.tv.tv_sec << "." << receive_time.tv.tv_nsec/1000 << "#" << dendl;
 		
 		RecoveryMessages rm;
 		//add debug
@@ -1136,6 +1146,7 @@ void ECBackend::handle_sub_read(
 				gettimeofday(&end, NULL);	
 				diff = 1000000 * (end.tv_sec - start.tv_sec) + end.tv_usec - start.tv_usec;
 				dout(1) << __func__ << ": mydebug:(usec) !! #read_time = " << diff << "#" << dendl;
+				reply->disk_read_time = diff;
 				//填充reply中的buffer
 				reply->buffers_read[i->first].push_back(
 					make_pair(
