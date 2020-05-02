@@ -653,7 +653,7 @@ public:
   protected:
     virtual void _enqueue(T) = 0;
     virtual void _enqueue_front(T) = 0;
-    virtual int _get_queue_size();
+    //virtual int _get_queue_size();
 
   public:
 
@@ -663,9 +663,9 @@ public:
     }
     virtual ~ShardedWQ() {}
 
-    int get_cur_queue_size(){
-      return _get_queue_size();
-    }
+    // int get_cur_queue_size(){
+    //   return _get_queue_size();
+    // }
 
     void queue(T item) {
       _enqueue(item);

@@ -8873,17 +8873,6 @@ void OSD::ShardedOpWQ::_process(uint32_t thread_index, heartbeat_handle_d *hb ) 
   (item.first)->unlock();
 }
 
-int OSD::ShardedOpWQ::_get_queue_size(){
-  ShardData* tempdata;
-  int cur_queue_size = 0;
-  for(int i=0;i<num_shards;i++){
-    tempdata = shard_list[i];
-    tempdata->sdata_op_ordering_lock.Lock();
-    cur_queue_size += tempdata->pqueue->length();
-    tempdata->sdata_op_ordering_lock.Unlock();
-  }
-  return cur_queue_size;
-}
 
 void OSD::ShardedOpWQ::_enqueue(pair<PGRef, PGQueueable> item) {
   //dout(1) << ": mydebug: in _enqueue"<< dendl;
