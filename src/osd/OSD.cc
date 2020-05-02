@@ -8784,7 +8784,7 @@ void OSD::enqueue_op(PG *pg, OpRequestRef& op)
 }
 
 void OSD::ShardedOpWQ::_process(uint32_t thread_index, heartbeat_handle_d *hb ) {
-
+  dout(1) << ": mydebug: in _process"<< dendl;
   uint32_t shard_index = thread_index % num_shards;
 
   //dout(1) << __func__ << ": mydebug: thread_index = " << thread_index << ", shard_index = "<< shard_index<< dendl;
@@ -8797,7 +8797,7 @@ void OSD::ShardedOpWQ::_process(uint32_t thread_index, heartbeat_handle_d *hb ) 
       pending_queue_size += tempdata->pqueue->length();
       tempdata->sdata_op_ordering_lock.Unlock();
     }
-    dout(1) << ": mydebug: #queue_size_of_shard "<<shard_index<<" = "<< pending_queue_size <<"#"<< dendl;
+    //dout(1) << ": mydebug: #queue_size_of_shard "<<shard_index<<" = "<< pending_queue_size <<"#"<< dendl;
   //}
   
 
@@ -8881,7 +8881,7 @@ void OSD::ShardedOpWQ::_process(uint32_t thread_index, heartbeat_handle_d *hb ) 
 }
 
 void OSD::ShardedOpWQ::_enqueue(pair<PGRef, PGQueueable> item) {
-
+  dout(1) << ": mydebug: in _enqueue"<< dendl;
   uint32_t shard_index = (((item.first)->get_pgid().ps())% shard_list.size());
 
   //dout(1) <<":" <<__func__ << ": mydebug: shard_index = " << shard_index << ", pgid = " << (item.first)->get_pgid().ps() << ", shard_list size = " << shard_list.size() << dendl;
@@ -8893,6 +8893,7 @@ void OSD::ShardedOpWQ::_enqueue(pair<PGRef, PGQueueable> item) {
   sdata->sdata_op_ordering_lock.Lock();
 
   //dout(1) << __func__ << ": mydebug: cost = " << cost << dendl;
+
 
 
   if (priority >= osd->op_prio_cutoff){
@@ -8952,6 +8953,7 @@ void OSD::dequeue_op(
   PGRef pg, OpRequestRef op,
   ThreadPool::TPHandle &handle)
 {
+  dout(1) << ": mydebug: in dequeue_op"<< dendl;
   utime_t now = ceph_clock_now(cct);
   op->set_dequeued_time(now);
   utime_t latency = now - op->get_req()->get_recv_stamp();

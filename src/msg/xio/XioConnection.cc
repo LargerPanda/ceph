@@ -385,7 +385,7 @@ int XioConnection::on_msg(struct xio_session *session,
 
     /* update timestamps */
     m->set_recv_stamp(recv_stamp);
-    ldout(msgr->cct,0) << "mydebug: set_recv_stamp in XioConnection::on_msg" << dendl;
+    //ldout(msgr->cct,0) << "mydebug: set_recv_stamp in XioConnection::on_msg" << dendl;
     m->set_recv_complete_stamp(ceph_clock_now(msgr->cct));
     m->set_seq(header.seq);
 

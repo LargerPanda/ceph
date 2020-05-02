@@ -888,7 +888,7 @@ void AsyncConnection::process()
           message->set_dispatch_throttle_size(message_size);
 
           message->set_recv_stamp(recv_stamp);
-          ldout(async_msgr->cct, 0) << "mydebug: set_recv_stamp in AsyncConnection::process"<<dendl;
+          //ldout(async_msgr->cct, 0) << "mydebug: set_recv_stamp in AsyncConnection::process"<<dendl;
           message->set_throttle_stamp(throttle_stamp);
           message->set_recv_complete_stamp(ceph_clock_now(async_msgr->cct));
 
