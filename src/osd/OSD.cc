@@ -8981,7 +8981,7 @@ void OSD::dequeue_op(
 	   << " pg " << *pg << dendl;
 
   //dout(1) << "mydebug: in dequeue get_recv_stamp() = " << op->get_req()->get_recv_stamp() << dendl;
-  dout(1) << "mydebug: in dequeue enqueue_time = " << op->get_enqueued_time() << dendl;
+  //dout(1) << "mydebug: in dequeue enqueue_time = " << op->get_enqueued_time() << dendl;
   if((op->get_req()->get_type()) == MSG_OSD_EC_READ){
     dout(1) << "#wait_for_servie = " << latency << "#"<< dendl;
   }
