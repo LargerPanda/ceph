@@ -1954,6 +1954,18 @@ void PG::queue_op(OpRequestRef& op)
   }
   op->mark_queued_for_pg();//标记：已经在pg的队列里了
 
+  OSD::ShardedOpWQ::ShardData* tempdata;
+  int cur_queue_size = 0;
+  for(int i=0;i<num_shards;i++){
+    tempdata = OSD::ShardedOpWQ::shard_list[i];
+    tempdata->sdata_op_ordering_lock.Lock();
+    cur_queue_size += tempdata->pqueue->length();
+    tempdata->sdata_op_ordering_lock.Unlock();
+  }
+  op->set_queue_size_when_enqueued(cur_queue_size);
+
+  utime_t now = ceph_clock_now(osd->cct);
+  op->set_enqueued_time(now);
 
   osd->op_wq.queue(make_pair(PGRef(this), op));
   //dout(1) << "mydebug: op_wq after enque, has " <<osd->op_wq.<<" ops"<< dendl;
