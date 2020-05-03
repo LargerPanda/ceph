@@ -854,6 +854,7 @@ bool ECBackend::handle_message(
 
 		reply->op.wait_for_service_time = _op->get_dequeued_time() - _op->get_enqueued_time(); 
 		reply->op.queue_size = _op->get_queue_size_when_enqueued();
+		reply->op.send_time = op->op.send_time;
 
 		reply->pgid = get_parent()->primary_spg_t();
 		reply->map_epoch = get_parent()->get_epoch();
@@ -875,13 +876,14 @@ bool ECBackend::handle_message(
 			_op->get_req());
 		
 		Message* m = _op->get_req();
-		utime_t receive_time = m->get_recv_stamp();
 
 		utime_t wait_for_service_time = op->op.wait_for_service_time;
 		int queue_size = op->op.queue_size;
-		unsigned long disk_read_time = op->op.disk_read_time;
+		utime_t disk_read_time = op->op.disk_read_time;
+		utime_t p_time =  m->get_recv_stamp() - op->op.send_time;
 
-		dout(1) << __func__ << ":p_time#\n" << "name: "<< op->op.buffers_read.begin()->first.oid.name << ",\n"<< "from: " << op->op.from.osd<< ",\n"<< "queue_size: "  << queue_size<< ",\n"<< "wait_for_service_time: " <<wait_for_service_time << ",\n"<< "disk_read_time: " << disk_read_time<< ",\n"<< "receive_time: " <<receive_time<< "#" << dendl;
+		//dout(1) << ":p_time#\n" << "name: "<< op->op.buffers_read.begin()->first.oid.name << ",\n"<< "from: " << op->op.from.osd<< ",\n"<< "queue_size: "  << queue_size<< ",\n"<< "wait_for_service_time: " <<wait_for_service_time << ",\n"<< "disk_read_time: " << disk_read_time<< ",\n"<< "receive_time: " <<receive_time<< "#" << dendl;
+		dout(1)<<":sub_info#"<<p_time<<","<<queue_size<<","<<wait_for_service_time<<","<<disk_read_time<<"#"<<dendl;
 		//dout(1) << __func__ << ":p_time#" << op->op.buffers_read.begin()->first.oid.name << "," << op->op.from.osd << ",receive," << receive_time.tv.tv_sec << "." << receive_time.tv.tv_nsec/1000 << "#" << dendl;
 		
 		RecoveryMessages rm;
@@ -1121,10 +1123,9 @@ void ECBackend::handle_sub_read(
 		{
 			bufferlist bl;//读object到bl中
 			//caculate read time
-			struct timeval start;
-			struct timeval end;
-			unsigned long diff;
-			gettimeofday(&start, NULL);
+			utime_t start_read_time;
+			utime_t end_read_time;
+			start_read_time = ceph_clock_now(cct);
 			r = store->read(
 				ch,
 				ghobject_t(i->first, ghobject_t::NO_GEN, shard),
@@ -1146,10 +1147,9 @@ void ECBackend::handle_sub_read(
 			else
 			{
 				dout(20) << __func__ << " read request=" << j->get<1>() << " r=" << r << " len=" << bl.length() << dendl;
-				gettimeofday(&end, NULL);	
-				diff = 1000000 * (end.tv_sec - start.tv_sec) + end.tv_usec - start.tv_usec;
-				dout(1) << __func__ << ": mydebug:(usec) !! #read_time = " << diff << "#" << dendl;
-				reply->disk_read_time = diff;
+				end_read_time = ceph_clock_now(cct);
+				reply->disk_read_time = end_read_time -start_read_time;
+				dout(1) << __func__ << ": mydebug:#read_time = " << reply->disk_read_time << "#" << dendl;
 				//填充reply中的buffer
 				reply->buffers_read[i->first].push_back(
 					make_pair(
@@ -2048,9 +2048,10 @@ void ECBackend::start_read_op(
 		msg->op.from = get_parent()->whoami_shard();
 		msg->op.tid = tid;
 		//进入实际传输
-		struct timeval send_time;
-		gettimeofday(&send_time, NULL);
-		dout(1) << __func__ << ":p_time#" << i->second.to_read.begin()->first.oid.name << "," << i->first.osd << ",send," << send_time.tv_sec << "." << send_time.tv_usec << "#" << dendl;
+
+		
+		msg->op.send_time = ceph_clock_now(cct);
+
 		get_parent()->send_message_osd_cluster(
 			i->first.osd,
 			msg,

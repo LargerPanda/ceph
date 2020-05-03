@@ -98,6 +98,7 @@ struct ECSubWriteReply {
 WRITE_CLASS_ENCODER(ECSubWriteReply)
 
 struct ECSubRead {
+  utime_t send_time;
   pg_shard_t from;
   ceph_tid_t tid;
   map<hobject_t, list<boost::tuple<uint64_t, uint64_t, uint32_t> >, hobject_t::BitwiseComparator> to_read;
@@ -112,7 +113,8 @@ WRITE_CLASS_ENCODER_FEATURES(ECSubRead)
 struct ECSubReadReply {
   int queue_size;
   utime_t wait_for_service_time;
-  unsigned long disk_read_time;
+  utime_t disk_read_time;
+  utime_t send_time;
   pg_shard_t from;
   ceph_tid_t tid;
   map<hobject_t, list<pair<uint64_t, bufferlist> >, hobject_t::BitwiseComparator> buffers_read;
