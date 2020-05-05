@@ -1958,7 +1958,7 @@ void PG::queue_op(OpRequestRef& op)
   utime_t now = ceph_clock_now(osd->cct);
   op->set_enqueued_time(now);
   
-  dout(1)<<"mydebug: in queue_op: queue "<<op->get_req()->get_type()<<dendl;
+  dout(1)<<"mydebug: in queue_op: queue "<<op->get_req()->get_type()<<" "<<CEPH_OSD_OP_READ<<dendl;
   osd->op_wq.queue(make_pair(PGRef(this), op));
   //dout(1) << "mydebug: op_wq after enque, has " <<osd->op_wq.<<" ops"<< dendl;
   {
