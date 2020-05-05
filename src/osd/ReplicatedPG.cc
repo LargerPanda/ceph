@@ -113,6 +113,7 @@ struct OnReadComplete : public Context {
 // OpContext
 void ReplicatedPG::OpContext::start_async_reads(ReplicatedPG *pg)
 {
+  dout<<"in ReplicatedPG::OpContext::start_async_reads"<<dendl;
   inflightreads = 1;
   pg->pgbackend->objects_read_async(
     obc->obs.oi.soid,
