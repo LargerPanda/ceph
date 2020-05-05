@@ -77,9 +77,13 @@
 #define DOUT_PREFIX_ARGS this, osd->whoami, get_osdmap()
 #undef dout_prefix
 #define dout_prefix _prefix(_dout, this)
+// template <typename T>
+// static ostream& _prefix(std::ostream *_dout, T *pg) {
+//   return *_dout << pg->gen_prefix();
+// }
 template <typename T>
 static ostream& _prefix(std::ostream *_dout, T *pg) {
-  return *_dout << pg->gen_prefix();
+  return *_dout << "replicatedPG";
 }
 
 
@@ -113,6 +117,9 @@ struct OnReadComplete : public Context {
 // OpContext
 void ReplicatedPG::OpContext::start_async_reads(ReplicatedPG *pg)
 {
+  // #define dout_subsys ceph_subsys_osd
+  // #undef dout_prefix
+  // #define dout_prefix (*_dout << "ECUtil")
   dout(1)<<"in ReplicatedPG::OpContext::start_async_reads!!!!!"<<dendl;
   inflightreads = 1;
   pg->pgbackend->objects_read_async(
