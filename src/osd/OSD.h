@@ -1302,6 +1302,8 @@ private:
 
   ThreadPool osd_tp;
   ShardedThreadPool osd_op_tp;
+  ShardedThreadPool osd_op_schedue_tp;
+  ShardedThreadPool osd_op_reply_tp;
   ThreadPool recovery_tp;
   ThreadPool disk_tp;
   ThreadPool command_tp;

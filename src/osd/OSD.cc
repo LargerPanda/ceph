@@ -1680,6 +1680,12 @@ OSD::OSD(CephContext *cct_, ObjectStore *store_,
   osd_tp(cct, "OSD::osd_tp", "tp_osd", cct->_conf->osd_op_threads, "osd_op_threads"),
   osd_op_tp(cct, "OSD::osd_op_tp", "tp_osd_tp",
     cct->_conf->osd_op_num_threads_per_shard * cct->_conf->osd_op_num_shards),
+
+  osd_op_schedule_tp(cct, "OSD::osd_op_schedule_tp", "tp_osd_schedule",      //new added
+    1 * cct->_conf->osd_op_num_shards),
+  osd_op_reply_tp(cct, "OSD::osd_op_schedule_tp", "tp_osd_reply",       //new added
+    1 * cct->_conf->osd_op_num_shards),
+
   recovery_tp(cct, "OSD::recovery_tp", "tp_osd_recov", cct->_conf->osd_recovery_threads, "osd_recovery_threads"),
   disk_tp(cct, "OSD::disk_tp", "tp_osd_disk", cct->_conf->osd_disk_threads, "osd_disk_threads"),
   command_tp(cct, "OSD::command_tp", "tp_osd_cmd",  1),
@@ -2209,6 +2215,11 @@ int OSD::init()
 
   osd_tp.start();
   osd_op_tp.start();
+
+  //
+  osd_op_schedule_tp.start();
+  osd_op_reply_tp.start();
+  //
   recovery_tp.start();
   disk_tp.start();
   command_tp.start();

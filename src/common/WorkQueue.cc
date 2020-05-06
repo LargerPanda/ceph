@@ -187,7 +187,6 @@ void ThreadPool::join_old_threads()
 void ThreadPool::start()
 {
   ldout(cct,10) << "start" << dendl;
-
   if (_thread_num_option.length()) {
     ldout(cct, 10) << " registering config observer on " << _thread_num_option << dendl;
     cct->_conf->add_observer(this);
@@ -364,7 +363,7 @@ void ShardedThreadPool::start_threads()
 void ShardedThreadPool::start()
 {
   ldout(cct,10) << "start" << dendl;
-
+  ldout(cct,1) << "mydebug: start shardedthreadpool!!!" << dendl;
   shardedpool_lock.Lock();
   start_threads();
   shardedpool_lock.Unlock();

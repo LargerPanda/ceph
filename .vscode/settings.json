@@ -22,7 +22,9 @@
         "functional": "cpp",
         "regex": "cpp",
         "tuple": "cpp",
-        "type_traits": "cpp"
+        "type_traits": "cpp",
+        "bitset": "cpp",
+        "cstdlib": "cpp"
     },
     "python.formatting.provider": "yapf"
 }

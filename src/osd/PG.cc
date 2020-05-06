@@ -1930,7 +1930,7 @@ void PG::take_op_map_waiters()
     if (op_must_wait_for_map(get_osdmap_with_maplock()->get_epoch(), *i)) {
       break;
     } else {
-      dout(1)<<"mydebug: in take_op_map_waiters"<<CEPH_MSG_OSD_OP<<dendl;
+      //dout(1)<<"mydebug: in take_op_map_waiters"<<CEPH_MSG_OSD_OP<<dendl;
       osd->op_wq.queue(make_pair(PGRef(this), *i));
       waiting_for_map.erase(i++);
     }
