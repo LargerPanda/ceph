@@ -120,7 +120,7 @@ void ReplicatedPG::OpContext::start_async_reads(ReplicatedPG *pg)
   // #define dout_subsys ceph_subsys_osd
   // #undef dout_prefix
   // #define dout_prefix (*_dout << "ECUtil")
-  dout(1)<<"in ReplicatedPG::OpContext::start_async_reads!!!!!"<<dendl;
+  //dout(1)<<"in ReplicatedPG::OpContext::start_async_reads!!!!!"<<dendl;
   inflightreads = 1;
   pg->pgbackend->objects_read_async(
     obc->obs.oi.soid,
