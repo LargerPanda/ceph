@@ -1959,9 +1959,15 @@ void PG::queue_op(OpRequestRef& op)
   utime_t now = ceph_clock_now(osd->cct);
   op->set_enqueued_time(now);
   
-  dout(1)<<"mydebug: in queue_op: queue "<<op->get_req()->get_type()<<" "<<CEPH_MSG_OSD_OP<<dendl;
-  osd->op_wq.queue(make_pair(PGRef(this), op));
-  //dout(1) << "mydebug: op_wq after enque, has " <<osd->op_wq.<<" ops"<< dendl;
+  int op_type = op->get_req()->get_type();
+  
+  if(op_type == CEPH_MSG_OSD_OP){
+    osd->op_schedule_wq.queue(make_pair(PGRef(this), op));
+  }else if(op_type == MSG_OSD_EC_READ_REPLY){
+    osd->op_reply_wq.queue(make_pair(PGRef(this), op));
+  }else{
+    osd->op_wq.queue(make_pair(PGRef(this), op));
+  }
   {
     // after queue() to include any locking costs
 #ifdef WITH_LTTNG
