@@ -1930,6 +1930,7 @@ void PG::take_op_map_waiters()
     if (op_must_wait_for_map(get_osdmap_with_maplock()->get_epoch(), *i)) {
       break;
     } else {
+      dout(1)<<"mydebug: in take_op_map_waiters"<<CEPH_MSG_OSD_OP<<dendl;
       osd->op_wq.queue(make_pair(PGRef(this), *i));
       waiting_for_map.erase(i++);
     }
@@ -1958,7 +1959,7 @@ void PG::queue_op(OpRequestRef& op)
   utime_t now = ceph_clock_now(osd->cct);
   op->set_enqueued_time(now);
   
-  dout(1)<<"mydebug: in queue_op: queue "<<op->get_req()->get_type()<<" "<<CEPH_OSD_OP_READ<<dendl;
+  dout(1)<<"mydebug: in queue_op: queue "<<op->get_req()->get_type()<<" "<<CEPH_MSG_OSD_OP<<dendl;
   osd->op_wq.queue(make_pair(PGRef(this), op));
   //dout(1) << "mydebug: op_wq after enque, has " <<osd->op_wq.<<" ops"<< dendl;
   {
