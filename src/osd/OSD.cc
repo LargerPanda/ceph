@@ -216,6 +216,8 @@ OSDService::OSDService(OSD *osd) :
   recoverystate_perf(osd->recoverystate_perf),
   monc(osd->monc),
   op_wq(osd->op_shardedwq),
+  op_schedule_wq(osd->op_shardedschedulewq), //
+  op_reply_wq(osd->op_shardedreplywq), //
   peering_wq(osd->peering_wq),
   recovery_wq(osd->recovery_wq),
   recovery_gen_wq("recovery_gen_wq", cct->_conf->osd_recovery_thread_timeout,
@@ -1711,6 +1713,20 @@ OSD::OSD(CephContext *cct_, ObjectStore *store_,
     cct->_conf->osd_op_thread_timeout,
     cct->_conf->osd_op_thread_suicide_timeout,
     &osd_op_tp),
+
+  op_shardedschedulewq(
+    cct->_conf->osd_op_num_shards,
+    this,
+    cct->_conf->osd_op_thread_timeout,
+    cct->_conf->osd_op_thread_suicide_timeout,
+    &osd_op_schedule_tp),
+  op_shardedreplywq(
+    cct->_conf->osd_op_num_shards,
+    this,
+    cct->_conf->osd_op_thread_timeout,
+    cct->_conf->osd_op_thread_suicide_timeout,
+    &osd_op_reply_tp),
+
   peering_wq(
     this,
     cct->_conf->osd_op_thread_timeout,

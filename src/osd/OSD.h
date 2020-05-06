@@ -424,6 +424,8 @@ public:
   PerfCounters *&recoverystate_perf;
   MonClient   *&monc;
   ShardedThreadPool::ShardedWQ < pair <PGRef, PGQueueable> > &op_wq;
+  ShardedThreadPool::ShardedWQ < pair <PGRef, PGQueueable> > &op_schedule_wq;
+  ShardedThreadPool::ShardedWQ < pair <PGRef, PGQueueable> > &op_reply_wq;
   ThreadPool::BatchWorkQueue<PG> &peering_wq;
   ThreadPool::WorkQueue<PG> &recovery_wq;
   GenContextWQ recovery_gen_wq;
@@ -1833,7 +1835,7 @@ public:
       return sdata->pqueue->empty();
     }
 
-  } op_shardedwq;
+  } op_shardedwq,op_shardedschedulewq,op_shardedreplywq;
 
 
   void enqueue_op(PG *pg, OpRequestRef& op);
