@@ -58,6 +58,15 @@ struct inconsistent_obj_wrapper;
     * implementation holding a lock and that the callbacks are
     * called under the same locks.
     */
+  //  ECBackend *ec_backend;
+  //  void set_ecbackend(ECBackend* ref_ec){
+  //    ec_backend = ref_ec;
+  //  }
+
+  //  ECBackend* get_ecbackend(){
+  //    return ec_backend;
+  //  }
+
    class Listener {
    public:
      /// Recovery

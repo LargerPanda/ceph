@@ -1961,8 +1961,11 @@ void PG::queue_op(OpRequestRef& op)
   
   int op_type = op->get_req()->get_type();
 
-  if(get_pgbackend()->remap){
-    dout(1) << "mydebug: get ec backend " << dendl;
+  PGBackend* p_pg = get_pgbackend();
+  ECBackend* p_ec = dynamic_cast<PGBackend*>(p_pg);
+
+  if(p_ec->remap){
+    dout(1) << "mydebug: get remap " << dendl;
   }
 
   if(op_type == CEPH_MSG_OSD_OP){

@@ -24,7 +24,8 @@
         "tuple": "cpp",
         "type_traits": "cpp",
         "bitset": "cpp",
-        "cstdlib": "cpp"
+        "cstdlib": "cpp",
+        "utility": "cpp"
     },
     "python.formatting.provider": "yapf"
 }

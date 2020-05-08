@@ -329,6 +329,14 @@ PGBackend *PGBackend::build_pg_backend(
       &ec_impl,
       &ss);
     assert(ec_impl);
+    // ECBackend* res = new ECBackend(
+    //   l,
+    //   coll,
+    //   ch,
+    //   store,
+    //   cct,
+    //   ec_impl,
+    //   pool.stripe_width);
     return new ECBackend(
       l,
       coll,
