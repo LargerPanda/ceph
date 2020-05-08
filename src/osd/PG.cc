@@ -1963,7 +1963,7 @@ void PG::queue_op(OpRequestRef& op)
   int op_type = op->get_req()->get_type();
 
   PGBackend* p_pg = get_pgbackend();
-  ECBackend* p_ec = dynamic_cast<PGBackend*>(p_pg);
+  ECBackend* p_ec = dynamic_cast<ECBackend*>(p_pg);
 
   if(p_ec->remap){
     dout(1) << "mydebug: get remap " << dendl;
