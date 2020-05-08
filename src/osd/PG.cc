@@ -1965,8 +1965,9 @@ void PG::queue_op(OpRequestRef& op)
   PGBackend* p_pg = get_pgbackend();
   ECBackend* p_ec = dynamic_cast<ECBackend*>(p_pg);
 
-  if(p_ec->remap){
-    dout(1) << "mydebug: get remap " << dendl;
+  map<string, vector<int>>::iterator temp_pair = p_ec->remap.begin();
+  if(temp_pair != remap.end()){
+    dout(1)<< ": mydebug: in pg queue op: "<< temp_pair->first << dendl;
   }
 
   if(op_type == CEPH_MSG_OSD_OP){
