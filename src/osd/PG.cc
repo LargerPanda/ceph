@@ -1960,7 +1960,11 @@ void PG::queue_op(OpRequestRef& op)
   op->set_enqueued_time(now);
   
   int op_type = op->get_req()->get_type();
-  
+
+  if(get_pgbackend()->remap){
+    dout(1) << "mydebug: get ec backend " << dendl;
+  }
+
   if(op_type == CEPH_MSG_OSD_OP){
     osd->op_schedule_wq.queue(make_pair(PGRef(this), op));
   }else if(op_type == MSG_OSD_EC_READ_REPLY){
