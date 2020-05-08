@@ -46,6 +46,7 @@
 #include "messages/MOSDSubOpReply.h"
 #include "messages/MOSDRepOpReply.h"
 #include "common/BackTrace.h"
+#include "ECBackend.h"
 
 #ifdef WITH_LTTNG
 #define TRACEPOINT_DEFINE
