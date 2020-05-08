@@ -1960,16 +1960,18 @@ void PG::queue_op(OpRequestRef& op)
   utime_t now = ceph_clock_now(osd->cct);
   op->set_enqueued_time(now);
   
-  int op_type = op->get_req()->get_type();
+  
+  if(is_ec_pg()){
+    PGBackend* p_pg = get_pgbackend();
+    ECBackend* p_ec = dynamic_cast<ECBackend*>(p_pg);
 
-  PGBackend* p_pg = get_pgbackend();
-  ECBackend* p_ec = dynamic_cast<ECBackend*>(p_pg);
-
-  map<string, vector<int>>::iterator temp_pair = p_ec->remap.begin();
-  if(temp_pair != p_ec->remap.end()){
-    dout(1)<< ": mydebug: in pg queue op: "<< temp_pair->first << dendl;
+    map<string, vector<int>>::iterator temp_pair = p_ec->remap.begin();
+    if(temp_pair != p_ec->remap.end()){
+      dout(1)<< ": mydebug: in pg queue op: "<< temp_pair->first << dendl;
+    }
   }
 
+  int op_type = op->get_req()->get_type();
   if(op_type == CEPH_MSG_OSD_OP){
     osd->op_schedule_wq.queue(make_pair(PGRef(this), op));
   }else if(op_type == MSG_OSD_EC_READ_REPLY){
