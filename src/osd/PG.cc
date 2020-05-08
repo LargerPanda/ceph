@@ -1966,7 +1966,7 @@ void PG::queue_op(OpRequestRef& op)
   ECBackend* p_ec = dynamic_cast<ECBackend*>(p_pg);
 
   map<string, vector<int>>::iterator temp_pair = p_ec->remap.begin();
-  if(temp_pair != remap.end()){
+  if(temp_pair != p_ec->remap.end()){
     dout(1)<< ": mydebug: in pg queue op: "<< temp_pair->first << dendl;
   }
 
