@@ -36,8 +36,6 @@ public:
   map<string, vector<int>> remap;
   int enforce_flag;
   int window_size;
-  std::mutex group_mtx;
-  std::atomic<int> group_size;
   
   RecoveryHandle *open_recovery_op();
 

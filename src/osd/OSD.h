@@ -416,6 +416,9 @@ public:
   LogClient &log_client;
   LogChannelRef clog;
   PGRecoveryStats &pg_recovery_stats;
+
+  std::mutex group_mtx;
+  std::atomic<int> group_size;
 private:
   Messenger *&cluster_messenger;
   Messenger *&client_messenger;

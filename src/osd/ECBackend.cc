@@ -190,23 +190,22 @@ ECBackend::ECBackend(
 	: PGBackend(pg, store, coll, ch),
 	  cct(cct),
 	  ec_impl(ec_impl),
-	  sinfo(ec_impl->get_data_chunk_count(), stripe_width),
-	  group_size(0)
+	  sinfo(ec_impl->get_data_chunk_count(), stripe_width)
 {
 	
-	dout(1)<< ": mydebug: init_ecbackend!!"<<dendl;
+	dout(20)<< ": mydebug: init_ecbackend!!"<<dendl;
 	/*get manage info*/
 	ifstream OSDfile("/users/yushua/OSD.txt");
     string OSD_str;
     int OSD_index = 0;
     if (!OSDfile.is_open())
     {
-      dout(1) << __func__ << ": "
+      dout(20) << __func__ << ": "
 				<< "Open OSDfile failed!" << dendl;
     }
     getline(OSDfile, OSD_str);
     OSD_index = atoi(&(OSD_str[0]));
-	dout(1) << __func__ << "insert schedule map"" of OSD" << OSD_index <<"!!!!!" << dendl;
+	dout(20) << __func__ << "insert schedule map"" of OSD" << OSD_index <<"!!!!!" << dendl;
 
 	ifstream myfile("/users/yushua/env/remap_"+OSD_str+".txt");
 	ifstream enforcefile("/users/yushua/env/enforce.txt");
@@ -216,30 +215,30 @@ ECBackend::ECBackend(
 	string window_str;
 	if (!myfile.is_open())
 	{
-		dout(1) << __func__ << ": "
+		dout(20) << __func__ << ": "
 				<< "open remap.txt failed!" << dendl;
 	}
 
 	if (!enforcefile.is_open())
 	{
-		dout(1) << __func__ << ": "
+		dout(20) << __func__ << ": "
 				<< "open enforce.txt failed!" << dendl;
 	}
 
 	if (!windowfile.is_open())
 	{
-		dout(1) << __func__ << ": "
+		dout(20) << __func__ << ": "
 				<< "open window.txt failed!" << dendl;
 	}
 
 	getline(enforcefile,enforce_str);
 	enforce_flag = atoi(&(enforce_str[0]));
-	dout(1) << __func__ << ": "
+	dout(20) << __func__ << ": "
 				<< "enforce flag = " << enforce_flag << dendl;
 
 	getline(windowfile,window_str);
 	window_size = atoi(window_str.c_str());
-	dout(1) << __func__ << ": "
+	dout(20) << __func__ << ": "
 				<< "window_size = " << window_size << dendl;
 	
 	if (myfile.is_open()){
@@ -248,16 +247,16 @@ ECBackend::ECBackend(
 			int space_location = temp.find(" ");
 			string objname = temp.substr(0, space_location);
 			vector<int> temp_osds;
-			dout(1) << __func__ << ": "
+			dout(20) << __func__ << ": "
 					<< " mydebug: ------------------ " << dendl;			
 			// dout(1) << __func__ << ": "
 			// 		<< " mydebug: objname = " << objname << dendl;
 			for(int i = 0;i<4;i++){
 				temp_osds.push_back(atoi(&(temp[space_location+2+i*3])));
-				dout(1) << __func__ << ": "
+				dout(20) << __func__ << ": "
 					<< " mydebug: push back " << atoi(&(temp[space_location+2+3*i])) << dendl;
 			}
-			dout(1) << __func__ << ": "
+			dout(20) << __func__ << ": "
 					<< " mydebug: ------------------ " << dendl;
 			remap.insert(pair<string,vector<int>>(objname,temp_osds));
 		}

@@ -1974,11 +1974,11 @@ void PG::queue_op(OpRequestRef& op)
     // }
     if(op_type == CEPH_MSG_OSD_OP){
 
-      p_ec->group_mtx.lock();
+      osd->group_mtx.lock();
       osd->op_group_wq.queue(make_pair(PGRef(this), op));
-      p_ec->group_size++;
-      dout(1)<< ": mydebug: group_size="<< p_ec->group_size << dendl;
-      if(p_ec->group_size == schedule_window_size){
+      osd->group_size++;
+      dout(1)<< ": mydebug: group_size="<< osd->group_size << dendl;
+      if(osd->group_size == schedule_window_size){
         dout(1)<< ": mydebug: saturate schedule queue"<<dendl;
         assert(osd->op_group_wq.get_queue_size()==schedule_window_size);
         OSD::ShardedOpWQ::ShardData* sdata = dynamic_cast<OSD::ShardedOpWQ*>(&(osd->op_group_wq))->shard_list[0];
@@ -1987,13 +1987,13 @@ void PG::queue_op(OpRequestRef& op)
           dout(1)<< ": mydebug: insert 1"<<dendl;
           pair<PGRef, PGQueueable> item = sdata->pqueue->dequeue();
           osd->op_schedule_wq.queue(item);
-          p_ec->group_size--;
+          osd->group_size--;
         }
-        assert(p_ec->group_size==0);
+        assert(osd->group_size==0);
         assert(osd->op_group_wq.get_queue_size()==0);
-        dout(1)<< ": mydebug: saturate finish, current group_size="<<p_ec->group_size<<dendl;
+        dout(1)<< ": mydebug: saturate finish, current group_size="<<osd->group_size<<dendl;
       }
-      p_ec->group_mtx.unlock();
+      osd->group_mtx.unlock();
 
     }else if(op_type == MSG_OSD_EC_READ_REPLY){
       osd->op_reply_wq.queue(make_pair(PGRef(this), op));
