@@ -208,8 +208,10 @@ ECBackend::ECBackend(
 
 	ifstream myfile("/users/yushua/env/remap_"+OSD_str+".txt");
 	ifstream enforcefile("/users/yushua/env/enforce.txt");
+	ifstream windowfile("/users/yushua/env/window.txt");
 	string temp;
 	string enforce_str;
+	string window_str;
 	if (!myfile.is_open())
 	{
 		dout(1) << __func__ << ": "
@@ -222,10 +224,21 @@ ECBackend::ECBackend(
 				<< "open enforce.txt failed!" << dendl;
 	}
 
+	if (!windowfile.is_open())
+	{
+		dout(1) << __func__ << ": "
+				<< "open window.txt failed!" << dendl;
+	}
+
 	getline(enforcefile,enforce_str);
 	enforce_flag = atoi(&(enforce_str[0]));
 	dout(1) << __func__ << ": "
 				<< "enforce flag = " << enforce_flag << dendl;
+
+	getline(windowfile,window_str);
+	window_size = atoi(window_str.c_str());
+	dout(1) << __func__ << ": "
+				<< "window_size = " << window_size << dendl;
 	
 	if (myfile.is_open()){
 		while(getline(myfile,temp)) 
