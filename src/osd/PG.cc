@@ -1976,7 +1976,7 @@ void PG::queue_op(OpRequestRef& op)
       osd->op_group_wq.queue(make_pair(PGRef(this), op));
       p_ec->group_size++;
       if(p_ec->group_size == schedule_window_size){
-        assert(osd->op_group_wq.get_queue_size()==schedule_window_size)
+        assert(osd->op_group_wq.get_queue_size()==schedule_window_size);
         for(int i=0;i<schedule_window_size;i++){
           OSD::ShardedOpWQ::ShardData* sdata = osd->op_group_wq.shard_list[0];
           assert(NULL != sdata);
