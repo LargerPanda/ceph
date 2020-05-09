@@ -1692,8 +1692,8 @@ private:
   friend class PGQueueable;
 
 public:
-  class ShardedOpWQ: public ShardedThreadPool::ShardedWQ < pair <PGRef, PGQueueable> > {
-    
+  class ShardedOpWQ: public ShardedThreadPool::ShardedWQ < pair <PGRef, PGQueueable> > { 
+  public:
     struct ShardData {
       Mutex sdata_lock;
       Cond sdata_cond;
@@ -1749,6 +1749,7 @@ public:
 	shard_list.pop_back();
       }
     }
+
 
     void _process(uint32_t thread_index, heartbeat_handle_d *hb);
     void _enqueue(pair <PGRef, PGQueueable> item);
