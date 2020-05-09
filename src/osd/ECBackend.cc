@@ -190,7 +190,8 @@ ECBackend::ECBackend(
 	: PGBackend(pg, store, coll, ch),
 	  cct(cct),
 	  ec_impl(ec_impl),
-	  sinfo(ec_impl->get_data_chunk_count(), stripe_width)
+	  sinfo(ec_impl->get_data_chunk_count(), stripe_width),
+	  group_size(0)
 {
 	/*get manage info*/
 	ifstream OSDfile("/users/yushua/OSD.txt");

@@ -1959,26 +1959,51 @@ void PG::queue_op(OpRequestRef& op)
   op->set_queue_size_when_enqueued(osd->op_wq.get_queue_size());
   utime_t now = ceph_clock_now(osd->cct);
   op->set_enqueued_time(now);
+
   
-  
+  int op_type = op->get_req()->get_type();
+
   if(is_ec_pg()){
     PGBackend* p_pg = get_pgbackend();
     ECBackend* p_ec = dynamic_cast<ECBackend*>(p_pg);
+    int schedule_window_size = 32;
+    // map<string, vector<int>>::iterator temp_pair = p_ec->remap.begin();
+    // if(temp_pair != p_ec->remap.end()){
+    //   dout(1)<< ": mydebug: in pg queue op: "<< temp_pair->first << dendl;
+    // }
+    if(op_type == CEPH_MSG_OSD_OP){
+      p_ec->group_mtx.lock();
+      osd->op_group_wq.queue(make_pair(PGRef(this), op));
+      p_ec->group_size++;
+      if(p_ec->group_size == schedule_window_size){
+        assert(osd->op_group_wq.get_queue_size()==schedule_window_size)
+        for(int i=0;i<schedule_window_size;i++){
+          OSD::ShardedOpWQ::ShardData* sdata = osd->op_group_wq.shard_list[0];
+          assert(NULL != sdata);
+          pair<PGRef, PGQueueable> item = sdata->pqueue->dequeue();
+          osd->op_schedule_wq.queue(item);
+          p_ec->group_size--;
+        }
+        assert(p_ec->group_size==0);
+        assert(osd->op_group_wq.get_queue_size()==0);
+      }
+      p_ec->group_mtx.unlock();
+    }else if(op_type == MSG_OSD_EC_READ_REPLY){
+      osd->op_reply_wq.queue(make_pair(PGRef(this), op));
+    }else{
+      osd->op_wq.queue(make_pair(PGRef(this), op));
+    }
 
-    map<string, vector<int>>::iterator temp_pair = p_ec->remap.begin();
-    if(temp_pair != p_ec->remap.end()){
-      dout(1)<< ": mydebug: in pg queue op: "<< temp_pair->first << dendl;
+  }else{
+    if(op_type == CEPH_MSG_OSD_OP){
+      osd->op_schedule_wq.queue(make_pair(PGRef(this), op));
+    }else if(op_type == MSG_OSD_EC_READ_REPLY){
+      osd->op_reply_wq.queue(make_pair(PGRef(this), op));
+    }else{
+      osd->op_wq.queue(make_pair(PGRef(this), op));
     }
   }
 
-  int op_type = op->get_req()->get_type();
-  if(op_type == CEPH_MSG_OSD_OP){
-    osd->op_schedule_wq.queue(make_pair(PGRef(this), op));
-  }else if(op_type == MSG_OSD_EC_READ_REPLY){
-    osd->op_reply_wq.queue(make_pair(PGRef(this), op));
-  }else{
-    osd->op_wq.queue(make_pair(PGRef(this), op));
-  }
   {
     // after queue() to include any locking costs
 #ifdef WITH_LTTNG

@@ -426,6 +426,8 @@ public:
   ShardedThreadPool::ShardedWQ < pair <PGRef, PGQueueable> > &op_wq;
   ShardedThreadPool::ShardedWQ < pair <PGRef, PGQueueable> > &op_schedule_wq;
   ShardedThreadPool::ShardedWQ < pair <PGRef, PGQueueable> > &op_reply_wq;
+  ShardedThreadPool::ShardedWQ < pair <PGRef, PGQueueable> > &op_group_wq;
+
   ThreadPool::BatchWorkQueue<PG> &peering_wq;
   ThreadPool::WorkQueue<PG> &recovery_wq;
   GenContextWQ recovery_gen_wq;
@@ -1306,6 +1308,7 @@ private:
   ShardedThreadPool osd_op_tp;
   ShardedThreadPool osd_op_schedule_tp;
   ShardedThreadPool osd_op_reply_tp;
+  ShardedThreadPool osd_op_group_tp;
   ThreadPool recovery_tp;
   ThreadPool disk_tp;
   ThreadPool command_tp;
@@ -1835,7 +1838,7 @@ public:
       return sdata->pqueue->empty();
     }
 
-  } op_shardedwq,op_shardedschedulewq,op_shardedreplywq;
+  } op_shardedwq,op_shardedschedulewq,op_shardedreplywq,op_shardedgroupwq;
 
 
   void enqueue_op(PG *pg, OpRequestRef& op);

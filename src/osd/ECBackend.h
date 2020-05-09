@@ -27,12 +27,16 @@
 #include "messages/MOSDECSubOpWriteReply.h"
 #include "messages/MOSDECSubOpRead.h"
 #include "messages/MOSDECSubOpReadReply.h"
+#include <mutex>
+#include <atomic>
 
 struct RecoveryMessages;
 class ECBackend : public PGBackend {
 public:
   map<string, vector<int>> remap;
   int enforce_flag;
+  std::mutex group_mtx;
+  std::atomic<int> group_size;
   
   RecoveryHandle *open_recovery_op();
 

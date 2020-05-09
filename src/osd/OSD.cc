@@ -218,6 +218,7 @@ OSDService::OSDService(OSD *osd) :
   op_wq(osd->op_shardedwq),
   op_schedule_wq(osd->op_shardedschedulewq), //
   op_reply_wq(osd->op_shardedreplywq), //
+  op_group_wq(osd->op_shardedgroupwq), //
   peering_wq(osd->peering_wq),
   recovery_wq(osd->recovery_wq),
   recovery_gen_wq("recovery_gen_wq", cct->_conf->osd_recovery_thread_timeout,
@@ -1685,8 +1686,10 @@ OSD::OSD(CephContext *cct_, ObjectStore *store_,
 
   osd_op_schedule_tp(cct, "OSD::osd_op_schedule_tp", "tp_osd_schedule",      //new added
     1 * cct->_conf->osd_op_num_shards),
-  osd_op_reply_tp(cct, "OSD::osd_op_schedule_tp", "tp_osd_reply",       //new added
+  osd_op_reply_tp(cct, "OSD::osd_op_reply_tp", "tp_osd_reply",       //new added
     1 * cct->_conf->osd_op_num_shards),
+  osd_op_group_tp(cct, "OSD::osd_op_group_tp", "tp_osd_group",       //new added
+    1),
 
   recovery_tp(cct, "OSD::recovery_tp", "tp_osd_recov", cct->_conf->osd_recovery_threads, "osd_recovery_threads"),
   disk_tp(cct, "OSD::disk_tp", "tp_osd_disk", cct->_conf->osd_disk_threads, "osd_disk_threads"),
@@ -1726,6 +1729,12 @@ OSD::OSD(CephContext *cct_, ObjectStore *store_,
     cct->_conf->osd_op_thread_timeout,
     cct->_conf->osd_op_thread_suicide_timeout,
     &osd_op_reply_tp),
+  op_shardedgroupwq(
+    1,
+    this,
+    cct->_conf->osd_op_thread_timeout,
+    cct->_conf->osd_op_thread_suicide_timeout,
+    &osd_op_group_tp),
 
   peering_wq(
     this,
