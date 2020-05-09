@@ -1991,8 +1991,8 @@ void PG::queue_op(OpRequestRef& op)
         }
         assert(p_ec->group_size==0);
         assert(osd->op_group_wq.get_queue_size()==0);
+        dout(1)<< ": mydebug: saturate finish, current group_size="<<p_ec->group_size<<dendl;
       }
-      dout(1)<< ": mydebug: saturate finish, current group_size="<<p_ec->group_size<<dendl;
       p_ec->group_mtx.unlock();
 
     }else if(op_type == MSG_OSD_EC_READ_REPLY){

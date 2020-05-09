@@ -193,6 +193,8 @@ ECBackend::ECBackend(
 	  sinfo(ec_impl->get_data_chunk_count(), stripe_width),
 	  group_size(0)
 {
+	
+	dout(1)<< ": mydebug: init_ecbackend!!"<<dendl;
 	/*get manage info*/
 	ifstream OSDfile("/users/yushua/OSD.txt");
     string OSD_str;
