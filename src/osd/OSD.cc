@@ -697,8 +697,8 @@ void OSDService::promote_throttle_recalibrate()
   // set hard limits for this interval to mitigate stampedes
   promote_max_objects = target_obj_sec * OSD::OSD_TICK_INTERVAL * 2;
   promote_max_bytes = target_bytes_sec * OSD::OSD_TICK_INTERVAL * 2;
-  dout(1) << ": mydebug: promote_max_objects=" << promote_max_objects << dendl;
-  dout(1) << ": mydebug: promote_max_bytes=" << promote_max_bytes << dendl;
+  //dout(1) << ": mydebug: promote_max_objects=" << promote_max_objects << dendl;
+  //dout(1) << ": mydebug: promote_max_bytes=" << promote_max_bytes << dendl;
 }
 
 // -------------------------------------

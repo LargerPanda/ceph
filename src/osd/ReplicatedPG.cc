@@ -2458,10 +2458,10 @@ bool ReplicatedPG::maybe_promote(ObjectContextRef obc,
 
   if (osd->promote_throttle()) {
     dout(10) << __func__ << " promote throttled" << dendl;
-    dout(1) << "my-debug: throttled" << dendl;
+    //dout(1) << "my-debug: throttled" << dendl;
     return false;
   }else{
-    dout(1) << "my-debug: not-throttled" << dendl;
+    //dout(1) << "my-debug: not-throttled" << dendl;
   }
   promote_object(obc, missing_oid, oloc, promote_op, promote_obc);
   return true;
