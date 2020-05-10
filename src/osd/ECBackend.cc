@@ -1420,7 +1420,7 @@ void ECBackend::handle_sub_read_reply(
 		dout(20) << __func__ << " Complete: " << rop << dendl;
 		osd->finished_op_mtx.lock();
 		osd->finished_op_num++;
-		if(osd->finished_op_num = window_size){
+		if(osd->finished_op_num == window_size){
 			dout(1) << " last reply received " << dendl;
 			osd->stop_mtx.lock();
 			dout(1) << " start next round " << dendl;
