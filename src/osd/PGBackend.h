@@ -639,7 +639,8 @@ struct inconsistent_obj_wrapper;
      coll_t coll,
      ObjectStore::CollectionHandle &ch,
      ObjectStore *store,
-     CephContext *cct);
+     CephContext *cct,
+     OSDService *o);
  };
 
 struct PG_SendMessageOnConn: public Context {
