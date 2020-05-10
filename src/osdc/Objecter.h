@@ -41,7 +41,7 @@
 
 #define dout_subsys ceph_subsys_objecter
 #undef dout_prefix
-#define dout_prefix  "objecter.h"
+#define dout_prefix  *_dout<<"objecter.h"
 
 using namespace std;
 
