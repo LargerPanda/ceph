@@ -1936,15 +1936,15 @@ private:
   void _throttle_op(Op *op, shunique_lock& sul, int op_size = 0);
   int _take_op_budget(Op *op, shunique_lock& sul) {
     assert(sul && sul.mutex() == &rwlock);
-    out(cout) << "mydebug: before calc_op_budget" << std::endl;
+    std::cout << "mydebug: before calc_op_budget" << std::endl;
     int op_budget = calc_op_budget(op);
     if (keep_balanced_budget) {
-      out(cout) << "mydebug: before _throttle_op" << std::endl;
+      std::cout << "mydebug: before _throttle_op" << std::endl;
       _throttle_op(op, sul, op_budget);
     } else {
-      out(cout) << "mydebug: before byte.take" << std::endl;
+      std::cout << "mydebug: before byte.take" << std::endl;
       op_throttle_bytes.take(op_budget);
-      out(cout) << "mydebug: before ops.take" << std::endl;
+      std::cout << "mydebug: before ops.take" << std::endl;
       op_throttle_ops.take(1);
     }
     op->budgeted = true;
