@@ -1687,9 +1687,9 @@ OSD::OSD(CephContext *cct_, ObjectStore *store_,
     cct->_conf->osd_op_num_threads_per_shard * cct->_conf->osd_op_num_shards),
 
   osd_op_schedule_tp(cct, "OSD::osd_op_schedule_tp", "tp_osd_schedule",      //new added
-    1 * cct->_conf->osd_op_num_shards),
+    cct->_conf->osd_op_num_threads_per_shard * cct->_conf->osd_op_num_shards),
   osd_op_reply_tp(cct, "OSD::osd_op_reply_tp", "tp_osd_reply",       //new added
-    1 * cct->_conf->osd_op_num_shards),
+    cct->_conf->osd_op_num_threads_per_shard * cct->_conf->osd_op_num_shards),
   osd_op_group_tp(cct, "OSD::osd_op_group_tp", "tp_osd_group",       //new added
     1),
 
