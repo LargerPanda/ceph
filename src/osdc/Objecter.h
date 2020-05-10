@@ -39,6 +39,9 @@
 #include "messages/MOSDOp.h"
 #include "osd/OSDMap.h"
 
+#define dout_subsys ceph_subsys_objecter
+#undef dout_prefix
+#define dout_prefix  "objecter.h"
 
 using namespace std;
 
