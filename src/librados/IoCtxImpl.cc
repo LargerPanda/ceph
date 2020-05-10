@@ -783,12 +783,12 @@ int librados::IoCtxImpl::aio_read(const object_t oid, AioCompletionImpl *c,
   c->io = this;
   c->blp = pbl;
 
-  ldout(client->cct, 0) << "mydebug: before prepare_read_op" << dendl;
+  ldout(client->cct, 20) << "mydebug: before prepare_read_op" << dendl;
   Objecter::Op *o = objecter->prepare_read_op(
     oid, oloc,
     off, len, snapid, pbl, 0,
     onack, &c->objver);
-  ldout(client->cct, 0) << "mydebug: before op_submit" << dendl;
+  ldout(client->cct, 20) << "mydebug: before op_submit" << dendl;
   objecter->op_submit(o, &c->tid);
   return 0;
 }
@@ -809,12 +809,12 @@ int librados::IoCtxImpl::aio_read(const object_t oid, AioCompletionImpl *c,
   c->blp = &c->bl;
   c->out_buf = buf;
 
-  ldout(client->cct, 0) << "mydebug: before prepare_read_op" << dendl;
+  ldout(client->cct, 20) << "mydebug: before prepare_read_op" << dendl;
   Objecter::Op *o = objecter->prepare_read_op(
     oid, oloc,
     off, len, snapid, &c->bl, 0,
     onack, &c->objver);
-  ldout(client->cct, 0) << "mydebug: before op_submit" << dendl;
+  ldout(client->cct, 20) << "mydebug: before op_submit" << dendl;
   objecter->op_submit(o, &c->tid);
   return 0;
 }

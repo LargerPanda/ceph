@@ -998,11 +998,7 @@ int ObjBencher::seq_read_bench(int seconds_to_run, int num_objects, int concurre
   {
     index[i] = i;
     start_times[i] = ceph_clock_now(cct);
-    out(cout) << "##mydebug"
-              << ",before create_completion"  << std::endl;
     create_completion(i, _aio_cb, (void *)&lc);
-    out(cout) << "##mydebug"
-              << ",before aio_read"  << std::endl;
     r = aio_read(name[i], i, contents[i], data.op_size,
                  data.op_size * (i % writes_per_object));
     //最后一个参数是偏移

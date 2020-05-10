@@ -2141,13 +2141,13 @@ void Objecter::resend_mon_ops()
 
 void Objecter::op_submit(Op *op, ceph_tid_t *ptid, int *ctx_budget)
 {
-  ldout(cct, 0) << "mydebug: in op_submit" << dendl;
-  ldout(cct, 0) << "mydebug: before shunique_lock" << dendl;
+  ldout(cct, 20) << "mydebug: in op_submit" << dendl;
+  ldout(cct, 20) << "mydebug: before shunique_lock" << dendl;
   shunique_lock rl(rwlock, ceph::acquire_shared);
   ceph_tid_t tid = 0;
   if (!ptid)
     ptid = &tid;
-  ldout(cct, 0) << "mydebug: before _op_submit_with_budget" << dendl;
+  ldout(cct, 20) << "mydebug: before _op_submit_with_budget" << dendl;
   _op_submit_with_budget(op, rl, ptid, ctx_budget);
 }
 
@@ -2164,7 +2164,7 @@ void Objecter::_op_submit_with_budget(Op *op, shunique_lock& sul,
   // throttle.  before we look at any state, because
   // _take_op_budget() may drop our lock while it blocks.
   if (!op->ctx_budgeted || (ctx_budget && (*ctx_budget == -1))) {
-    ldout(cct, 0) << "mydebug: before _take_op_budget" << dendl;
+    ldout(cct, 20) << "mydebug: before _take_op_budget" << dendl;
     int op_budget = _take_op_budget(op, sul);
     // take and pass out the budget for the first OP
     // in the context session
@@ -2181,7 +2181,7 @@ void Objecter::_op_submit_with_budget(Op *op, shunique_lock& sul,
 				    [this, tid]() {
 				      op_cancel(tid, -ETIMEDOUT); });
   }
-  ldout(cct, 0) << "mydebug: before _op_submit" << dendl;
+  ldout(cct, 20) << "mydebug: before _op_submit" << dendl;
   _op_submit(op, sul, ptid);
 }
 
@@ -3128,15 +3128,15 @@ int Objecter::calc_op_budget(Op *op)
 
 int Objecter::_take_op_budget(Op *op, shunique_lock& sul) {
   assert(sul && sul.mutex() == &rwlock);
-  ldout(cct, 0) << "mydebug: before calc_op_budget" << dendl;
+  ldout(cct, 20) << "mydebug: before calc_op_budget" << dendl;
   int op_budget = calc_op_budget(op);
   if (keep_balanced_budget) {
-    ldout(cct, 0) << "mydebug: before _throttle_op" << dendl;
+    ldout(cct, 20) << "mydebug: before _throttle_op" << dendl;
     _throttle_op(op, sul, op_budget);
   } else {
-    ldout(cct, 0) << "mydebug: before byte.take" << dendl;
+    ldout(cct, 20) << "mydebug: before byte.take" << dendl;
     op_throttle_bytes.take(op_budget);
-    ldout(cct, 0) << "mydebug: before ops.take" << dendl;
+    ldout(cct, 20) << "mydebug: before ops.take" << dendl;
     op_throttle_ops.take(1);
   }
   op->budgeted = true;
