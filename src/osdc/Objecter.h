@@ -39,9 +39,9 @@
 #include "messages/MOSDOp.h"
 #include "osd/OSDMap.h"
 
-#define dout_subsys ceph_subsys_objecter
-#undef dout_prefix
-#define dout_prefix  *_dout<<"objecter.h"
+// #define dout_subsys ceph_subsys_objecter
+// #undef dout_prefix
+// #define dout_prefix  *_dout<<"objecter.h"
 
 using namespace std;
 
@@ -1936,15 +1936,15 @@ private:
   void _throttle_op(Op *op, shunique_lock& sul, int op_size = 0);
   int _take_op_budget(Op *op, shunique_lock& sul) {
     assert(sul && sul.mutex() == &rwlock);
-    ldout(cct, 0) << "mydebug: before calc_op_budget" << dendl;
+    out(cout) << "mydebug: before calc_op_budget" << std::endl;
     int op_budget = calc_op_budget(op);
     if (keep_balanced_budget) {
-      ldout(cct, 0) << "mydebug: before _throttle_op" << dendl;
+      out(cout) << "mydebug: before _throttle_op" << std::endl;
       _throttle_op(op, sul, op_budget);
     } else {
-      ldout(cct, 0) << "mydebug: before byte.take" << dendl;
+      out(cout) << "mydebug: before byte.take" << std::endl;
       op_throttle_bytes.take(op_budget);
-      ldout(cct, 0) << "mydebug: before ops.take" << dendl;
+      out(cout) << "mydebug: before ops.take" << std::endl;
       op_throttle_ops.take(1);
     }
     op->budgeted = true;
