@@ -2164,6 +2164,7 @@ void Objecter::_op_submit_with_budget(Op *op, shunique_lock& sul,
   // throttle.  before we look at any state, because
   // _take_op_budget() may drop our lock while it blocks.
   if (!op->ctx_budgeted || (ctx_budget && (*ctx_budget == -1))) {
+    ldout(cct, 0) << "mydebug: before _take_op_budget" << dendl;
     int op_budget = _take_op_budget(op, sul);
     // take and pass out the budget for the first OP
     // in the context session
