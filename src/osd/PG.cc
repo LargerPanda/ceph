@@ -1979,12 +1979,22 @@ void PG::queue_op(OpRequestRef& op)
       osd->group_size++;
       dout(1)<< ": mydebug: group_size="<< osd->group_size << dendl;
       if(osd->group_size == schedule_window_size){
+        while(1){
+          osd->stop_mtx.lock();
+          if(!stop_flag){
+            osd->stop_flag = 1;
+            osd->stop_mtx.unlock();
+            break;
+          }  
+          osd->stop_mtx.unlock();         
+        }
+        
         dout(1)<< ": mydebug: saturate schedule queue"<<dendl;
         assert(osd->op_group_wq.get_queue_size()==schedule_window_size);
         OSD::ShardedOpWQ::ShardData* sdata = dynamic_cast<OSD::ShardedOpWQ*>(&(osd->op_group_wq))->shard_list[0];
         assert(NULL != sdata);
         for(int i=0;i<schedule_window_size;i++){
-          dout(1)<< ": mydebug: insert 1"<<dendl;
+          //dout(1)<< ": mydebug: insert 1"<<dendl;
           pair<PGRef, PGQueueable> item = sdata->pqueue->dequeue();
           osd->op_schedule_wq.queue(item);
           osd->group_size--;

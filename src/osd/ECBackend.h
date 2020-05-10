@@ -33,6 +33,8 @@
 struct RecoveryMessages;
 class ECBackend : public PGBackend {
 public:
+
+  OSDService *osd;
   map<string, vector<int>> remap;
   int enforce_flag;
   int window_size;
@@ -479,7 +481,8 @@ public:
     ObjectStore *store,
     CephContext *cct,
     ErasureCodeInterfaceRef ec_impl,
-    uint64_t stripe_width);
+    uint64_t stripe_width,
+    OSDService *o);
 
   /// Returns to_read replicas sufficient to reconstruct want
   int get_min_avail_to_read_shards(

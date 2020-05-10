@@ -186,11 +186,13 @@ ECBackend::ECBackend(
 	ObjectStore *store,
 	CephContext *cct,
 	ErasureCodeInterfaceRef ec_impl,
-	uint64_t stripe_width)
+	uint64_t stripe_width,
+	OSDService *o)
 	: PGBackend(pg, store, coll, ch),
 	  cct(cct),
 	  ec_impl(ec_impl),
-	  sinfo(ec_impl->get_data_chunk_count(), stripe_width)
+	  sinfo(ec_impl->get_data_chunk_count(), stripe_width),
+	  osd(o)
 {
 	
 	dout(20)<< ": mydebug: init_ecbackend!!"<<dendl;
@@ -1416,6 +1418,17 @@ void ECBackend::handle_sub_read_reply(
 	{
 		//dout(1) << __func__ << ": mydebug: Complete!" << rop << dendl;
 		dout(20) << __func__ << " Complete: " << rop << dendl;
+		osd->finished_op_mtx.lock();
+		osd->finished_op_num++;
+		if(osd->finished_op_num = window_size){
+			dout(1) << " last reply received " << dendl;
+			osd->stop_mtx.lock();
+			dout(1) << " start next round " << dendl;
+			osd->stop_flag = 0;
+			osd->stop_mtx.unlock();
+			osd->finished_op_num = 0;
+		}
+		osd->finished_op_mtx.unlock();
 		complete_read_op(rop, m);
 	}
 	else

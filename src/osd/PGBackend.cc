@@ -311,7 +311,8 @@ PGBackend *PGBackend::build_pg_backend(
   coll_t coll,
   ObjectStore::CollectionHandle &ch,
   ObjectStore *store,
-  CephContext *cct)
+  CephContext *cct,
+  OSDService *o)
 {
   switch (pool.type) {
   case pg_pool_t::TYPE_REPLICATED: {
@@ -344,7 +345,8 @@ PGBackend *PGBackend::build_pg_backend(
       store,
       cct,
       ec_impl,
-      pool.stripe_width);
+      pool.stripe_width,
+      o);
   }
   default:
     assert(0);
