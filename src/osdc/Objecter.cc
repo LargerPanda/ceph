@@ -3126,6 +3126,23 @@ int Objecter::calc_op_budget(Op *op)
   return op_budget;
 }
 
+int Objecter::_take_op_budget(Op *op, shunique_lock& sul) {
+  assert(sul && sul.mutex() == &rwlock);
+  ldout(cct, 0) << "mydebug: before calc_op_budget" << dendl;
+  int op_budget = calc_op_budget(op);
+  if (keep_balanced_budget) {
+    ldout(cct, 0) << "mydebug: before _throttle_op" << dendl;
+    _throttle_op(op, sul, op_budget);
+  } else {
+    ldout(cct, 0) << "mydebug: before byte.take" << dendl;
+    op_throttle_bytes.take(op_budget);
+    ldout(cct, 0) << "mydebug: before ops.take" << dendl;
+    op_throttle_ops.take(1);
+  }
+  op->budgeted = true;
+  return op_budget;
+}
+
 void Objecter::_throttle_op(Op *op,
 			    shunique_lock& sul,
 			    int op_budget)
