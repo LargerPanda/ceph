@@ -674,7 +674,7 @@ OPTION(osd_hit_set_max_size, OPT_INT, 100000)  // max target size for a HitSet
 OPTION(osd_hit_set_namespace, OPT_STR, ".ceph-internal") // rados namespace for hit_set tracking
 
 // conservative default throttling values
-OPTION(osd_tier_promote_max_objects_sec, OPT_U64, 25)
+OPTION(osd_tier_promote_max_objects_sec, OPT_U64, 200)
 OPTION(osd_tier_promote_max_bytes_sec, OPT_U64, 5 * 1024*1024)
 
 OPTION(osd_tier_default_cache_mode, OPT_STR, "writeback")
