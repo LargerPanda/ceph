@@ -2141,10 +2141,13 @@ void Objecter::resend_mon_ops()
 
 void Objecter::op_submit(Op *op, ceph_tid_t *ptid, int *ctx_budget)
 {
+  ldout(client->cct, 0) << "mydebug: in op_submit" << dendl;
+  ldout(client->cct, 0) << "mydebug: before shunique_lock" << dendl;
   shunique_lock rl(rwlock, ceph::acquire_shared);
   ceph_tid_t tid = 0;
   if (!ptid)
     ptid = &tid;
+  ldout(client->cct, 0) << "mydebug: before _op_submit_with_budget" << dendl;
   _op_submit_with_budget(op, rl, ptid, ctx_budget);
 }
 
@@ -2177,7 +2180,7 @@ void Objecter::_op_submit_with_budget(Op *op, shunique_lock& sul,
 				    [this, tid]() {
 				      op_cancel(tid, -ETIMEDOUT); });
   }
-
+  ldout(client->cct, 0) << "mydebug: before _op_submit" << dendl;
   _op_submit(op, sul, ptid);
 }
 
