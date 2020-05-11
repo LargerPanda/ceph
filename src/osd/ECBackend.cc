@@ -1435,7 +1435,10 @@ void ECBackend::handle_sub_read_reply(
      		}
 			dout(1)<< ": mydebug: saturate finish, current group_size="<<osd->op_group_wq.get_queue_size()<<dendl;
 			if(osd->op_group_wq.get_queue_size() == 0){
+				osd->group_mtx.lock();
 				osd->not_first_time = 0;
+				osd->group_size = 0;
+				osd->group_mtx.unlock();
 			}
 		}
 		osd->finished_op_mtx.unlock();
