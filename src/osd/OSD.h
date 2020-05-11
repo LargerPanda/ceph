@@ -419,8 +419,6 @@ public:
 
   std::mutex group_mtx;//
   std::atomic<int> group_size;//
-  std::mutex stop_mtx;//
-  std::atomic<int> stop_flag;//
   std::mutex finished_op_mtx;//
   std::atomic<int> finished_op_num;//
   std::atomic<int> actual_size;//
