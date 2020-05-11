@@ -1421,11 +1421,19 @@ void ECBackend::handle_sub_read_reply(
 		osd->finished_op_mtx.lock();
 		osd->finished_op_num++;
 		dout(1) << " osd->finished_op_num = " <<osd->finished_op_num<< dendl;
-		if(osd->finished_op_num == window_size){
+		if(osd->finished_op_num == osd->actual_size){
 			dout(1) << " last reply received " << dendl;
-			dout(1) << " start next round " << dendl;
-			osd->stop_flag = 0;
 			osd->finished_op_num = 0;
+        	OSD::ShardedOpWQ::ShardData* sdata = dynamic_cast<OSD::ShardedOpWQ*>(&(osd->op_group_wq))->shard_list[0];
+        	assert(NULL != sdata);
+			osd->actual_size = osd->op_wq.get_queue_size() < window_size ? osd->op_wq.get_queue_size():window_size;
+			dout(1)<< ": mydebug: saturate schedule queue with " <<osd->actual_size << "requests" <<dendl;
+        	for(int i=0;i<osd->actual_size;i++){
+          	//dout(1)<< ": mydebug: insert 1"<<dendl;
+          		pair<PGRef, PGQueueable> item = sdata->pqueue->dequeue();
+          		osd->op_schedule_wq.queue(item);
+     		}
+			dout(1)<< ": mydebug: saturate finish, current group_size="<<osd->op_wq.get_queue_size()<<dendl;
 		}
 		osd->finished_op_mtx.unlock();
 		complete_read_op(rop, m);

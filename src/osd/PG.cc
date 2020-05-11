@@ -1973,33 +1973,20 @@ void PG::queue_op(OpRequestRef& op)
     //   dout(1)<< ": mydebug: in pg queue op: "<< temp_pair->first << dendl;
     // }
     if(op_type == CEPH_MSG_OSD_OP){
-
       osd->group_mtx.lock();
-      osd->op_group_wq.queue(make_pair(PGRef(this), op));
-      osd->group_size++;
-      dout(1)<< ": mydebug: group_size="<< osd->group_size << dendl;
-      if(osd->group_size == schedule_window_size){  
-        while(1){
-          if(!osd->stop_flag){
-            break;
-          }           
+      if(osd->not_first_time == 0){//第一次group,全部放入正常的schedulewq
+        osd->actual_size = schedule_window_size;
+        osd->op_schedule_wq.queue(make_pair(PGRef(this), op));
+        osd->group_size++;//groupsize++
+        if(osd->group_size == schedule_window_size){//当达到windowsize时
+          osd->not_first_time = 1;//第一次group结束
+          osd->group_size = 0;//group大小变为0
         }
-        osd->stop_flag = 1;
-        dout(1)<< ": mydebug: saturate schedule queue"<<dendl;
-        assert(osd->op_group_wq.get_queue_size()==schedule_window_size);
-        OSD::ShardedOpWQ::ShardData* sdata = dynamic_cast<OSD::ShardedOpWQ*>(&(osd->op_group_wq))->shard_list[0];
-        assert(NULL != sdata);
-        for(int i=0;i<schedule_window_size;i++){
-          //dout(1)<< ": mydebug: insert 1"<<dendl;
-          pair<PGRef, PGQueueable> item = sdata->pqueue->dequeue();
-          osd->op_schedule_wq.queue(item);
-          osd->group_size--;
-        }
-        assert(osd->group_size==0);
-        assert(osd->op_group_wq.get_queue_size()==0);
-        dout(1)<< ": mydebug: saturate finish, current group_size="<<osd->group_size<<dendl;
+      }else{//第一次之后的group
+        osd->op_group_wq.queue(make_pair(PGRef(this), op));
+        osd->group_size++;
       }
-      osd->group_mtx.unlock();
+      osd->group_mtx.unlock();     
 
     }else if(op_type == MSG_OSD_EC_READ_REPLY){
       osd->op_reply_wq.queue(make_pair(PGRef(this), op));
