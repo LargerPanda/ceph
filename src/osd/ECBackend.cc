@@ -1434,6 +1434,9 @@ void ECBackend::handle_sub_read_reply(
           		osd->op_schedule_wq.queue(item);
      		}
 			dout(1)<< ": mydebug: saturate finish, current group_size="<<osd->op_group_wq.get_queue_size()<<dendl;
+			if(osd->op_group_wq.get_queue_size() == 0){
+				osd->not_first_time = 0;
+			}
 		}
 		osd->finished_op_mtx.unlock();
 		complete_read_op(rop, m);
