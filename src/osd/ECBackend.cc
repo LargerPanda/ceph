@@ -1418,18 +1418,18 @@ void ECBackend::handle_sub_read_reply(
 	{
 		dout(1) << __func__ << ": mydebug: Complete!" << rop << dendl;
 		dout(20) << __func__ << " Complete: " << rop << dendl;
-		// osd->finished_op_mtx.lock();
-		// osd->finished_op_num++;
-		// dout(1) << " osd->finished_op_num = " <<osd->finished_op_num<< dendl;
-		// if(osd->finished_op_num == window_size){
-		// 	dout(1) << " last reply received " << dendl;
-		// 	osd->stop_mtx.lock();
-		// 	dout(1) << " start next round " << dendl;
-		// 	osd->stop_flag = 0;
-		// 	osd->stop_mtx.unlock();
-		// 	osd->finished_op_num = 0;
-		// }
-		// osd->finished_op_mtx.unlock();
+		osd->finished_op_mtx.lock();
+		osd->finished_op_num++;
+		dout(1) << " osd->finished_op_num = " <<osd->finished_op_num<< dendl;
+		if(osd->finished_op_num == window_size){
+			dout(1) << " last reply received " << dendl;
+			osd->stop_mtx.lock();
+			dout(1) << " start next round " << dendl;
+			osd->stop_flag = 0;
+			osd->stop_mtx.unlock();
+			osd->finished_op_num = 0;
+		}
+		osd->finished_op_mtx.unlock();
 		complete_read_op(rop, m);
 	}
 	else
