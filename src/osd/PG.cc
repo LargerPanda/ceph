@@ -1979,15 +1979,15 @@ void PG::queue_op(OpRequestRef& op)
       osd->group_size++;
       dout(1)<< ": mydebug: group_size="<< osd->group_size << dendl;
       if(osd->group_size == schedule_window_size){
-        while(1){
-          osd->stop_mtx.lock();
-          if(!osd->stop_flag){
-            osd->stop_flag = 1;
-            osd->stop_mtx.unlock();
-            break;
-          }  
-          osd->stop_mtx.unlock();         
-        }
+        // while(1){
+        //   osd->stop_mtx.lock();
+        //   if(!osd->stop_flag){
+        //     osd->stop_flag = 1;
+        //     osd->stop_mtx.unlock();
+        //     break;
+        //   }  
+        //   osd->stop_mtx.unlock();         
+        // }
 
         dout(1)<< ": mydebug: saturate schedule queue"<<dendl;
         assert(osd->op_group_wq.get_queue_size()==schedule_window_size);
