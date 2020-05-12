@@ -1967,7 +1967,7 @@ void PG::queue_op(OpRequestRef& op)
     //PGBackend* p_pg = get_pgbackend();
     //ECBackend* p_ec = dynamic_cast<ECBackend*>(p_pg);
     int schedule_window_size = osd->window_size;
-    dout(1)<< ": mydebug: schedule_window_size="<< schedule_window_size << dendl;
+    //dout(1)<< ": mydebug: schedule_window_size="<< schedule_window_size << dendl;
     // map<string, vector<int>>::iterator temp_pair = p_ec->remap.begin();
     // if(temp_pair != p_ec->remap.end()){
     //   dout(1)<< ": mydebug: in pg queue op: "<< temp_pair->first << dendl;
