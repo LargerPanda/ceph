@@ -94,6 +94,7 @@ private:
   utime_t dequeued_time;
   utime_t enqueued_time;
   int queue_size_when_enqueued;
+  int batch_seq;
 
 
   static const uint8_t flag_queued_for_pg=1 << 0;
@@ -187,6 +188,15 @@ public:
   utime_t set_dequeued_time(utime_t deq_time) {
     dequeued_time = deq_time;
     return dequeued_time;
+  }
+
+  int set_batch_seq(int temp_seq){
+    batch_seq = temp_seq;
+    return batch_seq;
+  }
+
+  int get_batch_seq(int temp_seq){
+    return batch_seq;
   }
 
   osd_reqid_t get_reqid() const {

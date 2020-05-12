@@ -1959,7 +1959,7 @@ void PG::queue_op(OpRequestRef& op)
   op->set_queue_size_when_enqueued(osd->op_wq.get_queue_size());
   utime_t now = ceph_clock_now(osd->cct);
   op->set_enqueued_time(now);
-
+  
   
   int op_type = op->get_req()->get_type();
 
@@ -1974,6 +1974,8 @@ void PG::queue_op(OpRequestRef& op)
     // }
     if(op_type == CEPH_MSG_OSD_OP){
       osd->group_mtx.lock();
+      op->set_batch_seq(osd->
+      );
       if(osd->not_first_time == 0){//第一次group,全部放入正常的schedulewq
         osd->actual_size = schedule_window_size;
         osd->op_schedule_wq.queue(make_pair(PGRef(this), op));
@@ -1981,10 +1983,15 @@ void PG::queue_op(OpRequestRef& op)
         if(osd->group_size == schedule_window_size){//当达到windowsize时
           osd->not_first_time = 1;//第一次group结束
           osd->group_size = 0;//group大小变为0
+          osd->batch_seq++;
         }
       }else{//第一次之后的group
         osd->op_group_wq.queue(make_pair(PGRef(this), op));
         osd->group_size++;
+        if(osd->group_size == schedule_window_size){
+          osd->group_size = 0;//group大小变为0
+          osd->batch_seq++;
+        }
       }
       osd->group_mtx.unlock();     
 

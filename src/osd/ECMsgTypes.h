@@ -98,6 +98,7 @@ struct ECSubWriteReply {
 WRITE_CLASS_ENCODER(ECSubWriteReply)
 
 struct ECSubRead {
+  int batch_seq;
   utime_t send_time;
   pg_shard_t from;
   ceph_tid_t tid;

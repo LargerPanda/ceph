@@ -423,6 +423,7 @@ public:
   std::atomic<int> finished_op_num;//
   std::atomic<int> actual_size;//
   std::atomic<int> not_first_time;//
+  int batch_seq;//
 
 private:
   Messenger *&cluster_messenger;

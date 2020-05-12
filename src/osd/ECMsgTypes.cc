@@ -157,6 +157,7 @@ void ECSubRead::encode(bufferlist &bl, uint64_t features) const
 {
   if ((features & CEPH_FEATURE_OSD_FADVISE_FLAGS) == 0) {
     ENCODE_START(1, 1, bl);
+    ::encode(batch_seq,bl);
     ::encode(send_time,bl);
     ::encode(from, bl);
     ::encode(tid, bl);
@@ -177,6 +178,7 @@ void ECSubRead::encode(bufferlist &bl, uint64_t features) const
   }
 
   ENCODE_START(2, 2, bl);
+  ::encode(batch_seq,bl);
   ::encode(send_time,bl);
   ::encode(from, bl);
   ::encode(tid, bl);
@@ -188,6 +190,7 @@ void ECSubRead::encode(bufferlist &bl, uint64_t features) const
 void ECSubRead::decode(bufferlist::iterator &bl)
 {
   DECODE_START(2, bl);
+  ::decode(batch_seq,bl);
   ::decode(send_time,bl);
   ::decode(from, bl);
   ::decode(tid, bl);

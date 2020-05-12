@@ -620,6 +620,7 @@ void ECBackend::dispatch_recovery_messages(RecoveryMessages &m, int priority)
 	if (m.reads.empty())
 		return;
 	start_read_op(
+		-1,
 		priority,
 		m.reads,
 		OpRequestRef(),
@@ -869,6 +870,8 @@ bool ECBackend::handle_message(
 		MOSDECSubOpRead *op = static_cast<MOSDECSubOpRead *>(_op->get_req());
 		MOSDECSubOpReadReply *reply = new MOSDECSubOpReadReply;
 
+		dout(1)<<":batch_info#"<< op->op.from.osd<<","<< op->op.batch_seq<<","<<_op->get_queue_size_when_enqueued()<<"#"<<dendl;
+
 		reply->op.wait_for_service_time = _op->get_dequeued_time() - _op->get_enqueued_time(); 
 		reply->op.queue_size = _op->get_queue_size_when_enqueued();
 		reply->op.send_time = op->op.send_time;
@@ -883,7 +886,8 @@ bool ECBackend::handle_message(
 		get_parent()->send_message_osd_cluster(
 			op->op.from.osd, reply, get_parent()->get_epoch()); //再发送
 
-		dout(1)<< ": after EC_READ\n" << "queue_size: "  << reply->op.queue_size<< ",\n"<< "wait_for_service_time: " <<reply->op.wait_for_service_time << ",\n"<< "disk_read_time: " << reply->op.disk_read_time<< dendl;
+		//dout(1)<< ": after EC_READ\n" << "queue_size: "  << reply->op.queue_size<< ",\n"<< "wait_for_service_time: " <<reply->op.wait_for_service_time << ",\n"<< "disk_read_time: " << reply->op.disk_read_time<< dendl;
+		
 
 		return true;
 	}
@@ -2007,6 +2011,7 @@ int ECBackend::get_remaining_shards(
 }
 
 void ECBackend::start_read_op(
+	int batch_seq,
 	int priority,
 	map<hobject_t, read_request_t, hobject_t::BitwiseComparator> &to_read,
 	OpRequestRef _op,
@@ -2092,6 +2097,7 @@ void ECBackend::start_read_op(
 
 		
 		msg->op.send_time = ceph_clock_now(cct);
+		msg->op.batch_seq = batch_seq;
 
 		get_parent()->send_message_osd_cluster(
 			i->first.osd,
@@ -2446,13 +2452,13 @@ struct CallClientContexts : public GenContext<pair<RecoveryMessages *, ECBackend
 };
 
 void ECBackend::objects_read_async(
+	int batch_seq,
 	const hobject_t &hoid,
 	const list<pair<boost::tuple<uint64_t, uint64_t, uint32_t>,
 					pair<bufferlist *, Context *>>> &to_read,
 	Context *on_complete,
 	bool fast_read)
 {
-	//dout(1) << __func__ << ": mydebug: in objects_read_async! " << dendl;
 	in_progress_client_reads.push_back(ClientAsyncReadStatus(on_complete));
 	CallClientContexts *c = new CallClientContexts(
 		this, &(in_progress_client_reads.back()), to_read);
@@ -2501,6 +2507,7 @@ void ECBackend::objects_read_async(
 				c)));
 
 	start_read_op(
+		batch_seq,
 		CEPH_MSG_PRIO_DEFAULT,
 		for_read_op,
 		OpRequestRef(),

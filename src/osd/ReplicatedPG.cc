@@ -123,6 +123,7 @@ void ReplicatedPG::OpContext::start_async_reads(ReplicatedPG *pg)
   //dout(1)<<"in ReplicatedPG::OpContext::start_async_reads!!!!!"<<dendl;
   inflightreads = 1;
   pg->pgbackend->objects_read_async(
+    op->get_batch_seq(),
     obc->obs.oi.soid,
     pending_async_reads,
     new OnReadComplete(pg, this), pg->get_pool().fast_read);

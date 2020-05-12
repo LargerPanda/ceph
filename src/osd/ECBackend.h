@@ -150,6 +150,7 @@ public:
   };
   list<ClientAsyncReadStatus> in_progress_client_reads;
   void objects_read_async(
+    int batch_seq,
     const hobject_t &hoid,
     const list<pair<boost::tuple<uint64_t, uint64_t, uint32_t>,
 		    pair<bufferlist*, Context*> > > &to_read,
@@ -332,6 +333,7 @@ public:
   map<ceph_tid_t, ReadOp> tid_to_read_map;
   map<pg_shard_t, set<ceph_tid_t> > shard_to_read_map;
   void start_read_op(
+    int batch_seq,
     int priority,
     map<hobject_t, read_request_t, hobject_t::BitwiseComparator> &to_read,
     OpRequestRef op,
