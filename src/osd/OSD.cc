@@ -280,7 +280,8 @@ OSDService::OSDService(OSD *osd) :
   epoch_lock("OSDService::epoch_lock"),
   boot_epoch(0), up_epoch(0), bind_epoch(0),
   is_stopping_lock("OSDService::is_stopping_lock"),
-  state(NOT_STOPPING)
+  state(NOT_STOPPING),
+  window_size(cct->_conf->osd_schedule_window_size)
 #ifdef PG_DEBUG_REFS
   , pgid_lock("OSDService::pgid_lock")
 #endif
