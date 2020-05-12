@@ -195,7 +195,7 @@ public:
     return batch_seq;
   }
 
-  int get_batch_seq(int temp_seq){
+  int get_batch_seq(){
     return batch_seq;
   }
 
