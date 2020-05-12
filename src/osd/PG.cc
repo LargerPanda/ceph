@@ -1974,8 +1974,7 @@ void PG::queue_op(OpRequestRef& op)
     // }
     if(op_type == CEPH_MSG_OSD_OP){
       osd->group_mtx.lock();
-      op->set_batch_seq(osd->
-      );
+      op->set_batch_seq(osd->batch_seq);
       if(osd->not_first_time == 0){//第一次group,全部放入正常的schedulewq
         osd->actual_size = schedule_window_size;
         osd->op_schedule_wq.queue(make_pair(PGRef(this), op));
