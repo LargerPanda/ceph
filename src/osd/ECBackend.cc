@@ -1442,6 +1442,7 @@ void ECBackend::handle_sub_read_reply(
 				osd->group_mtx.lock();
 				osd->not_first_time = 0;
 				osd->group_size = 0;
+				osd->batch_seq = 0;
 				osd->group_mtx.unlock();
 			}
 		}

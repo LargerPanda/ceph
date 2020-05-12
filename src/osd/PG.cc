@@ -1964,10 +1964,10 @@ void PG::queue_op(OpRequestRef& op)
   int op_type = op->get_req()->get_type();
 
   if(is_ec_pg()){
-    PGBackend* p_pg = get_pgbackend();
-    ECBackend* p_ec = dynamic_cast<ECBackend*>(p_pg);
-    int schedule_window_size = p_ec->window_size;
-    //dout(1)<< ": mydebug: schedue_window_size="<< schedule_window_size << dendl;
+    //PGBackend* p_pg = get_pgbackend();
+    //ECBackend* p_ec = dynamic_cast<ECBackend*>(p_pg);
+    int schedule_window_size = osd->window_size;
+    dout(1)<< ": mydebug: schedue_window_size="<< schedule_window_size << dendl;
     // map<string, vector<int>>::iterator temp_pair = p_ec->remap.begin();
     // if(temp_pair != p_ec->remap.end()){
     //   dout(1)<< ": mydebug: in pg queue op: "<< temp_pair->first << dendl;

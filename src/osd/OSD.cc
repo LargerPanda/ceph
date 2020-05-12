@@ -9157,6 +9157,7 @@ const char** OSD::get_tracked_conf_keys() const
     "osd_pg_epoch_persisted_max_stale",
     "osd_disk_thread_ioprio_class",
     "osd_disk_thread_ioprio_priority",
+    "osd_schedule_window_size",
     // clog & admin clog
     "clog_to_monitors",
     "clog_to_syslog",
@@ -9180,6 +9181,9 @@ const char** OSD::get_tracked_conf_keys() const
 void OSD::handle_conf_change(const struct md_config_t *conf,
 			     const std::set <std::string> &changed)
 {
+  if (changed.count("osd_schedule_window_size")) {
+    service.window_size = cct->_conf->osd_schedule_window_size;
+  }
   if (changed.count("osd_max_backfills")) {
     service.local_reserver.set_max(cct->_conf->osd_max_backfills);
     service.remote_reserver.set_max(cct->_conf->osd_max_backfills);

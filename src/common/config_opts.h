@@ -433,6 +433,8 @@ OPTION(objecter_inflight_ops, OPT_U64, 1024)               // max in-flight ios
 OPTION(objecter_completion_locks_per_session, OPT_U64, 32) // num of completion locks per each session, for serializing same object responses
 OPTION(objecter_inject_no_watch_ping, OPT_BOOL, false)   // suppress watch pings
 
+
+
 // Max number of deletes at once in a single Filer::purge call
 OPTION(filer_max_purge_ops, OPT_U32, 10)
 // Max number of truncate at once in a single Filer::truncate call
@@ -719,6 +721,9 @@ OPTION(osd_read_ec_check_for_errors, OPT_BOOL, false) // return error if any ec 
 // Only use clone_overlap for recovery if there are fewer than
 // osd_recover_clone_overlap_limit entries in the overlap set
 OPTION(osd_recover_clone_overlap_limit, OPT_INT, 10)
+
+//window_size
+OPTION(osd_schedule_window_size, OPT_INT, 50)
 
 OPTION(osd_backfill_scan_min, OPT_INT, 64)
 OPTION(osd_backfill_scan_max, OPT_INT, 512)
