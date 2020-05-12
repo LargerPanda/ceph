@@ -588,6 +588,7 @@ struct inconsistent_obj_wrapper;
      bufferlist *bl) = 0;
 
    virtual void objects_read_async(
+     int batch_seq,
      const hobject_t &hoid,
      const list<pair<boost::tuple<uint64_t, uint64_t, uint32_t>,
 		pair<bufferlist*, Context*> > > &to_read,
