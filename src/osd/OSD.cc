@@ -282,12 +282,21 @@ OSDService::OSDService(OSD *osd) :
   is_stopping_lock("OSDService::is_stopping_lock"),
   state(NOT_STOPPING),
   window_size(cct->_conf->osd_schedule_window_size),
-  arrive_num(cct->_conf->osd_arrive_num)
+  arrive_num(cct->_conf->osd_arrive_num),
+  osd_num(cct->_conf->osd_num),
+  k(4),
+  m(2)
 #ifdef PG_DEBUG_REFS
   , pgid_lock("OSDService::pgid_lock")
 #endif
 {
   objecter->init();
+  //init sending_queue_list
+  for(int i=0;i<osd_num;i++){
+    sending_queue temp_queue;
+    temp_queue.osd_id = i;
+    sending_queue_list.push_back(temp_queue);
+  }
 }
 
 OSDService::~OSDService()

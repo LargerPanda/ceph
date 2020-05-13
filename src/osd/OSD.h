@@ -42,6 +42,7 @@
 
 #include <atomic>
 #include <map>
+#include <queue>
 #include <memory>
 #include "include/memory.h"
 using namespace std;
@@ -426,7 +427,28 @@ public:
   std::atomic<int> actual_size;//
   std::atomic<int> not_first_time;//
   int batch_seq;//
-  int window_size;
+  int window_size;//
+  int osd_num;
+  int k;
+  int m;
+  //ordered sending list
+  typedef struct queue_element
+  {
+    PGBackend::Listener * listener;
+    int32_t osd;
+    MOSDECSubOpRead *msg;
+    epoch_t epoch;
+  }queue_element;
+  
+  typedef struct sending_queue{
+    int32_t osd_id;
+    queue<queue_element> osd_queue;
+  }sending_queue;
+
+  std::mutex sending_list_mtx;
+  int sending_list_size;
+  vector<sending_queue> sending_queue_list;
+
 
 private:
   Messenger *&cluster_messenger;

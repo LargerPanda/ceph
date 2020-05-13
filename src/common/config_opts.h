@@ -725,6 +725,7 @@ OPTION(osd_recover_clone_overlap_limit, OPT_INT, 10)
 //window_size
 OPTION(osd_schedule_window_size, OPT_INT, 50)
 OPTION(osd_arrive_num, OPT_INT, 0)
+OPTION(osd_num, OPT_INT, 8)
 
 OPTION(osd_backfill_scan_min, OPT_INT, 64)
 OPTION(osd_backfill_scan_max, OPT_INT, 512)
