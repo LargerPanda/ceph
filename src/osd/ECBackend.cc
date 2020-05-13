@@ -870,7 +870,7 @@ bool ECBackend::handle_message(
 		MOSDECSubOpRead *op = static_cast<MOSDECSubOpRead *>(_op->get_req());
 		MOSDECSubOpReadReply *reply = new MOSDECSubOpReadReply;
 
-		dout(1)<<":batch_info#"<< op->op.from.osd<<","<< op->op.batch_seq<<","<<_op->get_queue_size_when_enqueued()<<"#"<<dendl;
+		dout(1)<<":batch_info#"<< op->op.from.osd<<","<< op->op.batch_seq<<","<<_op->get_queue_size_when_enqueued()<<","<<_op->get_enqueue_seq()<<"#"<<dendl;
 
 		reply->op.wait_for_service_time = _op->get_dequeued_time() - _op->get_enqueued_time(); 
 		reply->op.queue_size = _op->get_queue_size_when_enqueued();

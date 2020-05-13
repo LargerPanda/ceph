@@ -95,6 +95,7 @@ private:
   utime_t enqueued_time;
   int queue_size_when_enqueued;
   int batch_seq;
+  int enqueue_seq;
 
 
   static const uint8_t flag_queued_for_pg=1 << 0;
@@ -163,6 +164,15 @@ public:
     mark_flag_point(flag_commit_sent, "commit_sent");
   }
 
+
+  int set_enqueue_seq(int enq_seq){
+    enqueue_seq = enq_seq;
+    return enqueue_seq;
+  }
+
+  int get_enqueue_seq(){
+    return enqueue_seq;
+  }
 
   int set_queue_size_when_enqueued(int queue_size){
     queue_size_when_enqueued = queue_size;

@@ -1956,9 +1956,7 @@ void PG::queue_op(OpRequestRef& op)
   }
   op->mark_queued_for_pg();//标记：已经在pg的队列里了
 
-  op->set_queue_size_when_enqueued(osd->op_wq.get_queue_size());
-  utime_t now = ceph_clock_now(osd->cct);
-  op->set_enqueued_time(now);
+  
   
   
   int op_type = op->get_req()->get_type();
@@ -1996,6 +1994,14 @@ void PG::queue_op(OpRequestRef& op)
 
     }else if(op_type == MSG_OSD_EC_READ_REPLY){
       osd->op_reply_wq.queue(make_pair(PGRef(this), op));
+    }else if(op_type == MSG_OSD_EC_READ){
+      osd->arrive_mtx.lock();
+      op->set_enqueue_seq(osd->arrive_num);
+      osd->arrive_num++;
+      op->set_queue_size_when_enqueued(osd->op_wq.get_queue_size());
+      osd->arrive_mtx.unlock();
+      op->set_enqueued_time(ceph_clock_now(osd->cct));
+      osd->op_wq.queue(make_pair(PGRef(this), op));
     }else{
       osd->op_wq.queue(make_pair(PGRef(this), op));
     }
