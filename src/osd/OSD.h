@@ -60,6 +60,12 @@ using namespace std;
 #include "messages/MOSDOp.h"
 #include "include/Spinlock.h"
 
+#include "ECUtil.h"
+#include "ECBackend.h"
+#include "messages/MOSDPGPush.h"
+#include "messages/MOSDPGPushReply.h"
+#include "ReplicatedPG.h"
+
 #define CEPH_OSD_PROTOCOL    10 /* cluster internal */
 
 
