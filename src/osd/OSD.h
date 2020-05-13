@@ -60,7 +60,7 @@ using namespace std;
 #include "messages/MOSDOp.h"
 #include "include/Spinlock.h"
 
-#include "MOSDECSubOpRead.h"
+#include "messages/MOSDECSubOpRead.h"
 
 #define CEPH_OSD_PROTOCOL    10 /* cluster internal */
 
