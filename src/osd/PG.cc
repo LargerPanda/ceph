@@ -1974,7 +1974,6 @@ void PG::queue_op(OpRequestRef& op)
       osd->group_mtx.lock();
       op->set_batch_seq(osd->batch_seq);
       if(osd->not_first_time == 0){//第一次group,全部放入正常的schedulewq
-        osd->sending_list_size = 0;
         osd->actual_size = schedule_window_size;
         osd->op_schedule_wq.queue(make_pair(PGRef(this), op));
         osd->group_size++;//groupsize++
