@@ -285,7 +285,8 @@ OSDService::OSDService(OSD *osd) :
   arrive_num(cct->_conf->osd_arrive_num),
   osd_num(cct->_conf->osd_num),
   k(4),
-  m(2)
+  m(2),
+  sending_list_size(0)
 #ifdef PG_DEBUG_REFS
   , pgid_lock("OSDService::pgid_lock")
 #endif

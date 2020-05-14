@@ -2099,11 +2099,43 @@ void ECBackend::start_read_op(
 		
 		msg->op.send_time = ceph_clock_now(cct);
 		msg->op.batch_seq = batch_seq;
-
-		get_parent()->send_message_osd_cluster(
-			i->first.osd,
-			msg,
-			get_parent()->get_epoch());
+		
+		//ordered sending list
+		osd->sending_list_mtx.lock();
+		OSDService::queue_element temp_element;
+		temp_element.listener = get_parent();
+		temp_element.osd = i->first.osd;
+		temp_element.msg = msg;
+		temp_element.epoch = get_parent()->get_epoch();
+		osd->sending_queue_list[i->first.osd].osd_queue.push(temp_element);
+		osd->sending_list_size++;
+		if(osd->sending_list_size == osd->actual_size * osd->k){
+			for(int j = 0;j < osd->osd_num ; j++){
+				assert(osd->sending_queue_list[j].osd_id == j);
+				int length = osd->sending_queue_list[j].osd_queue.size();
+				dout(1) << ": mydebug: "<<length<<" sub_requests will be sent to OSD"<<j << dendl;
+				while(!osd->sending_queue_list[j].osd_queue.empty()){
+					OSDService::queue_element &first_element = osd->sending_queue_list[j].osd_queue.front();
+					first_element.listener->send_message_osd_cluster(
+						first_element.osd,
+						first_element.msg,
+						first_element.epoch
+					);
+					osd->sending_queue_list[j].osd_queue.pop();
+					osd->sending_list_size--;
+				}
+			}
+			assert(osd->sending_list_size == 0);
+			dout(1) << ": mydebug: finish ordered transfer"<<j << dendl;
+		}
+		
+		osd->sending_list_mtx.unlock();
+		
+		
+		// get_parent()->send_message_osd_cluster(
+		// 	i->first.osd,
+		// 	msg,
+		// 	get_parent()->get_epoch());
 		
 	}
 	dout(10) << __func__ << ": started " << op << dendl;
