@@ -1430,7 +1430,7 @@ void ECBackend::handle_sub_read_reply(
 			osd->finished_op_num = 0;
         	OSD::ShardedOpWQ::ShardData* sdata = dynamic_cast<OSD::ShardedOpWQ*>(&(osd->op_group_wq))->shard_list[0];
         	assert(NULL != sdata);
-			osd->actual_size = osd->op_group_wq.get_queue_size() < window_size ? osd->op_group_wq.get_queue_size():window_size;
+			osd->actual_size = osd->op_group_wq.get_queue_size() < osd->window_size ? osd->op_group_wq.get_queue_size():osd->window_size;
 			osd->sending_list_size = 0;
 			dout(1)<< ": mydebug: saturate schedule queue with " <<osd->actual_size << "requests" <<dendl;
         	for(int i=0;i<osd->actual_size;i++){
