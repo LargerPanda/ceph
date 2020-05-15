@@ -1698,6 +1698,8 @@ int OSDService::subscribe(string &channel, string &msg){
   dout(1)<< ": mydebug: before while!" << dendl;
   while(redisGetReply(subscribe_context, (void **)&reply) == REDIS_OK){
     dout(1)<< ": mydebug: before strcmp!" << dendl;
+    dout(1)<< reply->element[2]->str << dendl;
+    dout(1)<< msg.c_str() << dendl;
     if(strcmp(reply->element[2]->str, msg.c_str()) == 0){
       dout(1)<< ": mydebug: start message received!" << dendl;
       dout(1)<< ": mydebug: before free!" << dendl;
