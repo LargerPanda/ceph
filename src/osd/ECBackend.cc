@@ -1432,6 +1432,29 @@ void ECBackend::handle_sub_read_reply(
         	assert(NULL != sdata);
 			osd->actual_size = osd->op_group_wq.get_queue_size() < osd->window_size ? osd->op_group_wq.get_queue_size():osd->window_size;
 			osd->sending_list_size = 0;
+			/*publish and subscribe*/
+			dout(1)<< ": mydebug: publish and subscribe in handle_reply!" << dendl;
+			string start_msg("1");
+			if(osd->whoami==0){//如果是0号osd，就直接publish
+				dout(1)<< ": mydebug: in OSD0!" << dendl;
+				if(osd->publish(osd->publish_channel,start_msg,1)){
+				dout(1)<< ": mydebug: publish finish!" << dendl;
+				}
+			}else if(osd->whoami==(2)){//如果是最后一个，先订阅开始信号，接着直接开始osd->osd_num-1
+				dout(1)<< ": mydebug: in OSD2!" << dendl;
+				if(osd->subscribe(osd->subscribe_channel,start_msg)){
+				dout(1)<< ": mydebug: subscribe finish!" << dendl;
+				}
+			}else{//中间节点，先等待开始信号，接着发送开始信号给下一个
+				dout(1)<< ": mydebug: in OSD1!" << dendl;
+				if(osd->subscribe(osd->subscribe_channel,start_msg)){
+				dout(1)<< ": mydebug: subscribe finish!" << dendl;
+				if(osd->publish(osd->publish_channel,start_msg,1)){
+					dout(1)<< ": mydebug: publish finish!" << dendl;
+				}
+				}
+			}
+			/*publish and subscribe*/
 			dout(1)<< ": mydebug: saturate schedule queue with " <<osd->actual_size << "requests" <<dendl;
         	for(int i=0;i<osd->actual_size;i++){
           	//dout(1)<< ": mydebug: insert 1"<<dendl;
