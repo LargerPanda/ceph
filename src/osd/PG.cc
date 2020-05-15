@@ -1939,6 +1939,7 @@ void PG::take_op_map_waiters()
 }
 
 int PG::publish(string &channel, string &msg, int num){
+  dout(1)<< ": mydebug: in publish!" << dendl;
   redisReply *reply;
   while(1){
     reply = (redisReply *)redisCommand(osd->publish_context, "pubsub numsub %s", channel.c_str());
@@ -1953,6 +1954,7 @@ int PG::publish(string &channel, string &msg, int num){
 }
 
 int PG::subscribe(string &channel, string &msg){
+  dout(1)<< ": mydebug: in subscribe!" << dendl;
   redisReply *reply;
   reply = (redisReply *)redisCommand(osd->subscribe_context, "SUBSCRIBE %s", channel.c_str());
   while(redisGetReply(osd->subscribe_context, (void **)&reply) == REDIS_OK){
@@ -1960,7 +1962,9 @@ int PG::subscribe(string &channel, string &msg){
       dout(1)<< ": mydebug: start message received!" << dendl;
 		  freeReplyObject(reply);
       return 1;
-    } 
+    }else{
+      dout(1)<< ": mydebug: start message not right!" << dendl;
+    }
   }
   return 0;
 }
