@@ -209,6 +209,9 @@ public:
   CephContext *get_cct() const { return cct; }
   unsigned get_subsys() const { return ceph_subsys_osd; }
 
+  int publish(std::string channel, std::string msg, int num);
+  int subscribe(string &channel, string &msg);
+
   /*** PG ****/
   void update_snap_mapper_bits(uint32_t bits) {
     snap_mapper.update_bits(bits);

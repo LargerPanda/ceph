@@ -290,7 +290,8 @@ OSDService::OSDService(OSD *osd) :
   publish_channel(std::to_string(whoami)),
   subscribe_channel(std::to_string(whoami==0?7:(whoami-1))),
   IP("10.10.1.1"),
-  PORT(6379)
+  PORT(6379),
+  first_time_pushlished(0)
 #ifdef PG_DEBUG_REFS
   , pgid_lock("OSDService::pgid_lock")
 #endif
@@ -306,12 +307,16 @@ OSDService::OSDService(OSD *osd) :
   //init redis context
   publish_context = redisConnect(IP, PORT);
   if (publish_context->err) {    /* Error flags, 0 when there is no error */
-			dout(1)<<": mydebug: publish connect fail! "<< dendl;
-	}
+		dout(1)<<": mydebug: publish connect fail! "<< dendl;
+	}else{
+    dout(1)<<": mydebug: publish connect success! "<< dendl;
+  }
   subscribe_context = redisConnect(IP, PORT);
   if (subscribe_context->err) {    /* Error flags, 0 when there is no error */
-			dout(1)<<": mydebug: subscribe connect fail! "<< dendl;
-	}
+		dout(1)<<": mydebug: subscribe connect fail! "<< dendl;
+	}else{
+    dout(1)<<": mydebug: subscribe connect success! "<< dendl;
+  }
   
 }
 

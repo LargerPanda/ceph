@@ -1938,6 +1938,33 @@ void PG::take_op_map_waiters()
   }
 }
 
+int PG::publish(string &channel, string &msg, int num){
+  redisReply *reply;
+  while(1){
+    reply = (redisReply *)redisCommand(osd->publish_context, "pubsub numsub %s", channel.c_str());
+    if(reply->element[1]->integer >= num){
+      dout(1)<< ": mydebug: pub channel "<< channel <<"has been subscribed, start to publish!" << dendl;
+      reply = (redisReply *)redisCommand(osd->publish_context, "publish %s %s", channel.c_str(), msg.c_str());
+		  freeReplyObject(reply);
+      return 1;
+    } 
+  }
+  return 0;
+}
+
+int PG::subscribe(string &channel, string &msg){
+  redisReply *reply;
+  reply = (redisReply *)redisCommand(osd->subscribe_context, "SUBSCRIBE %s", channel.c_str());
+  while(redisGetReply(osd->subscribe_context, (void **)&reply) == REDIS_OK){
+    if(strcmp(reply->element[1]->str, msg.c_str()) == 0){
+      dout(1)<< ": mydebug: start message received!" << dendl;
+		  freeReplyObject(reply);
+      return 1;
+    } 
+  }
+  return 0;
+}
+
 void PG::queue_op(OpRequestRef& op)
 {
   Mutex::Locker l(map_lock);
@@ -1974,6 +2001,28 @@ void PG::queue_op(OpRequestRef& op)
       osd->group_mtx.lock();
       op->set_batch_seq(osd->batch_seq);
       if(osd->not_first_time == 0){//第一次group,全部放入正常的schedulewq
+        if(osd->first_time_published == 0){ //第一个object request
+          string start_msg("1");
+          if(osd->whoami==0){//如果是0号osd，就直接publish
+            if(publish(osd->publish_channel,start_msg,1)){
+              dout(1)<< ": mydebug: publish finish!" << dendl;
+              osd->first_time_published = 1;
+            }
+          }else if(osd->whoami==(osd->osd_num-1)){//如果是最后一个，先订阅开始信号，接着直接开始
+            if(subscribe(osd->subscribe_channel,start_msg)){
+              dout(1)<< ": mydebug: subscribe finish!" << dendl;
+              osd->first_time_published = 1;
+            }
+          }else{//中间节点，先等待开始信号，接着发送开始信号给下一个
+            if(subscribe(osd->subscribe_channel,start_msg)){
+              dout(1)<< ": mydebug: subscribe finish!" << dendl;
+              if(publish(osd->publish_channel,start_msg,1)){
+                dout(1)<< ": mydebug: publish finish!" << dendl;
+                osd->first_time_published = 1;
+              }
+            }
+          }
+        }
         osd->actual_size = schedule_window_size;
         osd->op_schedule_wq.queue(make_pair(PGRef(this), op));
         osd->group_size++;//groupsize++
