@@ -437,7 +437,7 @@ public:
   //redis
   char* IP;
   int PORT;
-  int first_time_pushlished;
+  int first_time_published;
 
   std::string publish_channel;
   std::string subscribe_channel;
