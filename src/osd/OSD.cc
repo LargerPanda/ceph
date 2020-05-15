@@ -1693,10 +1693,14 @@ int OSDService::publish(string &channel, string &msg, int num){
 int OSDService::subscribe(string &channel, string &msg){
   dout(1)<< ": mydebug: in subscribe!" << dendl;
   redisReply *reply;
+  dout(1)<< ": mydebug: before rediscommand!" << dendl;
   reply = (redisReply *)redisCommand(subscribe_context, "SUBSCRIBE %s", channel.c_str());
+  dout(1)<< ": mydebug: before while!" << dendl;
   while(redisGetReply(subscribe_context, (void **)&reply) == REDIS_OK){
+    dout(1)<< ": mydebug: before strcmp!" << dendl;
     if(strcmp(reply->element[2]->str, msg.c_str()) == 0){
       dout(1)<< ": mydebug: start message received!" << dendl;
+      dout(1)<< ": mydebug: before free!" << dendl;
 		  freeReplyObject(reply);
       return 1;
     }else{
