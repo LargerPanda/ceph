@@ -1431,6 +1431,7 @@ void ECBackend::handle_sub_read_reply(
         	OSD::ShardedOpWQ::ShardData* sdata = dynamic_cast<OSD::ShardedOpWQ*>(&(osd->op_group_wq))->shard_list[0];
         	assert(NULL != sdata);
 			osd->actual_size = osd->op_group_wq.get_queue_size() < osd->window_size ? osd->op_group_wq.get_queue_size():osd->window_size;
+			dout(1)<< ": mydebug: actualsize="<<osd->actual_size << dendl;
 			osd->sending_list_size = 0;
 			/*publish and subscribe*/
 			dout(1)<< ": mydebug: publish and subscribe in handle_reply!" << dendl;
@@ -1455,7 +1456,7 @@ void ECBackend::handle_sub_read_reply(
 				}
 			}
 			/*publish and subscribe*/
-			dout(1)<< ": mydebug: saturate schedule queue with " <<osd->actual_size << "requests" <<dendl;
+			dout(1)<< ": mydebug: saturate schedule queue with " <<osd->actual_size << " requests" <<dendl;
         	for(int i=0;i<osd->actual_size;i++){
           	//dout(1)<< ": mydebug: insert 1"<<dendl;
           		pair<PGRef, PGQueueable> item = sdata->pqueue->dequeue();
