@@ -1963,7 +1963,7 @@ int PG::subscribe(string &channel, string &msg){
 		  freeReplyObject(reply);
       return 1;
     }else{
-      dout(1)<< ": mydebug: start message not right!" <<reply->element[1]->str<<" "<< msg.c_str() << dendl;
+      dout(1)<< ": mydebug: start message not right!!!" <<reply->element[1]->str<<" "<< msg.c_str() << dendl;
     }
   }
   return 0;
