@@ -1958,12 +1958,12 @@ int PG::subscribe(string &channel, string &msg){
   redisReply *reply;
   reply = (redisReply *)redisCommand(osd->subscribe_context, "SUBSCRIBE %s", channel.c_str());
   while(redisGetReply(osd->subscribe_context, (void **)&reply) == REDIS_OK){
-    if(strcmp(reply->element[1]->str, msg.c_str()) == 0){
+    if(strcmp(reply->element[2]->str, msg.c_str()) == 0){
       dout(1)<< ": mydebug: start message received!" << dendl;
 		  freeReplyObject(reply);
       return 1;
     }else{
-      dout(1)<< ": mydebug: start message not right!" << dendl;
+      dout(1)<< ": mydebug: start message not right!" <<reply->element[1]->str<<" "<< msg.c_str() << dendl;
     }
   }
   return 0;
