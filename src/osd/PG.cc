@@ -1981,7 +1981,7 @@ void PG::queue_op(OpRequestRef& op)
           string start_msg("1");
           if(osd->whoami==0){//如果是0号osd，就直接publish
             dout(1)<< ": mydebug: in OSD0!" << dendl;
-            if(osd->(osd->publish_channel,start_msg,1)){
+            if(osd->publish(osd->publish_channel,start_msg,1)){
               dout(1)<< ": mydebug: publish finish!" << dendl;
               osd->first_time_published = 1;
             }
