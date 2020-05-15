@@ -1700,6 +1700,10 @@ int OSDService::subscribe(string &channel, string &msg){
     dout(1)<< ": mydebug: before strcmp!" << dendl;
     dout(1)<< reply->element[2]->str << dendl;
     dout(1)<< msg.c_str() << dendl;
+    if(reply->element[2]->str == NULL){
+      dout(1)<< "redisGetReply error!" << dendl;
+      continue;
+    }
     if(strcmp(reply->element[2]->str, msg.c_str()) == 0){
       dout(1)<< ": mydebug: start message received!" << dendl;
       dout(1)<< ": mydebug: before free!" << dendl;
@@ -1707,6 +1711,8 @@ int OSDService::subscribe(string &channel, string &msg){
       return 1;
     }else{
       dout(1)<< ": mydebug: start message not right!" <<reply->element[1]->str<<" "<< msg.c_str() << dendl;
+      freeReplyObject(reply);
+      return 0;
     }
   }
   return 0;
