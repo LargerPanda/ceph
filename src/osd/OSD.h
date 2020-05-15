@@ -444,6 +444,9 @@ public:
 
   redisContext *publish_context;
   redisContext *subscribe_context;
+
+  int publish(std::string &channel, std::string &msg, int num);
+  int subscribe(string &channel, string &msg);v
   //ordered sending list
   typedef struct queue_element
   {
