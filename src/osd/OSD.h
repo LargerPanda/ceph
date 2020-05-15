@@ -61,6 +61,7 @@ using namespace std;
 #include "include/Spinlock.h"
 
 #include "messages/MOSDECSubOpRead.h"
+#include <hiredis/hiredis.h>
 
 #define CEPH_OSD_PROTOCOL    10 /* cluster internal */
 
@@ -433,6 +434,12 @@ public:
   int osd_num;
   int k;
   int m;
+  //redis
+  std::string publish_channel;
+  std::string subscribe_channel;
+
+  redisContext *publish_context;
+  redisContext *subscribe_context;
   //ordered sending list
   typedef struct queue_element
   {
