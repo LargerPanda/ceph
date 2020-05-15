@@ -1681,8 +1681,9 @@ int OSDService::publish(string &channel, string &msg, int num){
   while(1){
     reply = (redisReply *)redisCommand(publish_context, "pubsub numsub %s", channel.c_str());
     if(reply->element[1]->integer >= num){
-      dout(1)<< ": mydebug: pub channel "<< channel <<"has been subscribed, start to publish!" << dendl;
+      dout(1)<< ": mydebug: pub channel "<< channel <<" has been subscribed, start to publish!" << dendl;
       reply = (redisReply *)redisCommand(publish_context, "publish %s %s", channel.c_str(), msg.c_str());
+      dout(1)<< ": mydebug: publish "<< msg.c_str() << "to channel "<<channel.c_str()<< dendl;
 		  freeReplyObject(reply);
       return 1;
     } 
