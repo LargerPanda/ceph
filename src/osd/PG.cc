@@ -1985,7 +1985,7 @@ void PG::queue_op(OpRequestRef& op)
               dout(1)<< ": mydebug: publish finish!" << dendl;
               osd->first_time_published = 1;
             }
-          }else if(osd->whoami==(osd->osd_num-1)){//如果是最后一个，先订阅开始信号，接着直接开始osd->osd_num-1
+          }else if(osd->whoami==(pipeline_length-1)){//如果是最后一个，先订阅开始信号，接着直接开始osd->osd_num-1
             dout(1)<< ": mydebug: in OSD2!" << dendl;
             if(osd->subscribe(osd->subscribe_channel,start_msg)){
               dout(1)<< ": mydebug: subscribe finish!" << dendl;

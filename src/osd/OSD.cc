@@ -291,7 +291,8 @@ OSDService::OSDService(OSD *osd) :
   subscribe_channel(std::to_string(whoami==0?7:(whoami-1))),
   IP("10.10.1.1"),
   PORT(6379),
-  first_time_published(0)
+  first_time_published(0),
+  pipeline_length(cct->_conf->osd_pipeline_length)
 #ifdef PG_DEBUG_REFS
   , pgid_lock("OSDService::pgid_lock")
 #endif
@@ -9237,6 +9238,7 @@ const char** OSD::get_tracked_conf_keys() const
     "osd_disk_thread_ioprio_priority",
     "osd_schedule_window_size",
     "osd_arrive_num",
+    "osd_pipeline_length",
     // clog & admin clog
     "clog_to_monitors",
     "clog_to_syslog",
@@ -9260,6 +9262,9 @@ const char** OSD::get_tracked_conf_keys() const
 void OSD::handle_conf_change(const struct md_config_t *conf,
 			     const std::set <std::string> &changed)
 {
+  if (changed.count("osd_pipeline_length")) {
+    service.pipeline_length = cct->_conf->osd_pipeline_length;
+  }
   if (changed.count("osd_arrive_num")) {
     service.arrive_mtx.lock();
     service.arrive_num = cct->_conf->osd_arrive_num;

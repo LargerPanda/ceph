@@ -438,6 +438,7 @@ public:
   char* IP;
   int PORT;
   int first_time_published;
+  int pipeline_length;
 
   std::string publish_channel;
   std::string subscribe_channel;
