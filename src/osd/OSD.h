@@ -435,6 +435,9 @@ public:
   int k;
   int m;
   //redis
+  std::string IP;
+  std::int PORT;
+
   std::string publish_channel;
   std::string subscribe_channel;
 

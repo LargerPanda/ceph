@@ -286,7 +286,11 @@ OSDService::OSDService(OSD *osd) :
   osd_num(cct->_conf->osd_num),
   k(4),
   m(2),
-  sending_list_size(0)
+  sending_list_size(0),
+  publish_channel(std::to_string(whoami)),
+  subscribe_channel(std::to_string(whoami==0?7:(whoami-1))),
+  IP("10.10.1.1"),
+  PORT(6379)
 #ifdef PG_DEBUG_REFS
   , pgid_lock("OSDService::pgid_lock")
 #endif
@@ -298,6 +302,17 @@ OSDService::OSDService(OSD *osd) :
     temp_queue.osd_id = i;
     sending_queue_list.push_back(temp_queue);
   }
+
+  //init redis context
+  publish_context = redisConnect(IP, PORT);
+  if (publish_context->err) {    /* Error flags, 0 when there is no error */
+			dout(1)<<": mydebug: publish connect fail! "<< dendl;
+	}
+  subscribe_context = redisConnect(IP, PORT);
+  if (subscribe_context->err) {    /* Error flags, 0 when there is no error */
+			dout(1)<<": mydebug: subscribe connect fail! "<< dendl;
+	}
+  
 }
 
 OSDService::~OSDService()
