@@ -2002,18 +2002,22 @@ void PG::queue_op(OpRequestRef& op)
       op->set_batch_seq(osd->batch_seq);
       if(osd->not_first_time == 0){//第一次group,全部放入正常的schedulewq
         if(osd->first_time_published == 0){ //第一个object request
+          dout(1)<< ": mydebug: first object!" << dendl;
           string start_msg("1");
           if(osd->whoami==0){//如果是0号osd，就直接publish
+            dout(1)<< ": mydebug: in OSD0!" << dendl;
             if(publish(osd->publish_channel,start_msg,1)){
               dout(1)<< ": mydebug: publish finish!" << dendl;
               osd->first_time_published = 1;
             }
-          }else if(osd->whoami==(osd->osd_num-1)){//如果是最后一个，先订阅开始信号，接着直接开始
+          }else if(osd->whoami==(2)){//如果是最后一个，先订阅开始信号，接着直接开始osd->osd_num-1
+            dout(1)<< ": mydebug: in OSD2!" << dendl;
             if(subscribe(osd->subscribe_channel,start_msg)){
               dout(1)<< ": mydebug: subscribe finish!" << dendl;
               osd->first_time_published = 1;
             }
           }else{//中间节点，先等待开始信号，接着发送开始信号给下一个
+            dout(1)<< ": mydebug: in OSD1!" << dendl;
             if(subscribe(osd->subscribe_channel,start_msg)){
               dout(1)<< ": mydebug: subscribe finish!" << dendl;
               if(publish(osd->publish_channel,start_msg,1)){
