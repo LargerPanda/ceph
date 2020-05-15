@@ -291,7 +291,7 @@ OSDService::OSDService(OSD *osd) :
   subscribe_channel(std::to_string(whoami==0?7:(whoami-1))),
   IP("10.10.1.1"),
   PORT(6379),
-  first_time_pushlished(0)
+  first_time_published(0)
 #ifdef PG_DEBUG_REFS
   , pgid_lock("OSDService::pgid_lock")
 #endif
