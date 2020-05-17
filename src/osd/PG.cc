@@ -1977,6 +1977,8 @@ void PG::queue_op(OpRequestRef& op)
       op->set_batch_seq(osd->batch_seq);
       if(osd->not_first_time == 0){//第一次group,全部放入正常的schedulewq
         if(osd->first_time_published == 0){ //第一个object request
+          osd->actual_size = schedule_window_size;
+          dout(1)<< ": mydebug: osd->actual_size="<<osd->actual_size << dendl;
           dout(1)<< ": mydebug: first object!" << dendl;
           string start_msg("1");
           if(osd->whoami==0){//如果是0号osd，就直接publish
@@ -2002,7 +2004,6 @@ void PG::queue_op(OpRequestRef& op)
             }
           }
         }
-        osd->actual_size = schedule_window_size;
         osd->op_schedule_wq.queue(make_pair(PGRef(this), op));
         osd->group_size++;//groupsize++
         if(osd->group_size == schedule_window_size){//当达到windowsize时

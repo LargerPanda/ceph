@@ -2123,7 +2123,7 @@ void ECBackend::start_read_op(
 		//进入实际传输
 
 		
-		msg->op.send_time = ceph_clock_now(cct);
+		
 		msg->op.batch_seq = batch_seq;
 		
 		//ordered sending list
@@ -2135,7 +2135,7 @@ void ECBackend::start_read_op(
 		temp_element.epoch = get_parent()->get_epoch();
 		osd->sending_queue_list[i->first.osd].osd_queue.push(temp_element);
 		osd->sending_list_size++;
-		dout(1) << ": mydebug: cur_sending_list_size="<<osd->sending_list_size<< dendl;
+		dout(1) << ": mydebug: needed sub_req="<<osd->actual_size * osd->k<<", cur_sending_list_size="<<osd->sending_list_size<< dendl;
 		if(osd->sending_list_size == osd->actual_size * osd->k){
 			for(int j = 0;j < osd->osd_num ; j++){
 				assert(osd->sending_queue_list[j].osd_id == j);
@@ -2143,6 +2143,7 @@ void ECBackend::start_read_op(
 				dout(1) << ": mydebug: "<<length<<" sub_requests will be sent to OSD"<<j << dendl;
 				while(!osd->sending_queue_list[j].osd_queue.empty()){
 					OSDService::queue_element &first_element = osd->sending_queue_list[j].osd_queue.front();
+					first_element.msg->op.send_time = ceph_clock_now(cct);
 					first_element.listener->send_message_osd_cluster(
 						first_element.osd,
 						first_element.msg,
