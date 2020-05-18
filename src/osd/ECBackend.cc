@@ -1173,7 +1173,7 @@ void ECBackend::handle_sub_read(
 				dout(20) << __func__ << " read request=" << j->get<1>() << " r=" << r << " len=" << bl.length() << dendl;
 				end_read_time = ceph_clock_now(cct);
 				reply->disk_read_time = end_read_time -start_read_time;
-				dout(1) << __func__ << ": mydebug:#read_time = " << reply->disk_read_time << "#" << dendl;
+				//dout(1) << __func__ << ": mydebug:#read_time = " << reply->disk_read_time << "#" << dendl;
 				//填充reply中的buffer
 				reply->buffers_read[i->first].push_back(
 					make_pair(
@@ -2142,7 +2142,7 @@ void ECBackend::start_read_op(
 		temp_element.epoch = get_parent()->get_epoch();
 		osd->sending_queue_list[i->first.osd].osd_queue.push(temp_element);
 		osd->sending_list_size++;
-		dout(1) << ": mydebug: needed sub_req="<<osd->actual_size * osd->k<<", cur_sending_list_size="<<osd->sending_list_size<< dendl;
+		//dout(1) << ": mydebug: needed sub_req="<<osd->actual_size * osd->k<<", cur_sending_list_size="<<osd->sending_list_size<< dendl;
 		if(osd->sending_list_size == osd->actual_size * osd->k){
 			for(int j = 0;j < osd->osd_num ; j++){
 				assert(osd->sending_queue_list[j].osd_id == j);

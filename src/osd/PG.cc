@@ -2011,7 +2011,7 @@ void PG::queue_op(OpRequestRef& op)
         }
         osd->op_schedule_wq.queue(make_pair(PGRef(this), op));
         osd->group_size++;//groupsize++
-        dout(1)<< ": mydebug: osd->group_size="<<osd->group_size<< dendl;
+        //dout(1)<< ": mydebug: osd->group_size="<<osd->group_size<< dendl;
         if(osd->group_size == schedule_window_size){//当达到windowsize时
           dout(1)<< ": mydebug: first group end " << dendl;
           osd->not_first_time = 1;//第一次group结束
