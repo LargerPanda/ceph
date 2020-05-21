@@ -2144,6 +2144,9 @@ void ECBackend::start_read_op(
 				}else{
 					if(osd->whoami==0){//如果是0号osd，就直接publish
 						dout(1)<< ": mydebug: in OSD0!" << dendl;
+						if(osd->publish(osd->publish_channel[j],start_msg,1)){
+							dout(1)<< ": mydebug: publish finish!" << dendl;
+						}
 						while(!osd->sending_queue_list[j].osd_queue.empty()){
 							OSDService::queue_element &first_element = osd->sending_queue_list[j].osd_queue.front();
 							first_element.msg->op.send_time = ceph_clock_now(cct);
@@ -2155,9 +2158,7 @@ void ECBackend::start_read_op(
 							osd->sending_queue_list[j].osd_queue.pop();
 							osd->sending_list_size--;
 						}
-						if(osd->publish(osd->publish_channel[j],start_msg,1)){
-							dout(1)<< ": mydebug: publish finish!" << dendl;
-						}
+						
 					}else if(osd->whoami==(osd->pipeline_length-1)){//如果是最后一个，先订阅开始信号，接着直接开始osd->osd_num-1
 						dout(1)<< ": mydebug: in OSD2!" << dendl;
 						if(osd->subscribe(osd->subscribe_channel[j-1],start_msg)){
