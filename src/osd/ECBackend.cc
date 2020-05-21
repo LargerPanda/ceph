@@ -2118,7 +2118,7 @@ void ECBackend::start_read_op(
 		temp_element.epoch = get_parent()->get_epoch();
 		osd->sending_queue_list[i->first.osd].osd_queue.push(temp_element);
 		osd->sending_list_size++;
-		//dout(1) << ": mydebug: needed sub_req="<<osd->actual_size * osd->k<<", cur_sending_list_size="<<osd->sending_list_size<< dendl;
+		dout(1) << ": mydebug: needed sub_req="<<osd->actual_size * osd->k<<", cur_sending_list_size="<<osd->sending_list_size<< dendl;
 		if(osd->sending_list_size == osd->actual_size * osd->k){
 			for(int j = 0;j < osd->osd_num ; j++){
 				assert(osd->sending_queue_list[j].osd_id == j);
