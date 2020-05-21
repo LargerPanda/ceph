@@ -440,8 +440,8 @@ public:
   int first_time_published;
   int pipeline_length;
 
-  std::string publish_channel;
-  std::string subscribe_channel;
+  std::vector<std::string> publish_channel;
+  std::vector<std::string> subscribe_channel;
 
   redisContext *publish_context;
   redisContext *subscribe_context;

@@ -1437,31 +1437,7 @@ void ECBackend::handle_sub_read_reply(
 			dout(1)<< ": mydebug: actualsize="<<osd->actual_size << dendl;
 			osd->sending_list_size = 0;
 			/*publish and subscribe*/
-			string start_msg("1");
-			if(osd->pipeline_length==1){
-				dout(1)<< ": mydebug: no need to publish in handle_reply!" << dendl;
-			}else{
-				dout(1)<< ": mydebug: publish and subscribe in handle_reply!" << dendl;
-				if(osd->whoami==0){//如果是0号osd，就直接publish
-					dout(1)<< ": mydebug: in OSD0!" << dendl;
-					if(osd->publish(osd->publish_channel,start_msg,1)){
-					dout(1)<< ": mydebug: publish finish!" << dendl;
-					}
-				}else if(osd->whoami==(osd->pipeline_length-1)){//如果是最后一个，先订阅开始信号，接着直接开始osd->osd_num-1
-					dout(1)<< ": mydebug: in OSD2!" << dendl;
-					if(osd->subscribe(osd->subscribe_channel,start_msg)){
-					dout(1)<< ": mydebug: subscribe finish!" << dendl;
-					}
-				}else{//中间节点，先等待开始信号，接着发送开始信号给下一个
-					dout(1)<< ": mydebug: in OSD1!" << dendl;
-					if(osd->subscribe(osd->subscribe_channel,start_msg)){
-					dout(1)<< ": mydebug: subscribe finish!" << dendl;
-					if(osd->publish(osd->publish_channel,start_msg,1)){
-						dout(1)<< ": mydebug: publish finish!" << dendl;
-					}
-					}
-				}
-			}
+			
 			/*publish and subscribe*/
 			dout(1)<< ": mydebug: saturate schedule queue with " <<osd->actual_size << " requests" <<dendl;
         	for(int i=0;i<osd->actual_size;i++){
@@ -2148,6 +2124,32 @@ void ECBackend::start_read_op(
 				assert(osd->sending_queue_list[j].osd_id == j);
 				int length = osd->sending_queue_list[j].osd_queue.size();
 				dout(1) << ": mydebug: "<<length<<" sub_requests will be sent to OSD"<<j << dendl;
+				/*subscribe and publish*/
+				string start_msg("1");
+				if(osd->pipeline_length==1){
+					dout(1)<< ": mydebug: no need to publish!" << dendl;
+				}else{
+					if(osd->whoami==0){//如果是0号osd，就直接publish
+						dout(1)<< ": mydebug: in OSD0!" << dendl;
+						if(osd->publish(osd->publish_channel[j],start_msg,1)){
+							dout(1)<< ": mydebug: publish finish!" << dendl;
+						}
+					}else if(osd->whoami==(osd->pipeline_length-1)){//如果是最后一个，先订阅开始信号，接着直接开始osd->osd_num-1
+						dout(1)<< ": mydebug: in OSD2!" << dendl;
+						if(osd->subscribe(osd->subscribe_channel[j],start_msg)){
+							dout(1)<< ": mydebug: subscribe finish!" << dendl;
+						}
+					}else{//中间节点，先等待开始信号，接着发送开始信号给下一个
+						dout(1)<< ": mydebug: in OSD1!" << dendl;
+						if(osd->subscribe(osd->subscribe_channel[j],start_msg)){
+							dout(1)<< ": mydebug: subscribe finish!" << dendl;
+							if(osd->publish(osd->publish_channel[j],start_msg,1)){
+							dout(1)<< ": mydebug: publish finish!" << dendl;
+							}
+						}
+					}
+				}
+				/*subscribe and publish*/
 				while(!osd->sending_queue_list[j].osd_queue.empty()){
 					OSDService::queue_element &first_element = osd->sending_queue_list[j].osd_queue.front();
 					first_element.msg->op.send_time = ceph_clock_now(cct);

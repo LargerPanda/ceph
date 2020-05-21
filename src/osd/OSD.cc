@@ -287,8 +287,8 @@ OSDService::OSDService(OSD *osd) :
   k(4),
   m(2),
   sending_list_size(0),
-  publish_channel(std::to_string(whoami)),
-  subscribe_channel(std::to_string(whoami==0?7:(whoami-1))),
+  //publish_channel(std::to_string(whoami)),
+  //subscribe_channel(std::to_string(whoami==0?7:(whoami-1))),
   IP("10.10.1.1"),
   PORT(6379),
   first_time_published(0),
@@ -317,6 +317,12 @@ OSDService::OSDService(OSD *osd) :
 		dout(1)<<": mydebug: subscribe connect fail! "<< dendl;
 	}else{
     dout(1)<<": mydebug: subscribe connect success! "<< dendl;
+  }
+
+  //init pub/sub channel
+  for(int i=0;i<osd_num;i++){
+    subscribe_channel.push_back(std::to_string(whoami==0?7:(whoami-1))+std::to_string(i));
+    publish_channel.push_back(std::to_string(whoami)+std::to_string(i));
   }
   
 }
