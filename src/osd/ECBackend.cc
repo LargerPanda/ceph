@@ -2124,13 +2124,36 @@ void ECBackend::start_read_op(
 				assert(osd->sending_queue_list[j].osd_id == j);
 				int length = osd->sending_queue_list[j].osd_queue.size();
 				dout(1) << ": mydebug: "<<length<<" sub_requests will be sent to OSD"<<j << dendl;
+				
 				/*subscribe and publish*/
 				string start_msg("1");
 				if(osd->pipeline_length==1){
 					dout(1)<< ": mydebug: no need to publish!" << dendl;
+					while(!osd->sending_queue_list[j].osd_queue.empty()){
+						OSDService::queue_element &first_element = osd->sending_queue_list[j].osd_queue.front();
+						first_element.msg->op.send_time = ceph_clock_now(cct);
+						first_element.listener->send_message_osd_cluster(
+							first_element.osd,
+							first_element.msg,
+							first_element.epoch
+						);
+						osd->sending_queue_list[j].osd_queue.pop();
+						osd->sending_list_size--;
+					}
 				}else{
 					if(osd->whoami==0){//如果是0号osd，就直接publish
 						dout(1)<< ": mydebug: in OSD0!" << dendl;
+						while(!osd->sending_queue_list[j].osd_queue.empty()){
+							OSDService::queue_element &first_element = osd->sending_queue_list[j].osd_queue.front();
+							first_element.msg->op.send_time = ceph_clock_now(cct);
+							first_element.listener->send_message_osd_cluster(
+								first_element.osd,
+								first_element.msg,
+								first_element.epoch
+							);
+							osd->sending_queue_list[j].osd_queue.pop();
+							osd->sending_list_size--;
+						}
 						if(osd->publish(osd->publish_channel[j],start_msg,1)){
 							dout(1)<< ": mydebug: publish finish!" << dendl;
 						}
@@ -2139,10 +2162,32 @@ void ECBackend::start_read_op(
 						if(osd->subscribe(osd->subscribe_channel[j],start_msg)){
 							dout(1)<< ": mydebug: subscribe finish!" << dendl;
 						}
-					}else{//中间节点，先等待开始信号，接着发送开始信号给下一个
+						while(!osd->sending_queue_list[j].osd_queue.empty()){
+							OSDService::queue_element &first_element = osd->sending_queue_list[j].osd_queue.front();
+							first_element.msg->op.send_time = ceph_clock_now(cct);
+							first_element.listener->send_message_osd_cluster(
+								first_element.osd,
+								first_element.msg,
+								first_element.epoch
+							);
+							osd->sending_queue_list[j].osd_queue.pop();
+							osd->sending_list_size--;
+						}
+					}else{//中间节点，先等待开始信号，发送完之后再接着发送开始信号给下一个
 						dout(1)<< ": mydebug: in OSD1!" << dendl;
 						if(osd->subscribe(osd->subscribe_channel[j],start_msg)){
 							dout(1)<< ": mydebug: subscribe finish!" << dendl;
+							while(!osd->sending_queue_list[j].osd_queue.empty()){
+								OSDService::queue_element &first_element = osd->sending_queue_list[j].osd_queue.front();
+								first_element.msg->op.send_time = ceph_clock_now(cct);
+								first_element.listener->send_message_osd_cluster(
+									first_element.osd,
+									first_element.msg,
+									first_element.epoch
+								);
+								osd->sending_queue_list[j].osd_queue.pop();
+								osd->sending_list_size--;
+							}
 							if(osd->publish(osd->publish_channel[j],start_msg,1)){
 							dout(1)<< ": mydebug: publish finish!" << dendl;
 							}
@@ -2150,17 +2195,6 @@ void ECBackend::start_read_op(
 					}
 				}
 				/*subscribe and publish*/
-				while(!osd->sending_queue_list[j].osd_queue.empty()){
-					OSDService::queue_element &first_element = osd->sending_queue_list[j].osd_queue.front();
-					first_element.msg->op.send_time = ceph_clock_now(cct);
-					first_element.listener->send_message_osd_cluster(
-						first_element.osd,
-						first_element.msg,
-						first_element.epoch
-					);
-					osd->sending_queue_list[j].osd_queue.pop();
-					osd->sending_list_size--;
-				}
 			}
 			assert(osd->sending_list_size == 0);
 			dout(1) << ": mydebug: finish ordered transfer"<< dendl;
