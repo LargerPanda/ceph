@@ -2161,7 +2161,7 @@ void ECBackend::start_read_op(
 						
 					}else if(osd->whoami==(osd->pipeline_length-1)){//如果是最后一个，先订阅开始信号，接着直接开始osd->osd_num-1
 						dout(1)<< ": mydebug: in OSD2!" << dendl;
-						if(osd->subscribe(osd->subscribe_channel[j-1],start_msg)){
+						if(osd->subscribe(osd->subscribe_channel[j==0?8:j-1],start_msg)){
 							dout(1)<< ": mydebug: subscribe finish!" << dendl;
 						}
 						while(!osd->sending_queue_list[j].osd_queue.empty()){
@@ -2177,7 +2177,7 @@ void ECBackend::start_read_op(
 						}
 					}else{//中间节点，先等待开始信号，发送完之后再接着发送开始信号给下一个
 						dout(1)<< ": mydebug: in OSD1!" << dendl;
-						if(osd->subscribe(osd->subscribe_channel[j-1],start_msg)){
+						if(osd->subscribe(osd->subscribe_channel[j==0?8:j-1],start_msg)){
 							dout(1)<< ": mydebug: subscribe finish!" << dendl;
 							while(!osd->sending_queue_list[j].osd_queue.empty()){
 								OSDService::queue_element &first_element = osd->sending_queue_list[j].osd_queue.front();
