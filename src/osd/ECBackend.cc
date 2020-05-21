@@ -2121,7 +2121,7 @@ void ECBackend::start_read_op(
 		dout(1) << ": mydebug: needed sub_req="<<osd->actual_size * osd->k<<", cur_sending_list_size="<<osd->sending_list_size<< dendl;
 		if(osd->sending_list_size == osd->actual_size * osd->k){
 			for(int z = 0;z < osd->osd_num ; z++){
-				j = (z+osd->whoami)%osd->osd_num; // j is the current OSD index reqs sending to
+				int j = (z+osd->whoami)%osd->osd_num; // j is the current OSD index reqs sending to
 				assert(osd->sending_queue_list[j].osd_id == j);
 				int length = osd->sending_queue_list[j].osd_queue.size();
 				dout(1) << ": mydebug: "<<length<<" sub_requests will be sent to OSD"<<j << dendl;
