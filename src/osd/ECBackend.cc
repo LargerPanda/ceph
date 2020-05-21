@@ -2120,7 +2120,8 @@ void ECBackend::start_read_op(
 		osd->sending_list_size++;
 		dout(1) << ": mydebug: needed sub_req="<<osd->actual_size * osd->k<<", cur_sending_list_size="<<osd->sending_list_size<< dendl;
 		if(osd->sending_list_size == osd->actual_size * osd->k){
-			for(int j = 0;j < osd->osd_num ; j++){
+			for(int z = 0;z < osd->osd_num ; z++){
+				j = (z+osd->whoami)%osd->osd_num; // j is the current OSD index reqs sending to
 				assert(osd->sending_queue_list[j].osd_id == j);
 				int length = osd->sending_queue_list[j].osd_queue.size();
 				dout(1) << ": mydebug: "<<length<<" sub_requests will be sent to OSD"<<j << dendl;
@@ -2159,7 +2160,7 @@ void ECBackend::start_read_op(
 						}
 					}else if(osd->whoami==(osd->pipeline_length-1)){//如果是最后一个，先订阅开始信号，接着直接开始osd->osd_num-1
 						dout(1)<< ": mydebug: in OSD2!" << dendl;
-						if(osd->subscribe(osd->subscribe_channel[j],start_msg)){
+						if(osd->subscribe(osd->subscribe_channel[j-1],start_msg)){
 							dout(1)<< ": mydebug: subscribe finish!" << dendl;
 						}
 						while(!osd->sending_queue_list[j].osd_queue.empty()){
@@ -2175,7 +2176,7 @@ void ECBackend::start_read_op(
 						}
 					}else{//中间节点，先等待开始信号，发送完之后再接着发送开始信号给下一个
 						dout(1)<< ": mydebug: in OSD1!" << dendl;
-						if(osd->subscribe(osd->subscribe_channel[j],start_msg)){
+						if(osd->subscribe(osd->subscribe_channel[j-1],start_msg)){
 							dout(1)<< ": mydebug: subscribe finish!" << dendl;
 							while(!osd->sending_queue_list[j].osd_queue.empty()){
 								OSDService::queue_element &first_element = osd->sending_queue_list[j].osd_queue.front();
