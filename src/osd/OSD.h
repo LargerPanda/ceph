@@ -453,7 +453,7 @@ public:
   int publish(std::string &channel, std::string &msg, int num);
   int subscribe(string &channel, string &msg);
 
-  int redis_lock(std::string lock_name);
+  int redis_lock(std::string lock_name,int value);
   int redis_unlock(std::string lock_name);
   //ordered sending list
   typedef struct queue_element

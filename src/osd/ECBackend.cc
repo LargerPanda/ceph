@@ -2144,7 +2144,7 @@ void ECBackend::start_read_op(
 				}else{
 					if(osd->whoami==0){//如果是0号osd，就直接publish
 						dout(1)<< ": mydebug: in OSD0!" << dendl;
-						osd->redis_lock(std::string("OSD")+std::to_string(j));
+						osd->redis_lock(std::string("OSD")+std::to_string(j),j);
 						while(!osd->sending_queue_list[j].osd_queue.empty()){
 							OSDService::queue_element &first_element = osd->sending_queue_list[j].osd_queue.front();
 							first_element.msg->op.batch_size = length;
@@ -2166,7 +2166,7 @@ void ECBackend::start_read_op(
 						if(osd->subscribe(osd->subscribe_channel[j],start_msg)){
 							dout(1)<< ": mydebug: subscribe finish!" << dendl;
 						}
-						osd->redis_lock(std::string("OSD")+std::to_string(j));
+						osd->redis_lock(std::string("OSD")+std::to_string(j),j);
 						while(!osd->sending_queue_list[j].osd_queue.empty()){
 							OSDService::queue_element &first_element = osd->sending_queue_list[j].osd_queue.front();
 							first_element.msg->op.batch_size = length;
@@ -2183,7 +2183,7 @@ void ECBackend::start_read_op(
 						dout(1)<< ": mydebug: in OSD1!" << dendl;
 						if(osd->subscribe(osd->subscribe_channel[j],start_msg)){
 							dout(1)<< ": mydebug: subscribe finish!" << dendl;
-							osd->redis_lock(std::string("OSD")+std::to_string(j));
+							osd->redis_lock(std::string("OSD")+std::to_string(j),j);
 							while(!osd->sending_queue_list[j].osd_queue.empty()){
 								OSDService::queue_element &first_element = osd->sending_queue_list[j].osd_queue.front();
 								first_element.msg->op.batch_size = length;

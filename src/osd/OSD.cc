@@ -1734,11 +1734,11 @@ int OSDService::subscribe(string &channel, string &msg){
   return 0;
 }
 
-int OSDService::redis_lock(std::string lock_name){
+int OSDService::redis_lock(std::string lock_name, int value){
   dout(1)<< ": mydebug: in lock!" << dendl;
   while(1){
     redisReply *reply;
-    reply = (redisReply *)redisCommand(lock_context,"set %s %d ex %d nx", lock_name.c_str(), whoami, 20);
+    reply = (redisReply *)redisCommand(lock_context,"set %s %d ex %d nx", lock_name.c_str(),value, 20);
     if(reply->type != REDIS_REPLY_NIL && strcmp(reply->str, "OK") == 0){
       dout(1)<< ": mydebug: set lock ok!" << dendl;
       freeReplyObject(reply);
@@ -1758,7 +1758,7 @@ int OSDService::redis_unlock(std::string lock_name){
   reply = (redisReply *)redisCommand(lock_context, "GET %s", lock_name.c_str());  
   if(strcmp(reply->str, std::to_string(whoami).c_str()) == 0){
     reply = (redisReply *)redisCommand(lock_context,"DEL %s", lock_name.c_str());
-    dout(1)<< ": mydebug: delete lock fail!" << dendl;
+    dout(1)<< ": mydebug: delete lock ok!" << dendl;
   }else{
     dout(1)<< ": mydebug: delete lock fail! reply-str=" << reply->str<<" "<<std::to_string(whoami).c_str()<< dendl;
   }
