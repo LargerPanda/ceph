@@ -2003,7 +2003,7 @@ void PG::queue_op(OpRequestRef& op)
       MOSDECSubOpRead *temp_op = static_cast<MOSDECSubOpRead *>(op->get_req());
       osd->received_sub_read_mtx.lock();
       osd->received_sub_read++;
-      if(received_sub_read == temp_op->op.batch_size){
+      if(osd->received_sub_read == temp_op->op.batch_size){
         dout(1)<<"batch received!"<<dendl;
         osd->received_sub_read=0;
         osd->redis_unlock(std::string(OSD)+std::to_string(osd->whoami));
