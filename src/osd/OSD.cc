@@ -1734,7 +1734,7 @@ int OSDService::subscribe(string &channel, string &msg){
   return 0;
 }
 
-int OSD::redis_lock(std::string lock_name){
+int OSDService::redis_lock(std::string lock_name){
   dout(1)<< ": mydebug: in lock!" << dendl;
   while(1){
     redisReply *reply;
@@ -1752,7 +1752,7 @@ int OSD::redis_lock(std::string lock_name){
   }  
 }
 
-int OSD::redis_unlock(std::string lock_name){
+int OSDService::redis_unlock(std::string lock_name){
   dout(1)<< ": mydebug: in unlock!" << dendl;
   reply = redisCommand(lock_context, "GET %s", lock_name.c_str());  
   if(strcmp(reply->str, std::to_string(whoami).c_str()) == 0){
