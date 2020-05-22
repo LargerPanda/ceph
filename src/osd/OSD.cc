@@ -1758,6 +1758,15 @@ int OSDService::redis_lock(std::string lock_name, int value){
   }  
 }
 
+int OSDService::redis_unlock_self(std::string lock_name){
+  dout(1)<< ": mydebug: in unlock_self!" << dendl;
+  redisReply *reply;
+  reply = (redisReply *)redisCommand(unlock_context,"DEL %s", lock_name.c_str());
+  dout(1)<< ": mydebug: delete lock "<<lock_name<<" ok!" << dendl;
+  freeReplyObject(reply);
+}
+
+
 int OSDService::redis_unlock(std::string lock_name){
   dout(1)<< ": mydebug: in unlock!" << dendl;
   redisReply *reply;

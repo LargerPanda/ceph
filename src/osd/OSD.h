@@ -456,6 +456,7 @@ public:
 
   int redis_lock(std::string lock_name,int value);
   int redis_unlock(std::string lock_name);
+  int redis_unlock_self(std::string lock_name);
   //ordered sending list
   typedef struct queue_element
   {
