@@ -2125,7 +2125,6 @@ void ECBackend::start_read_op(
 				assert(osd->sending_queue_list[j].osd_id == j);
 				int length = osd->sending_queue_list[j].osd_queue.size();
 				dout(1) << ": mydebug: "<<length<<" sub_requests will be sent to OSD"<<j << dendl;
-				
 				/*subscribe and publish*/
 				string start_msg("1");
 				if(osd->pipeline_length==1){
