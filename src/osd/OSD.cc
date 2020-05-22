@@ -1746,11 +1746,11 @@ int OSDService::redis_lock(std::string lock_name, int value){
     redisReply *reply;
     reply = (redisReply *)redisCommand(lock_context,"set %s %d ex %d nx", lock_name.c_str(),value, 20);
     if(reply->type != REDIS_REPLY_NIL && strcmp(reply->str, "OK") == 0){
-      dout(1)<< ": mydebug: set lock ok!" << dendl;
+      dout(1)<< ": mydebug: set lock "<<lock_name<<" ok!" << dendl;
       freeReplyObject(reply);
       break;
     }else{
-      dout(1)<< ": mydebug: set lock fail!" << dendl;
+      dout(1)<< ": mydebug: set lock "<< lock_name<<" fail!" << dendl;
       freeReplyObject(reply);
       //sleep(1);
       continue;
@@ -1764,9 +1764,9 @@ int OSDService::redis_unlock(std::string lock_name){
   reply = (redisReply *)redisCommand(unlock_context, "GET %s", lock_name.c_str());  
   if(strcmp(reply->str, std::to_string(whoami).c_str()) == 0){
     reply = (redisReply *)redisCommand(unlock_context,"DEL %s", lock_name.c_str());
-    dout(1)<< ": mydebug: delete lock ok!" << dendl;
+    dout(1)<< ": mydebug: set lock "<<lock_name<<" ok!" << dendl;
   }else{
-    dout(1)<< ": mydebug: delete lock fail! reply-str=" << reply->str<<" "<<std::to_string(whoami).c_str()<< dendl;
+    dout(1)<< ": mydebug: delete lock"<< lock_name<<" fail! reply-str=" << reply->str<<" "<<std::to_string(whoami).c_str()<< dendl;
   }
   freeReplyObject(reply);
 }

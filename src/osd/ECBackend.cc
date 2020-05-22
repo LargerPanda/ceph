@@ -870,7 +870,7 @@ bool ECBackend::handle_message(
 		MOSDECSubOpRead *op = static_cast<MOSDECSubOpRead *>(_op->get_req());
 		MOSDECSubOpReadReply *reply = new MOSDECSubOpReadReply;
 
-		dout(1)<<":batch_info#"<< op->op.from.osd<<","<< op->op.batch_seq<<","<<_op->get_queue_size_when_enqueued()<<","<<_op->get_enqueue_seq()<<"#"<<dendl;
+		//dout(1)<<":batch_info#"<< op->op.from.osd<<","<< op->op.batch_seq<<","<<_op->get_queue_size_when_enqueued()<<","<<_op->get_enqueue_seq()<<"#"<<dendl;
 		
 		reply->op.wait_for_service_time = _op->get_dequeued_time() - _op->get_enqueued_time(); 
 		reply->op.queue_size = _op->get_queue_size_when_enqueued();
@@ -907,7 +907,7 @@ bool ECBackend::handle_message(
 		utime_t p_time =  m->get_recv_stamp() - op->op.send_time;
 		//note for multi-queue
 		//dout(1) << ":p_time#\n" << "name: "<< op->op.buffers_read.begin()->first.oid.name << ",\n"<< "from: " << op->op.from.osd<< ",\n"<< "queue_size: "  << queue_size<< ",\n"<< "wait_for_service_time: " <<wait_for_service_time << ",\n"<< "disk_read_time: " << disk_read_time<< ",\n"<< "receive_time: " <<receive_time<< "#" << dendl;
-		dout(1)<<":sub_info#"<< op->op.buffers_read.begin()->first.oid.name<<","<< op->op.from.osd<<","<<p_time<<","<<queue_size<<","<<wait_for_service_time<<","<<disk_read_time<<","<<op->op.batch_index<<","<<op->op.enqueue_seq<<"#"<<dendl;
+		//dout(1)<<":sub_info#"<< op->op.buffers_read.begin()->first.oid.name<<","<< op->op.from.osd<<","<<p_time<<","<<queue_size<<","<<wait_for_service_time<<","<<disk_read_time<<","<<op->op.batch_index<<","<<op->op.enqueue_seq<<"#"<<dendl;
 		//dout(1) << __func__ << ":p_time#" << op->op.buffers_read.begin()->first.oid.name << "," << op->op.from.osd << ",receive," << receive_time.tv.tv_sec << "." << receive_time.tv.tv_nsec/1000 << "#" << dendl;
 		
 		RecoveryMessages rm;
@@ -2118,7 +2118,7 @@ void ECBackend::start_read_op(
 		temp_element.epoch = get_parent()->get_epoch();
 		osd->sending_queue_list[i->first.osd].osd_queue.push(temp_element);
 		osd->sending_list_size++;
-		dout(1) << ": mydebug: needed sub_req="<<osd->actual_size * osd->k<<", cur_sending_list_size="<<osd->sending_list_size<< dendl;
+		//dout(1) << ": mydebug: needed sub_req="<<osd->actual_size * osd->k<<", cur_sending_list_size="<<osd->sending_list_size<< dendl;
 		if(osd->sending_list_size == osd->actual_size * osd->k){
 			for(int j = 0; j< osd->osd_num ; j++){
 				//int j = (z+osd->whoami)%osd->osd_num; // j is the current OSD index reqs sending to
@@ -2143,7 +2143,7 @@ void ECBackend::start_read_op(
 					}
 				}else{
 					if(osd->whoami==0){//如果是0号osd，就直接publish
-						dout(1)<< ": mydebug: in OSD0!" << dendl;
+						dout(1)<< ": mydebug: in first OSD!" << dendl;
 						osd->redis_lock(std::string("OSD")+std::to_string(j),j);
 						while(!osd->sending_queue_list[j].osd_queue.empty()){
 							OSDService::queue_element &first_element = osd->sending_queue_list[j].osd_queue.front();
@@ -2162,7 +2162,7 @@ void ECBackend::start_read_op(
 						}
 						
 					}else if(osd->whoami==(osd->pipeline_length-1)){//如果是最后一个，先订阅开始信号，接着直接开始osd->osd_num-1
-						dout(1)<< ": mydebug: in OSD2!" << dendl;
+						dout(1)<< ": mydebug: in last OSD!" << dendl;
 						if(osd->subscribe(osd->subscribe_channel[j],start_msg)){
 							dout(1)<< ": mydebug: subscribe finish!" << dendl;
 						}
@@ -2180,7 +2180,7 @@ void ECBackend::start_read_op(
 							osd->sending_list_size--;
 						}
 					}else{//中间节点，先等待开始信号，发送完之后再接着发送开始信号给下一个
-						dout(1)<< ": mydebug: in OSD1!" << dendl;
+						dout(1)<< ": mydebug: in middle OSD!" << dendl;
 						if(osd->subscribe(osd->subscribe_channel[j],start_msg)){
 							dout(1)<< ": mydebug: subscribe finish!" << dendl;
 							osd->redis_lock(std::string("OSD")+std::to_string(j),j);
