@@ -448,6 +448,7 @@ public:
   redisContext *publish_context;
   redisContext *subscribe_context;
   redisContext *lock_context;
+  redisContext *unlock_context;
   
 
   int publish(std::string &channel, std::string &msg, int num);
