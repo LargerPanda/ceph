@@ -319,6 +319,13 @@ OSDService::OSDService(OSD *osd) :
     dout(1)<<": mydebug: subscribe connect success! "<< dendl;
   }
 
+  lock_context = redisConnect(IP, PORT);
+  if (lock_context->err) {    /* Error flags, 0 when there is no error */
+		dout(1)<<": mydebug: lock connect fail! "<< dendl;
+	}else{
+    dout(1)<<": mydebug: lock connect success! "<< dendl;
+  }
+
   //init pub/sub channel
   for(int i=0;i<osd_num;i++){
     subscribe_channel.push_back(std::to_string(whoami==0?7:(whoami-1))+std::to_string(i));
@@ -1726,6 +1733,37 @@ int OSDService::subscribe(string &channel, string &msg){
   }
   return 0;
 }
+
+int OSD::redis_lock(std::string lock_name){
+  dout(1)<< ": mydebug: in lock!" << dendl;
+  while(1){
+    redisReply *reply;
+    reply = redisCommand(lock_context,"set %s %d ex %d nx", lock_name.c_str(), whoami, 20);
+    if(reply->type != REDIS_REPLY_NIL && strcmp(reply->str, "OK") == 0){
+      dout(1)<< ": mydebug: set lock ok!" << dendl;
+      freeReplyObject(reply);
+      break;
+    }else{
+      dout(1)<< ": mydebug: set lock fail!" << dendl;
+      freeReplyObject(reply);
+      //sleep(1);
+      continue;
+    }
+  }  
+}
+
+int OSD::redis_unlock(std::string lock_name){
+  dout(1)<< ": mydebug: in unlock!" << dendl;
+  reply = redisCommand(lock_context, "GET %s", lock_name.c_str());  
+  if(strcmp(reply->str, std::to_string(whoami).c_str()) == 0){
+    reply = redisCommand(c,"DEL %s", lock_name.c_str());
+    dout(1)<< ": mydebug: delete lock fail!" << dendl;
+  }else{
+    dout(1)<< ": mydebug: delete lock fail! reply-str=" << reply->str<<" "<<std::to_string(whoami).c_str()<< dendl;
+  }
+  freeReplyObject(reply);
+}
+
 
 // cons/des
 

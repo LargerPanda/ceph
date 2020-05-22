@@ -429,6 +429,8 @@ public:
   std::atomic<int> finished_op_num;//
   std::atomic<int> actual_size;//
   std::atomic<int> not_first_time;//
+  std::mutex received_sub_read_mtx;//
+  std::atomic<int> received_sub_read;//
   int batch_seq;//
   int window_size;//
   int osd_num;
@@ -445,6 +447,8 @@ public:
 
   redisContext *publish_context;
   redisContext *subscribe_context;
+  redisContext *lock_context;
+  
 
   int publish(std::string &channel, std::string &msg, int num);
   int subscribe(string &channel, string &msg);

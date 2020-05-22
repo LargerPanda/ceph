@@ -1998,7 +1998,17 @@ void PG::queue_op(OpRequestRef& op)
 
     }else if(op_type == MSG_OSD_EC_READ_REPLY){
       osd->op_reply_wq.queue(make_pair(PGRef(this), op));
+
     }else if(op_type == MSG_OSD_EC_READ){
+      MOSDECSubOpRead *temp_op = static_cast<MOSDECSubOpRead *>(op->get_req());
+      osd->received_sub_read_mtx.lock();
+      osd->received_sub_read++;
+      if(received_sub_read == temp_op->op.batch_size){
+        dout(1)<<"batch received!"<<dendl;
+        osd->received_sub_read=0;
+        osd->redis_unlock(std::string(OSD)+std::to_string(osd->whoami));
+      }
+      osd->received_sub_read_mtx.unlock();
       osd->arrive_mtx.lock();
       op->set_enqueue_seq(osd->arrive_num);
       osd->arrive_num++;
