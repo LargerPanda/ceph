@@ -2157,6 +2157,9 @@ void ECBackend::start_read_op(
 							osd->sending_queue_list[j].osd_queue.pop();
 							osd->sending_list_size--;
 						}
+						if(length==0){
+							osd->redis_unlock(std::string("OSD")+std::to_string(j),j);
+						}
 						if(osd->publish(osd->publish_channel[j],start_msg,1)){
 							dout(1)<< ": mydebug: publish finish!" << dendl;
 						}
@@ -2179,6 +2182,9 @@ void ECBackend::start_read_op(
 							osd->sending_queue_list[j].osd_queue.pop();
 							osd->sending_list_size--;
 						}
+						if(length==0){
+							osd->redis_unlock(std::string("OSD")+std::to_string(j),j);
+						}
 					}else{//中间节点，先等待开始信号，发送完之后再接着发送开始信号给下一个
 						dout(1)<< ": mydebug: in middle OSD!" << dendl;
 						if(osd->subscribe(osd->subscribe_channel[j],start_msg)){
@@ -2195,6 +2201,9 @@ void ECBackend::start_read_op(
 								);
 								osd->sending_queue_list[j].osd_queue.pop();
 								osd->sending_list_size--;
+							}
+							if(length==0){
+								osd->redis_unlock(std::string("OSD")+std::to_string(j),j);
 							}
 							if(osd->publish(osd->publish_channel[j],start_msg,1)){
 								dout(1)<< ": mydebug: publish finish!" << dendl;

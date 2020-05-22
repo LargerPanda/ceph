@@ -1764,7 +1764,7 @@ int OSDService::redis_unlock(std::string lock_name){
   reply = (redisReply *)redisCommand(unlock_context, "GET %s", lock_name.c_str());  
   if(strcmp(reply->str, std::to_string(whoami).c_str()) == 0){
     reply = (redisReply *)redisCommand(unlock_context,"DEL %s", lock_name.c_str());
-    dout(1)<< ": mydebug: set lock "<<lock_name<<" ok!" << dendl;
+    dout(1)<< ": mydebug: delete lock "<<lock_name<<" ok!" << dendl;
   }else{
     dout(1)<< ": mydebug: delete lock"<< lock_name<<" fail! reply-str=" << reply->str<<" "<<std::to_string(whoami).c_str()<< dendl;
   }
