@@ -872,7 +872,8 @@ bool ECBackend::handle_message(
 
 		dout(1)<<":batch_info#"<< op->op.from.osd<<","<< op->op.batch_seq<<","<<_op->get_queue_size_when_enqueued()<<","<<_op->get_enqueue_seq()<<"#"<<dendl;
 		
-		reply->op.wait_for_service_time = _op->get_dequeued_time() - _op->get_enqueued_time(); 
+		//reply->op.wait_for_service_time = _op->get_dequeued_time() - _op->get_enqueued_time(); 
+		reply->op.wait_for_service_time = ceph_clock_now(cct)- _op->get_enqueued_time(); 
 		reply->op.queue_size = _op->get_queue_size_when_enqueued();
 		reply->op.send_time = op->op.send_time;
 		reply->op.batch_index = op->op.batch_seq;
@@ -907,6 +908,7 @@ bool ECBackend::handle_message(
 		utime_t p_time =  m->get_recv_stamp() - op->op.send_time;
 		//note for multi-queue
 		//dout(1) << ":p_time#\n" << "name: "<< op->op.buffers_read.begin()->first.oid.name << ",\n"<< "from: " << op->op.from.osd<< ",\n"<< "queue_size: "  << queue_size<< ",\n"<< "wait_for_service_time: " <<wait_for_service_time << ",\n"<< "disk_read_time: " << disk_read_time<< ",\n"<< "receive_time: " <<receive_time<< "#" << dendl;
+		
 		dout(1)<<":sub_info#"<< op->op.buffers_read.begin()->first.oid.name<<","<< op->op.from.osd<<","<<p_time<<","<<queue_size<<","<<wait_for_service_time<<","<<disk_read_time<<","<<op->op.batch_index<<","<<op->op.enqueue_seq<<"#"<<dendl;
 		//dout(1) << __func__ << ":p_time#" << op->op.buffers_read.begin()->first.oid.name << "," << op->op.from.osd << ",receive," << receive_time.tv.tv_sec << "." << receive_time.tv.tv_nsec/1000 << "#" << dendl;
 		
