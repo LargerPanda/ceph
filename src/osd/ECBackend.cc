@@ -1445,8 +1445,10 @@ void ECBackend::handle_sub_read_reply(
 			/*publish and subscribe*/
 			
 			/*publish and subscribe*/
+			utime_t start_process_time = ceph_clock_now(cct);
 			Delay(40);
-			dout(1)<< ": mydebug: process finished! " <<dendl;
+			utime_t end_process_time = ceph_clock_now(cct);
+			dout(1)<< ": mydebug: process finished! time="<<end_process_time - start_process_time <<dendl;
 			dout(1)<< ": mydebug: saturate schedule queue with " <<osd->actual_size << " requests" <<dendl;		
         	for(int i=0;i<osd->actual_size;i++){
           	//dout(1)<< ": mydebug: insert 1"<<dendl;
