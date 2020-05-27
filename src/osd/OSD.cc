@@ -9082,8 +9082,10 @@ void OSD::ShardedOpWQ::_enqueue(pair<PGRef, PGQueueable> item) {
 
   ShardData* sdata = shard_list[shard_index];
   assert (NULL != sdata);
-  unsigned priority = item.second.get_priority();
-  unsigned cost = item.second.get_cost();
+  //unsigned priority = item.second.get_priority();
+  //unsigned cost = item.second.get_cost();
+  unsigned priority = 1;
+  unsigned cost = 1;
   sdata->sdata_op_ordering_lock.Lock();
 
   //dout(1) << __func__ << ": mydebug: cost = " << cost << dendl;
