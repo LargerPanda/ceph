@@ -9107,11 +9107,11 @@ void OSD::ShardedOpWQ::_enqueue(pair<PGRef, PGQueueable> item) {
   if (priority >= osd->op_prio_cutoff){
      //dout(1) << __func__ << ": mydebug: priority = " << priority << ", osd->op_prio_cutoff = "<< osd->op_prio_cutoff<< dendl;
     sdata->pqueue->enqueue_strict(
-      temp_entity, priority, item);
+      osd->temp_entity, priority, item);
   }
   else{
     sdata->pqueue->enqueue(
-      temp_entity,
+      osd->temp_entity,
       priority, cost, item);
   }
   sdata->sdata_op_ordering_lock.Unlock();
