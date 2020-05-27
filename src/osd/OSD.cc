@@ -9094,14 +9094,24 @@ void OSD::ShardedOpWQ::_enqueue(pair<PGRef, PGQueueable> item) {
   // utime_t now = ceph_clock_now(osd->cct);
   // item.second.op_ref->set_enqueued_time(now);
 
+  // if (priority >= osd->op_prio_cutoff){
+  //    //dout(1) << __func__ << ": mydebug: priority = " << priority << ", osd->op_prio_cutoff = "<< osd->op_prio_cutoff<< dendl;
+  //   sdata->pqueue->enqueue_strict(
+  //     item.second.get_owner(), priority, item);
+  // }
+  // else{
+  //   sdata->pqueue->enqueue(
+  //     item.second.get_owner(),
+  //     priority, cost, item);
+  // }
   if (priority >= osd->op_prio_cutoff){
      //dout(1) << __func__ << ": mydebug: priority = " << priority << ", osd->op_prio_cutoff = "<< osd->op_prio_cutoff<< dendl;
     sdata->pqueue->enqueue_strict(
-      item.second.get_owner(), priority, item);
+      temp_entity, priority, item);
   }
   else{
     sdata->pqueue->enqueue(
-      item.second.get_owner(),
+      temp_entity,
       priority, cost, item);
   }
   sdata->sdata_op_ordering_lock.Unlock();

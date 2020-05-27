@@ -1168,6 +1168,8 @@ public:
   void update_log_config();
   void check_config();
 
+  entity_inst_t temp_entity;
+
 protected:
   Mutex osd_lock;			// global lock
   SafeTimer tick_timer;    // safe timer (osd_lock)
