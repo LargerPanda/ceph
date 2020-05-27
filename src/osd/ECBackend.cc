@@ -23,7 +23,7 @@
 #include "messages/MOSDPGPush.h"
 #include "messages/MOSDPGPushReply.h"
 #include "ReplicatedPG.h"
-
+#include <ctime>
 #include <time.h>
 
 class ReplicatedPG;
@@ -1257,6 +1257,12 @@ void ECBackend::handle_sub_write_reply(
 	check_op(&(i->second));
 }
 
+void Delay(int time)//time*1000为秒数 
+{ 
+	clock_t now = clock(); 
+	while(clock() - now < time); 
+} 
+
 void ECBackend::handle_sub_read_reply(
 	pg_shard_t from,
 	ECSubReadReply &op,
@@ -1439,7 +1445,9 @@ void ECBackend::handle_sub_read_reply(
 			/*publish and subscribe*/
 			
 			/*publish and subscribe*/
-			dout(1)<< ": mydebug: saturate schedule queue with " <<osd->actual_size << " requests" <<dendl;
+			Delay(40);
+			dout(1)<< ": mydebug: process finished! " <<dendl;
+			dout(1)<< ": mydebug: saturate schedule queue with " <<osd->actual_size << " requests" <<dendl;		
         	for(int i=0;i<osd->actual_size;i++){
           	//dout(1)<< ": mydebug: insert 1"<<dendl;
           		pair<PGRef, PGQueueable> item = sdata->pqueue->dequeue();
