@@ -337,7 +337,8 @@ OSDService::OSDService(OSD *osd) :
     subscribe_channel.push_back(std::to_string(whoami==0?7:(whoami-1))+std::to_string(i));
     publish_channel.push_back(std::to_string(whoami)+std::to_string(i));
   }
-  
+
+
 }
 
 OSDService::~OSDService()
@@ -1917,6 +1918,7 @@ OSD::OSD(CephContext *cct_, ObjectStore *store_,
                                          cct->_conf->osd_op_log_threshold);
   op_tracker.set_history_size_and_duration(cct->_conf->osd_op_history_size,
                                            cct->_conf->osd_op_history_duration);
+  dout(1)<<": mydebug: op_queue = "<<op_queue<< dendl;
 }
 
 OSD::~OSD()
