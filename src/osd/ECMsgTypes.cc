@@ -286,6 +286,8 @@ void ECSubRead::generate_test_instances(list<ECSubRead*>& o)
 void ECSubReadReply::encode(bufferlist &bl) const
 {
   ENCODE_START(1, 1, bl);
+  ::encode(enqueued_time, bl);//
+  ::encode(dequeued_time, bl);//
   ::encode(batch_index, bl);//
   ::encode(enqueue_seq, bl);//
   ::encode(queue_size, bl);//
@@ -303,6 +305,8 @@ void ECSubReadReply::encode(bufferlist &bl) const
 void ECSubReadReply::decode(bufferlist::iterator &bl)
 {
   DECODE_START(1, bl);
+  ::decode(enqueued_time, bl);//
+  ::decode(dequeued_time, bl);//
   ::decode(batch_index, bl);//
   ::decode(enqueue_seq, bl);//
   ::decode(queue_size, bl);//
