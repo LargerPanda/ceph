@@ -289,7 +289,7 @@ OSDService::OSDService(OSD *osd) :
   sending_list_size(0),
   //publish_channel(std::to_string(whoami)),
   //subscribe_channel(std::to_string(whoami==0?7:(whoami-1))),
-  IP("10.10.1.1"),
+  IP("10.10.1.9"),
   PORT(6379),
   first_time_published(0),
   pipeline_length(cct->_conf->osd_pipeline_length)
