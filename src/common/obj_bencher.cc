@@ -1139,8 +1139,8 @@ int ObjBencher::seq_read_bench(int seconds_to_run, int num_objects, int concurre
 
     int temp_index = 0;
 
-    out(cout) << "##mydebug"
-              << ",name=" << name[slot] << ",index=" << temp_index << ",latency=" << data.cur_latency << std::endl;
+    //out(cout) << "##mydebug"
+              //<< ",name=" << name[slot] << ",index=" << temp_index << ",latency=" << data.cur_latency << std::endl;
 
     if (!no_verify)
     {
